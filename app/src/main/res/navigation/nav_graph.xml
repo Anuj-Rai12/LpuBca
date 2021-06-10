@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginScreen">
+
+    <fragment
+        android:id="@+id/loginScreen"
+        android:name="com.example.working.loginorsignup.LoginScreen"
+        android:label="LoginScreen"
+        tools:layout="@layout/login_fragment">
+        <action
+            android:id="@+id/action_loginScreen_to_forgetPassWord"
+            app:destination="@id/forgetPassWord" />
+        <action
+            android:id="@+id/action_loginScreen_to_signUpScreen"
+            app:destination="@id/signUpScreen" />
+        <action
+            android:id="@+id/action_loginScreen_to_mainActivity23"
+            app:destination="@id/navigation2" />
+        <argument
+            android:name="flags"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/signUpScreen"
+        android:name="com.example.working.loginorsignup.SignUpScreen"
+        android:label="SignUpScreen"
+        tools:layout="@layout/sign_framgnet">
+        <action
+            android:id="@+id/action_signUpScreen_to_dateDetailScr"
+            app:destination="@id/dateDetailScr" />
+    </fragment>
+    <fragment
+        android:id="@+id/forgetPassWord"
+        android:name="com.example.working.loginorsignup.forgertpass.ForgetPassWord"
+        android:label="ForgetPassWord"
+        tools:layout="@layout/forget_fragement">
+        <action
+            android:id="@+id/action_forgetPassWord_to_makeSelection"
+            app:destination="@id/makeSelection" />
+    </fragment>
+    <fragment
+        android:id="@+id/makeSelection"
+        android:name="com.example.working.loginorsignup.forgertpass.MakeSelection"
+        android:label="MakeSelection"
+        tools:layout="@layout/mke_framgent">
+        <action
+            android:id="@+id/action_makeSelection_to_OTPScreen"
+            app:destination="@id/OTPScreen" />
+    </fragment>
+    <fragment
+        android:id="@+id/OTPScreen"
+        android:name="com.example.working.loginorsignup.forgertpass.OTPScreen"
+        android:label="OTPScreen"
+        tools:layout="@layout/opt_framgnet">
+        <action
+            android:id="@+id/action_OTPScreen_to_mainActivity23"
+            app:destination="@id/navigation2" />
+    </fragment>
+    <fragment
+        android:id="@+id/dateDetailScr"
+        android:name="com.example.working.loginorsignup.createacc.DateDetailScr"
+        android:label="DateDetailScr"
+        tools:layout="@layout/date_detail_framgent">
+        <action
+            android:id="@+id/action_dateDetailScr_to_phoneScreen"
+            app:destination="@id/phoneScreen" />
+    </fragment>
+    <fragment
+        android:id="@+id/phoneScreen"
+        android:name="com.example.working.loginorsignup.createacc.PhoneScreen"
+        android:label="PhoneScreen"
+        tools:layout="@layout/phone_number">
+        <action
+            android:id="@+id/action_phoneScreen_to_OTPScreen"
+            app:destination="@id/OTPScreen" />
+    </fragment>
+    <navigation android:id="@+id/navigation2"
+        app:startDestination="@id/mainActivity23">
+        <activity
+            android:id="@+id/mainActivity23"
+            android:name="com.example.working.MainActivity2"
+            android:label="activity_main2"
+            tools:layout="@layout/activity_main2" />
+        <action
+            android:id="@+id/action_global_loginScreen"
+            app:destination="@id/loginScreen" />
+    </navigation>
+</navigation>

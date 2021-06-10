@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/user_graph"
+    app:startDestination="@id/noteFragment">
+    <fragment
+        android:id="@+id/noteFragment"
+        android:name="com.example.working.userfagment.NoteFragment"
+        android:label="NoteFragment"
+        tools:layout="@layout/note_framgnet"/>
+    <fragment
+        android:id="@+id/booksFragment"
+        android:name="com.example.working.userfagment.BooksFragment"
+        android:label="BooksFragment"
+        tools:layout="@layout/book_fragment"/>
+</navigation>
