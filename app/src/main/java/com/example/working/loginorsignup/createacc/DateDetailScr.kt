@@ -12,8 +12,12 @@ class DateDetailScr:Fragment(R.layout.date_detail_framgent) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding= DateDetailFramgentBinding.bind(view)
-        binding.backTo.setOnClickListener {
+        binding.nextBtn.setOnClickListener {
             val action= DateDetailScrDirections.actionDateDetailScrToPhoneScreen()
+            findNavController().navigate(action)
+        }
+        binding.backTo.setOnClickListener {
+            val action=DateDetailScrDirections.actionDateDetailScrToLoginScreen()
             findNavController().navigate(action)
         }
     }

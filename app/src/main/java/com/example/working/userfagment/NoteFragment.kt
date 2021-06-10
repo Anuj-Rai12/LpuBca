@@ -8,7 +8,6 @@ import androidx.activity.OnBackPressedDispatcher
 import androidx.fragment.app.Fragment
 import com.example.working.R
 import com.example.working.databinding.NoteFramgnetBinding
-import kotlin.system.exitProcess
 
 class NoteFragment : Fragment(R.layout.note_framgnet) {
     private lateinit var binding: NoteFramgnetBinding

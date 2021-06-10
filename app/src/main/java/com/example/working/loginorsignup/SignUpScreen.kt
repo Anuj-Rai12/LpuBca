@@ -12,8 +12,12 @@ class SignUpScreen:Fragment(R.layout.sign_framgnet) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding= SignFramgnetBinding.bind(view)
-        binding.backTo.setOnClickListener {
+        binding.nextBtn.setOnClickListener {
             val action=SignUpScreenDirections.actionSignUpScreenToDateDetailScr()
+            findNavController().navigate(action)
+        }
+        binding.backTo.setOnClickListener {
+            val action=SignUpScreenDirections.actionSignUpScreenToLoginScreen()
             findNavController().navigate(action)
         }
     }

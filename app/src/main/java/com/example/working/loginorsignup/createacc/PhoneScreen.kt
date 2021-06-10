@@ -13,8 +13,12 @@ class PhoneScreen:Fragment(R.layout.phone_number) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding= PhoneNumberBinding.bind(view)
-        binding.backTo.setOnClickListener {
+        binding.nextBtn.setOnClickListener {
             val action= PhoneScreenDirections.actionPhoneScreenToOTPScreen()
+            findNavController().navigate(action)
+        }
+        binding.backTo.setOnClickListener {
+            val action=PhoneScreenDirections.actionPhoneScreenToLoginScreen()
             findNavController().navigate(action)
         }
     }

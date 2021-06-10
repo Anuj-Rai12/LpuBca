@@ -17,5 +17,9 @@ class ForgetPassWord:Fragment(R.layout.forget_fragement) {
             val action= ForgetPassWordDirections.actionForgetPassWordToMakeSelection()
             findNavController().navigate(action)
         }
+        binding.createacc.setOnClickListener {
+            val action=ForgetPassWordDirections.actionForgetPassWordToSignUpScreen()
+            findNavController().navigate(action)
+        }
     }
 }

@@ -19,11 +19,17 @@ class LoginScreen : Fragment(R.layout.login_fragment) {
         super.onViewCreated(view, savedInstanceState)
         binding = LoginFragmentBinding.bind(view)
         binding.nextBtn.setOnClickListener {
-            binding.emailTextView.boxStrokeColor = (resources.getColor(R.color.red_color, null))
-            binding.emailTextView.hint = "hello is Is Wrong"
+            /*binding.emailTextView.boxStrokeColor = (resources.getColor(R.color.red_color, null))
+            binding.emailTextView.hint = "hello is Is Wrong"*/
+            val action=LoginScreenDirections.actionLoginScreenToMainActivity23()
+            findNavController().navigate(action)
+        }
+        binding.forpass.setOnClickListener {
+            val action=LoginScreenDirections.actionLoginScreenToForgetPassWord()
+            findNavController().navigate(action)
         }
         binding.backSign.setOnClickListener {
-            val action = LoginScreenDirections.actionLoginScreenToMainActivity23()
+            val action = LoginScreenDirections.actionLoginScreenToSignUpScreen()
             findNavController().navigate(action)
         }
     }
