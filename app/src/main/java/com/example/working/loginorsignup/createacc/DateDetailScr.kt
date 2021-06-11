@@ -17,7 +17,7 @@ class DateDetailScr:Fragment(R.layout.date_detail_framgent) {
             findNavController().navigate(action)
         }
         binding.backTo.setOnClickListener {
-            val action=DateDetailScrDirections.actionDateDetailScrToLoginScreen()
+            val action=DateDetailScrDirections.actionGlobalLoginScreen2()
             findNavController().navigate(action)
         }
     }

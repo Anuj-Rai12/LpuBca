@@ -18,7 +18,7 @@ class PhoneScreen:Fragment(R.layout.phone_number) {
             findNavController().navigate(action)
         }
         binding.backTo.setOnClickListener {
-            val action=PhoneScreenDirections.actionPhoneScreenToLoginScreen()
+            val action=PhoneScreenDirections.actionGlobalLoginScreen2()
             findNavController().navigate(action)
         }
     }

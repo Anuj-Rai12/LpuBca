@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/loginScreen"
         android:name="com.example.working.loginorsignup.LoginScreen"
-        android:label="LoginScreen"
+        android:label="Login Screen"
         tools:layout="@layout/login_fragment">
         <action
             android:id="@+id/action_loginScreen_to_forgetPassWord"
@@ -19,27 +19,20 @@
         <action
             android:id="@+id/action_loginScreen_to_mainActivity23"
             app:destination="@id/navigation2" />
-        <argument
-            android:name="flags"
-            app:argType="boolean"
-            android:defaultValue="false" />
     </fragment>
     <fragment
         android:id="@+id/signUpScreen"
         android:name="com.example.working.loginorsignup.SignUpScreen"
-        android:label="SignUpScreen"
+        android:label="Create Account"
         tools:layout="@layout/sign_framgnet">
         <action
             android:id="@+id/action_signUpScreen_to_dateDetailScr"
             app:destination="@id/dateDetailScr" />
-        <action
-            android:id="@+id/action_signUpScreen_to_loginScreen"
-            app:destination="@id/loginScreen" />
     </fragment>
     <fragment
         android:id="@+id/forgetPassWord"
         android:name="com.example.working.loginorsignup.forgertpass.ForgetPassWord"
-        android:label="ForgetPassWord"
+        android:label="Forget Password"
         tools:layout="@layout/forget_fragement">
         <action
             android:id="@+id/action_forgetPassWord_to_makeSelection"
@@ -60,7 +53,7 @@
     <fragment
         android:id="@+id/OTPScreen"
         android:name="com.example.working.loginorsignup.forgertpass.OTPScreen"
-        android:label="OTPScreen"
+        android:label="OTP"
         tools:layout="@layout/opt_framgnet">
         <action
             android:id="@+id/action_OTPScreen_to_mainActivity23"
@@ -69,26 +62,20 @@
     <fragment
         android:id="@+id/dateDetailScr"
         android:name="com.example.working.loginorsignup.createacc.DateDetailScr"
-        android:label="DateDetailScr"
+        android:label="Information"
         tools:layout="@layout/date_detail_framgent">
         <action
             android:id="@+id/action_dateDetailScr_to_phoneScreen"
             app:destination="@id/phoneScreen" />
-        <action
-            android:id="@+id/action_dateDetailScr_to_loginScreen"
-            app:destination="@id/loginScreen" />
     </fragment>
     <fragment
         android:id="@+id/phoneScreen"
         android:name="com.example.working.loginorsignup.createacc.PhoneScreen"
-        android:label="PhoneScreen"
+        android:label="Phone Number"
         tools:layout="@layout/phone_number">
         <action
             android:id="@+id/action_phoneScreen_to_OTPScreen"
             app:destination="@id/OTPScreen" />
-        <action
-            android:id="@+id/action_phoneScreen_to_loginScreen"
-            app:destination="@id/loginScreen" />
     </fragment>
     <navigation android:id="@+id/navigation2"
         app:startDestination="@id/mainActivity23">
@@ -97,8 +84,6 @@
             android:name="com.example.working.MainActivity2"
             android:label="activity_main2"
             tools:layout="@layout/activity_main2" />
-        <action
-            android:id="@+id/action_global_loginScreen"
-            app:destination="@id/loginScreen" />
     </navigation>
+    <action android:id="@+id/action_global_loginScreen2" app:destination="@id/loginScreen" />
 </navigation>

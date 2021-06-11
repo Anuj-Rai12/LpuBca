@@ -17,7 +17,7 @@ class SignUpScreen:Fragment(R.layout.sign_framgnet) {
             findNavController().navigate(action)
         }
         binding.backTo.setOnClickListener {
-            val action=SignUpScreenDirections.actionSignUpScreenToLoginScreen()
+            val action=SignUpScreenDirections.actionGlobalLoginScreen2()
             findNavController().navigate(action)
         }
     }

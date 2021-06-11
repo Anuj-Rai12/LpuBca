@@ -38,7 +38,7 @@ class MainActivity2 : AppCompatActivity() {
                 Log.i("MYTAG", "handleOnBackPressed: on Back Pressed")
                 // activity?.finish()
                 /*exitProcess(0)*/
-                MainActivity2Directions.actionGlobalLoginScreen(true)
+                MainActivity2Directions.actionGlobalLoginScreen2()
             }
         }
         this.onBackPressedDispatcher.addCallback(callback)

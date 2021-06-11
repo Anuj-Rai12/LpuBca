@@ -12,7 +12,7 @@ import com.example.working.databinding.LoginFragmentBinding
 
 class LoginScreen : Fragment(R.layout.login_fragment) {
     private lateinit var binding: LoginFragmentBinding
-    private val args: LoginScreenArgs by navArgs()
+    /*private val args: LoginScreenArgs by navArgs()*/
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -36,9 +36,9 @@ class LoginScreen : Fragment(R.layout.login_fragment) {
 
     override fun onStart() {
         super.onStart()
-        if (args.flags) {
+        /*if (args.flags) {
             activity?.finish()
-        }
+        }*/
     }
 
 }
