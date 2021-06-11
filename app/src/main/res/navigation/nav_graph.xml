@@ -86,4 +86,10 @@
             tools:layout="@layout/activity_main2" />
     </navigation>
     <action android:id="@+id/action_global_loginScreen2" app:destination="@id/loginScreen" />
+    <dialog
+        android:id="@+id/bottomSheet"
+        android:name="com.example.working.utils.BottomSheet"
+        android:label="mybottomsheet"
+        tools:layout="@layout/mybottomsheet" />
+    <action android:id="@+id/action_global_bottomSheet" app:destination="@id/bottomSheet" />
 </navigation>
