@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Working</string>
+    <string-array name="timers">
+        <item>1th Semester</item>
+        <item>2th Semester</item>
+        <item>3th Semester</item>
+        <item>4th Semester</item>
+        <item>5th Semester</item>
+        <item>6th Semester</item>
+    </string-array>
 </resources>

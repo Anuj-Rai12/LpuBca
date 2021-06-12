@@ -12,7 +12,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
-import android.widget.Toast
+import android.widget.ArrayAdapter
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
@@ -30,10 +30,13 @@ import com.example.working.utils.SendData
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
-const val TAG="MYTAG"
+const val TAG = "MYTAG"
+
 class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
     private lateinit var binding: SignFramgnetBinding
     private var myBitmap: Bitmap? = null
+    private var semesterNo: String? = null
+
     //private val myViewModel: MyViewModel by activityViewModels()
     private val requestCamera =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -44,8 +47,9 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = SignFramgnetBinding.bind(view)
+        setSemester()
         savedInstanceState?.let {
-            myBitmap=it.getByteArray("IMAGE")?.let {byte->
+            myBitmap = it.getByteArray("IMAGE")?.let { byte ->
                 Convertor.covertByteArray2image(byte)
             }
         }
@@ -61,7 +65,27 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
             val action = SignUpScreenDirections.actionGlobalLoginScreen2()
             findNavController().navigate(action)
         }
+        binding.Autocom.setOnItemClickListener { _, _, position, _ ->
+            getPosition(position)
+            Snackbar.make(
+                requireView(),
+                "The Value you selected  is $semesterNo ",
+                Snackbar.LENGTH_SHORT
+            ).show()
+        }
         getImage()
+    }
+
+    private fun getPosition(position: Int) {
+        semesterNo = when (position) {
+            0 -> "1th Semester"
+            1 -> "2th Semester"
+            2 -> "3th Semester"
+            3 -> "4th Semester"
+            4 -> "5th Semester"
+            5 -> "6th Semester"
+            else -> null
+        }
     }
 
     private fun getImage() {
@@ -107,19 +131,22 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
             binding.profileImage.setImageBitmap(myBitmap)
         }
     }
-    private fun convertImage(myImage: Int=R.drawable.myimage): Bitmap = BitmapFactory.decodeResource(resources, myImage)
+
+    private fun convertImage(myImage: Int = R.drawable.myimage): Bitmap =
+        BitmapFactory.decodeResource(resources, myImage)
+
     private suspend fun getBitmap(): Bitmap? {
-        binding.progress.isVisible=true
+        binding.progress.isVisible = true
         val loading = ImageLoader(requireContext())
         val request = ImageRequest.Builder(requireContext())
             .data("https://picsum.photos/800/800")
             .build()
         return try {
             val result = (loading.execute(request) as SuccessResult).drawable
-            binding.progress.isVisible=false
+            binding.progress.isVisible = false
             (result as BitmapDrawable).bitmap
         } catch (e: Exception) {
-            binding.progress.isVisible=false
+            binding.progress.isVisible = false
             Snackbar.make(requireView(), "No Internet :(", Snackbar.LENGTH_SHORT).show()
             null
         }
@@ -127,9 +154,20 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        if (myBitmap!=null)
-            outState.putByteArray("IMAGE",Convertor.covertImages2ByteArray(myBitmap!!))
+        if (myBitmap != null)
+            outState.putByteArray("IMAGE", Convertor.covertImages2ByteArray(myBitmap!!))
         else
             Log.i(TAG, "onSaveInstanceState: MyBit is Null")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setSemester()
+    }
+
+    private fun setSemester() {
+        val weeks = resources.getStringArray(R.array.timers)
+        val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdaown, weeks)
+        binding.Autocom.setAdapter(arrayAdapter)
     }
 }
