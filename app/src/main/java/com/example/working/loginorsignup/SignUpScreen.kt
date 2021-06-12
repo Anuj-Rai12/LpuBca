@@ -3,6 +3,7 @@ package com.example.working.loginorsignup
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
@@ -101,13 +102,12 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
     }
 
     override fun urlImage() {
-        Snackbar.make(requireView(), "Loading...", Snackbar.LENGTH_SHORT).show()
         lifecycleScope.launch {
-            myBitmap = getBitmap()
+            myBitmap = getBitmap() ?: convertImage()
             binding.profileImage.setImageBitmap(myBitmap)
         }
     }
-
+    private fun convertImage(myImage: Int=R.drawable.myimage): Bitmap = BitmapFactory.decodeResource(resources, myImage)
     private suspend fun getBitmap(): Bitmap? {
         binding.progress.isVisible=true
         val loading = ImageLoader(requireContext())
@@ -120,7 +120,7 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
             (result as BitmapDrawable).bitmap
         } catch (e: Exception) {
             binding.progress.isVisible=false
-            Toast.makeText(activity, "Oops Something went wrong", Toast.LENGTH_SHORT).show()
+            Snackbar.make(requireView(), "No Internet :(", Snackbar.LENGTH_SHORT).show()
             null
         }
     }

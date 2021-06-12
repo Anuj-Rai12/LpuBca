@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/weathertransp"
+    android:background="@drawable/workingappbackground"
     tools:context="com.example.working.utils.BottomSheet">
 
     <LinearLayout
@@ -19,36 +19,39 @@
             android:fontFamily="@font/allerta"
             android:gravity="center"
             android:text="Photos."
-            android:textSize="26sp"
+            android:textSize="15sp"
+            android:textColor="@color/black"
             android:textStyle="bold" />
 
 
         <TextView
             android:id="@+id/opencamera"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:fontFamily="@font/allerta"
-            android:layout_margin="30dp"
+            android:layout_margin="20dp"
             android:gravity="start"
-            android:drawablePadding="4dp"
             android:text="Take Photo."
+            android:drawableTint="@color/black"
+            android:drawablePadding="10dp"
+            android:textColor="@color/black"
             app:drawableStartCompat="@drawable/ic_camera"
-            android:textSize="20sp"
+            android:textSize="15sp"
             android:textStyle="bold" />
-
-
 
         <TextView
             android:id="@+id/opengallery"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:fontFamily="@font/allerta"
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="20dp"
             android:gravity="start"
-            android:drawablePadding="4dp"
+            android:drawablePadding="10dp"
             android:text="Open Gallery."
+            android:drawableTint="@color/black"
+            android:textColor="@color/black"
             app:drawableStartCompat="@drawable/ic_image"
-            android:textSize="20sp"
+            android:textSize="15sp"
             android:textStyle="bold" />
 
 
@@ -57,17 +60,20 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fontFamily="@font/allerta"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
             android:gravity="start"
-            android:drawablePadding="4dp"
+            android:drawablePadding="10dp"
             android:text="Random Images."
+            android:textColor="@color/black"
             app:drawableStartCompat="@drawable/ic_image_search"
-            android:textSize="20sp"
+            android:drawableTint="@color/black"
+            android:textCursorDrawable="@color/black"
+            android:textSize="15sp"
             android:textStyle="bold" />
         <View
             android:layout_width="match_parent"
-            android:layout_height="20dp" />
+            android:layout_height="30dp" />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
