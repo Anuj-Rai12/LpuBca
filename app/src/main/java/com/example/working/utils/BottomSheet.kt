@@ -15,9 +15,10 @@ import com.example.working.databinding.MybottomsheetBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
+import javax.inject.Inject
 
 
-class BottomSheet: BottomSheetDialogFragment(), EasyPermissions.PermissionCallbacks {
+class BottomSheet @Inject constructor(): BottomSheetDialogFragment(), EasyPermissions.PermissionCallbacks {
     private lateinit var binding: MybottomsheetBinding
     var sendData: SendData? = null
     private val requestGallery =

@@ -28,15 +28,18 @@ import com.example.working.utils.BottomSheet
 import com.example.working.utils.Convertor
 import com.example.working.utils.SendData
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 const val TAG = "MYTAG"
-
+@AndroidEntryPoint
 class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
     private lateinit var binding: SignFramgnetBinding
     private var myBitmap: Bitmap? = null
     private var semesterNo: String? = null
-
+    @Inject
+    lateinit var myBottomSheet: BottomSheet
     //private val myViewModel: MyViewModel by activityViewModels()
     private val requestCamera =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -90,7 +93,6 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
 
     private fun getImage() {
         binding.setimagedude.setOnClickListener {
-            val myBottomSheet = BottomSheet()
             myBottomSheet.sendData = this
             myBottomSheet.show(childFragmentManager, "Bottom Sheet")
         }

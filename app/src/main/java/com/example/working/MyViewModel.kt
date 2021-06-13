@@ -1,8 +1,10 @@
 package com.example.working
 
-import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class MyViewModel:ViewModel() {
-    var ImageViewBitamp:Bitmap?=null
+@HiltViewModel
+class MyViewModel  @Inject constructor(): ViewModel() {
+    //var ImageViewBitmap:Bitmap?=null
 }

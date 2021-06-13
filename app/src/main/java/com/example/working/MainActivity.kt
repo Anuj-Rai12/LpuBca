@@ -11,11 +11,13 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.working.databinding.ActivityMainBinding
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
+import dagger.hilt.android.AndroidEntryPoint
 
 const val REQUEST_CAM = 101
 const val REQUEST_GAL = 102
 const val REQUEST_WRIT = 103
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
@@ -44,7 +46,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
             request(Manifest.permission.CAMERA, REQUEST_CAM, "Camera")
         }
         if (!checkGalleryPermission()) {
-            request(Manifest.permission.READ_EXTERNAL_STORAGE, REQUEST_GAL,"Gallery")
+            request(Manifest.permission.READ_EXTERNAL_STORAGE, REQUEST_GAL, "Gallery")
         }
         if (!checkWritePermission()) {
             request(Manifest.permission.WRITE_EXTERNAL_STORAGE, REQUEST_WRIT, "Access to Storage")
