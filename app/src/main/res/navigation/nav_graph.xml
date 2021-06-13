@@ -79,6 +79,9 @@
         <action
             android:id="@+id/action_phoneScreen_to_OTPScreen"
             app:destination="@id/OTPScreen" />
+        <argument
+            android:name="usertwo"
+            app:argType="com.example.working.utils.userchannel.UserInfo1" />
     </fragment>
     <navigation android:id="@+id/navigation2"
         app:startDestination="@id/mainActivity23">
@@ -95,4 +98,12 @@
         android:label="mybottomsheet"
         tools:layout="@layout/mybottomsheet" />
     <action android:id="@+id/action_global_bottomSheet" app:destination="@id/bottomSheet" />
+    <dialog
+        android:id="@+id/passwordDialog"
+        android:name="com.example.working.utils.PasswordDialog"
+        android:label="PasswordDialog" >
+        <argument
+            android:name="message"
+            app:argType="string" />
+    </dialog><action android:id="@+id/action_global_passwordDialog" app:destination="@id/passwordDialog"/>
 </navigation>

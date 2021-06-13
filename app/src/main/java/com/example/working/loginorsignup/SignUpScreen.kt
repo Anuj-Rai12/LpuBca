@@ -32,6 +32,7 @@ import com.example.working.utils.userchannel.UserInfo1
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.util.regex.Pattern.compile
 import javax.inject.Inject
 
 
@@ -63,7 +64,7 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
             myBitmap = it.getByteArray("IMAGE")?.let { byte ->
                 Convertor.covertByteArray2image(byte)
             }
-            semesterNo=it.getString("Sem")
+            semesterNo = it.getString("Sem")
         }
         myBitmap?.let {
             binding.profileImage.setImageBitmap(it)
@@ -77,23 +78,39 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
             val password = binding.password.text.toString()
             Log.i(TAG, "onViewCreated: $lastname,$firstname,$email,$password $semesterNo")
             if ((lastname.isEmpty() || lastname.isBlank()
-                        || firstname.isEmpty() || firstname.isBlank()) || !isValidEmail(email) || password.isEmpty() || password.isBlank() || semesterNo.isNullOrEmpty()
+                        || firstname.isEmpty() || firstname.isBlank() || email.isEmpty() || email.isBlank()) || password.isEmpty() || password.isBlank() || semesterNo.isNullOrEmpty()
             ) {
-                Snackbar.make(requireView(), "Please Enter The Correct value", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(
+                    requireView(),
+                    "Please  Fill The Information",
+                    Snackbar.LENGTH_SHORT
+                ).show()
                 return@setOnClickListener
-            } else {
-                val icon = myBitmap ?: convertImage()
-                val info1 = UserInfo1(
-                    firstname = firstname,
-                    lastname = lastname,
-                    semester = semesterNo!!,
-                    email = email,
-                    password = password,
-                    icon = Convertor.covertImages2ByteArray(icon)!!
-                )
-                Log.i(TAG, "onViewCreated: $info1")
-                dir(info1)
             }
+            if (!isValidEmail(email)) {
+                Snackbar.make(requireView(), "Enter the Valid Email", Snackbar.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (!isValidPassword(password.trim())) {
+                Snackbar.make(requireView(), "PassWord is Weak", Snackbar.LENGTH_LONG)
+                    .setAction("Info") {
+                        val action=SignUpScreenDirections.actionGlobalPasswordDialog(msg())
+                        findNavController().navigate(action)
+                    }.show()
+                return@setOnClickListener
+            }
+
+            val icon = myBitmap ?: convertImage()
+            val info1 = UserInfo1(
+                firstname = firstname,
+                lastname = lastname,
+                semester = semesterNo!!,
+                email = email,
+                password = password,
+                icon = Convertor.covertImages2ByteArray(icon)!!
+            )
+            Log.i(TAG, "onViewCreated: $info1")
+            dir(info1)
         }
         binding.backTo.setOnClickListener {
             val action = SignUpScreenDirections.actionGlobalLoginScreen2()
@@ -104,18 +121,31 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
         }
         getImage()
     }
+
     private fun isValidEmail(target: CharSequence?): Boolean {
-        return if (target==null ) {
+        return if (target == null) {
             false
         } else {
             Patterns.EMAIL_ADDRESS.matcher(target).matches()
         }
     }
+
     private fun dir(userInfo1: UserInfo1) {
         val action = SignUpScreenDirections.actionSignUpScreenToDateDetailScr(userInfo1)
         findNavController().navigate(action)
     }
-
+    private fun isValidPassword(password: String): Boolean {
+        val passwordREGEX = compile("^" +
+                "(?=.*[0-9])" +         //at least 1 digit
+                "(?=.*[a-z])" +         //at least 1 lower case letter
+                "(?=.*[A-Z])" +         //at least 1 upper case letter
+                "(?=.*[a-zA-Z])" +      //any letter
+                "(?=.*[@#$%^&+=])" +    //at least 1 special character
+                "(?=\\S+$)" +           //no white spaces
+                ".{8,}" +               //at least 8 characters
+                "$")
+        return passwordREGEX.matcher(password).matches()
+    }
     private fun getPosition(position: Int) {
         semesterNo = when (position) {
             0 -> "1th Semester"
@@ -197,8 +227,8 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
             outState.putByteArray("IMAGE", Convertor.covertImages2ByteArray(myBitmap!!))
         else
             Log.i(TAG, "onSaveInstanceState: MyBit is Null")
-        if (semesterNo!=null)
-            outState.putString("Sem",semesterNo)
+        if (semesterNo != null)
+            outState.putString("Sem", semesterNo)
         else
             Log.i(TAG, "onSaveInstanceState: SemesterNo is Null")
     }
@@ -213,4 +243,13 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
         val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdaown, weeks)
         binding.Autocom.setAdapter(arrayAdapter)
     }
+    private fun msg()="The Good Password Must contain Following thing ;) :- \n\n" +
+            "1.At least 1 digit i.e [0-9]\n" +
+            "2.At least 1 lower case letter i.e [a-z]\n" +
+            "3.At least 1 upper case letter i.e [A-Z]\n" +
+            "4.Any letter i.e [A-Z,a-z]\n" +
+            "5.At least 1 special character i.e [%^*!&*|)(%#$%]\n" +
+            "6.No white spaces\n" +
+            "7.At Least 8 Character\n"
+
 }

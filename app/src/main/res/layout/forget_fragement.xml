@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:padding="20dp"
+    android:padding="8dp"
     tools:context="com.example.working.loginorsignup.forgertpass.ForgetPassWord">
 
     <LinearLayout
@@ -17,13 +17,11 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:orientation="vertical">
 
             <ImageView
                 android:layout_width="wrap_content"
-                android:layout_height="150dp"
-                android:padding="5dp"
+                android:layout_height="120dp"
                 app:srcCompat="@drawable/resetlock" />
 
             <TextView
@@ -34,7 +32,7 @@
                 android:text="   Forget\nPassword?"
                 android:textAllCaps="false"
                 android:textColor="@color/black"
-                android:textSize="30sp"
+                android:textSize="23sp"
                 android:textStyle="bold" />
 
             <TextView

@@ -5,12 +5,15 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class UserInfo1(
-    val firstname:String,
-    val lastname:String,
-    val semester:String,
-    val email:String,
-    val password:String,
-    val icon:ByteArray
+    val firstname:String?=null,
+    val lastname:String?=null,
+    val gender:String?=null,
+    val dob:String?=null,
+    val semester:String?=null,
+    val phone:String?=null,
+    val email:String?=null,
+    val password:String?=null,
+    val icon:ByteArray?=null,
 ) : Parcelable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
