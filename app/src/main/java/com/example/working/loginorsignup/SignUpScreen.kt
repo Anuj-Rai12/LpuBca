@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.util.Patterns
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.activity.result.ActivityResult
@@ -27,22 +28,27 @@ import com.example.working.utils.BottomSheet
 import com.example.working.utils.Convertor
 import com.example.working.utils.CustomProgressBar
 import com.example.working.utils.SendData
+import com.example.working.utils.userchannel.UserInfo1
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
 const val TAG = "MYTAG"
+
 @AndroidEntryPoint
 class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
     private lateinit var binding: SignFramgnetBinding
     private var myBitmap: Bitmap? = null
     private var semesterNo: String? = null
+
+
     @Inject
     lateinit var myBottomSheet: BottomSheet
+
     @Inject
     lateinit var customProgressBar: CustomProgressBar
-    //private val myViewModel: MyViewModel by activityViewModels()
     private val requestCamera =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it != null)
@@ -57,14 +63,37 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
             myBitmap = it.getByteArray("IMAGE")?.let { byte ->
                 Convertor.covertByteArray2image(byte)
             }
+            semesterNo=it.getString("Sem")
         }
         myBitmap?.let {
             binding.profileImage.setImageBitmap(it)
             binding.profileImage.setBackgroundColor(Color.WHITE)
         }
+
         binding.nextBtn.setOnClickListener {
-            val action = SignUpScreenDirections.actionSignUpScreenToDateDetailScr()
-            findNavController().navigate(action)
+            val lastname = binding.lastName.text.toString()
+            val firstname = binding.firstName.text.toString()
+            val email = binding.emailAddress.text.toString()
+            val password = binding.password.text.toString()
+            Log.i(TAG, "onViewCreated: $lastname,$firstname,$email,$password $semesterNo")
+            if ((lastname.isEmpty() || lastname.isBlank()
+                        || firstname.isEmpty() || firstname.isBlank()) || !isValidEmail(email) || password.isEmpty() || password.isBlank() || semesterNo.isNullOrEmpty()
+            ) {
+                Snackbar.make(requireView(), "Please Enter The Correct value", Snackbar.LENGTH_SHORT).show()
+                return@setOnClickListener
+            } else {
+                val icon = myBitmap ?: convertImage()
+                val info1 = UserInfo1(
+                    firstname = firstname,
+                    lastname = lastname,
+                    semester = semesterNo!!,
+                    email = email,
+                    password = password,
+                    icon = Convertor.covertImages2ByteArray(icon)!!
+                )
+                Log.i(TAG, "onViewCreated: $info1")
+                dir(info1)
+            }
         }
         binding.backTo.setOnClickListener {
             val action = SignUpScreenDirections.actionGlobalLoginScreen2()
@@ -72,13 +101,19 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
         }
         binding.Autocom.setOnItemClickListener { _, _, position, _ ->
             getPosition(position)
-            Snackbar.make(
-                requireView(),
-                "The Value you selected  is $semesterNo ",
-                Snackbar.LENGTH_SHORT
-            ).show()
         }
         getImage()
+    }
+    private fun isValidEmail(target: CharSequence?): Boolean {
+        return if (target==null ) {
+            false
+        } else {
+            Patterns.EMAIL_ADDRESS.matcher(target).matches()
+        }
+    }
+    private fun dir(userInfo1: UserInfo1) {
+        val action = SignUpScreenDirections.actionSignUpScreenToDateDetailScr(userInfo1)
+        findNavController().navigate(action)
     }
 
     private fun getPosition(position: Int) {
@@ -140,7 +175,7 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
         BitmapFactory.decodeResource(resources, myImage)
 
     private suspend fun getBitmap(): Bitmap? {
-        customProgressBar.show(requireActivity(),"Image Is Loading..",false)
+        customProgressBar.show(requireActivity(), "Image Is Loading..", false)
         val loading = ImageLoader(requireContext())
         val request = ImageRequest.Builder(requireContext())
             .data("https://picsum.photos/1000/1000")
@@ -162,6 +197,10 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
             outState.putByteArray("IMAGE", Convertor.covertImages2ByteArray(myBitmap!!))
         else
             Log.i(TAG, "onSaveInstanceState: MyBit is Null")
+        if (semesterNo!=null)
+            outState.putString("Sem",semesterNo)
+        else
+            Log.i(TAG, "onSaveInstanceState: SemesterNo is Null")
     }
 
     override fun onResume() {

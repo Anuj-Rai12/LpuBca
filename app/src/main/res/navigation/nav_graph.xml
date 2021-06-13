@@ -67,6 +67,9 @@
         <action
             android:id="@+id/action_dateDetailScr_to_phoneScreen"
             app:destination="@id/phoneScreen" />
+        <argument
+            android:name="userone"
+            app:argType="com.example.working.utils.userchannel.UserInfo1" />
     </fragment>
     <fragment
         android:id="@+id/phoneScreen"
