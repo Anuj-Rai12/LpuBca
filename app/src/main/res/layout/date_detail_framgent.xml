@@ -22,11 +22,11 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:fontFamily="@font/allerta"
-                android:text="Create\nAccount"
+                android:text="Create\nAccount."
                 android:textAllCaps="true"
                 android:textColor="@color/black"
                 android:gravity="center"
-                android:textSize="33sp"
+                android:textSize="30sp"
                 android:textStyle="bold" />
 
         </LinearLayout>

@@ -25,10 +25,10 @@
                 android:layout_weight="1"
                 android:fontFamily="@font/allerta"
                 android:gravity="center"
-                android:text="Create\nAccount"
+                android:text="Create\nAccount."
                 android:textAllCaps="true"
                 android:textColor="@color/black"
-                android:textSize="33sp"
+                android:textSize="30sp"
                 android:textStyle="bold" />
         </LinearLayout>
 

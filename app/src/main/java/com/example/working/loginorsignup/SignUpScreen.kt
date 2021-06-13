@@ -15,7 +15,6 @@ import android.view.View
 import android.widget.ArrayAdapter
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -26,6 +25,7 @@ import com.example.working.R
 import com.example.working.databinding.SignFramgnetBinding
 import com.example.working.utils.BottomSheet
 import com.example.working.utils.Convertor
+import com.example.working.utils.CustomProgressBar
 import com.example.working.utils.SendData
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,6 +40,8 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
     private var semesterNo: String? = null
     @Inject
     lateinit var myBottomSheet: BottomSheet
+    @Inject
+    lateinit var customProgressBar: CustomProgressBar
     //private val myViewModel: MyViewModel by activityViewModels()
     private val requestCamera =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -138,17 +140,17 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
         BitmapFactory.decodeResource(resources, myImage)
 
     private suspend fun getBitmap(): Bitmap? {
-        binding.progress.isVisible = true
+        customProgressBar.show(requireActivity(),"Image Is Loading..",false)
         val loading = ImageLoader(requireContext())
         val request = ImageRequest.Builder(requireContext())
-            .data("https://picsum.photos/800/800")
+            .data("https://picsum.photos/1000/1000")
             .build()
         return try {
             val result = (loading.execute(request) as SuccessResult).drawable
-            binding.progress.isVisible = false
+            customProgressBar.dismiss()
             (result as BitmapDrawable).bitmap
         } catch (e: Exception) {
-            binding.progress.isVisible = false
+            customProgressBar.dismiss()
             Snackbar.make(requireView(), "No Internet :(", Snackbar.LENGTH_SHORT).show()
             null
         }
