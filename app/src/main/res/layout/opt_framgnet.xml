@@ -79,6 +79,17 @@
                 android:text="Verify"
                 android:textStyle="normal" />
         </LinearLayout>
+        <TextView
+            android:id="@+id/otpCountDown"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:text="00s"
+            android:textColor="@color/red_color"/>
 
         <TextView
             android:id="@+id/resendotp"
@@ -88,6 +99,7 @@
             android:layout_gravity="right"
             android:fontFamily="sans-serif-condensed-medium"
             android:text="Resend OTP"
+            android:visibility="gone"
             android:textColor="#0000FF"
             android:textSize="15sp"/>
 
