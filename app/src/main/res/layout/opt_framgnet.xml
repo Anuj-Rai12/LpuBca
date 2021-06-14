@@ -100,8 +100,22 @@
             android:fontFamily="sans-serif-condensed-medium"
             android:text="Resend OTP"
             android:visibility="gone"
+            tools:visibility="visible"
             android:textColor="#0000FF"
             android:textSize="15sp"/>
 
+        <TextView
+            android:id="@+id/errorMsg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:text="dksdjkdljdgklgdjklgkgjlgf"
+            android:gravity="center"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:textColor="@color/red_color"
+            android:textStyle="bold"
+            android:textSize="14sp" />
     </LinearLayout>
 </ScrollView>

@@ -111,7 +111,7 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
                 semester = semesterNo!!,
                 email = email,
                 password = password,
-                icon = Convertor.covertImages2ByteArray(icon)!!
+                icon = Convertor.covertImages2ByteArray(icon)!!.toString()
             )
             Log.i(TAG, "onViewCreated: $info1")
             dir(info1)

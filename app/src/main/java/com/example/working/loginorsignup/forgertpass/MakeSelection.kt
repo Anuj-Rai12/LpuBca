@@ -14,7 +14,7 @@ class MakeSelection:Fragment(R.layout.mke_framgent) {
         super.onViewCreated(view, savedInstanceState)
         binding= MkeFramgentBinding.bind(view)
         binding.re1.setOnClickListener {
-            val action= MakeSelectionDirections.actionMakeSelectionToOTPScreen()
+            val action= MakeSelectionDirections.actionMakeSelectionToOTPScreen(null,null)
             findNavController().navigate(action)
         }
     }
