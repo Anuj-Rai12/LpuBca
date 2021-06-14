@@ -9,9 +9,11 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.working.databinding.ActivityMainBinding
+import com.example.working.utils.CustomProgressBar
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 const val REQUEST_CAM = 101
 const val REQUEST_GAL = 102
@@ -21,6 +23,8 @@ const val REQUEST_WRIT = 103
 class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
+    @Inject
+    lateinit var customProgressBar: CustomProgressBar
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -73,7 +77,17 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
             }
         }
     }
+    override fun onPause() {
+        super.onPause()
+        customProgressBar.show(this,null)
+        customProgressBar.dismiss()
+    }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        customProgressBar.show(this,null)
+        customProgressBar.dismiss()
+    }
     override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
         Log.i("MYTAG", "onPermissionsGranted: Permission Is Granted")
     }

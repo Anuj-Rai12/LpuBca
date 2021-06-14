@@ -55,6 +55,10 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
             if (it != null)
                 getCameraImage(it)
         }
+    private val requestGallery = registerForActivityResult(ActivityResultContracts.GetContent()) {
+            if (it != null)
+                getGalleryImage(it)
+        }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -94,7 +98,7 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
             if (!isValidPassword(password.trim())) {
                 Snackbar.make(requireView(), "PassWord is Weak", Snackbar.LENGTH_LONG)
                     .setAction("Info") {
-                        val action=SignUpScreenDirections.actionGlobalPasswordDialog(msg())
+                        val action = SignUpScreenDirections.actionGlobalPasswordDialog(msg())
                         findNavController().navigate(action)
                     }.show()
                 return@setOnClickListener
@@ -134,18 +138,22 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
         val action = SignUpScreenDirections.actionSignUpScreenToDateDetailScr(userInfo1)
         findNavController().navigate(action)
     }
+
     private fun isValidPassword(password: String): Boolean {
-        val passwordREGEX = compile("^" +
-                "(?=.*[0-9])" +         //at least 1 digit
-                "(?=.*[a-z])" +         //at least 1 lower case letter
-                "(?=.*[A-Z])" +         //at least 1 upper case letter
-                "(?=.*[a-zA-Z])" +      //any letter
-                "(?=.*[@#$%^&+=])" +    //at least 1 special character
-                "(?=\\S+$)" +           //no white spaces
-                ".{8,}" +               //at least 8 characters
-                "$")
+        val passwordREGEX = compile(
+            "^" +
+                    "(?=.*[0-9])" +         //at least 1 digit
+                    "(?=.*[a-z])" +         //at least 1 lower case letter
+                    "(?=.*[A-Z])" +         //at least 1 upper case letter
+                    "(?=.*[a-zA-Z])" +      //any letter
+                    "(?=.*[@#$%^&+=])" +    //at least 1 special character
+                    "(?=\\S+$)" +           //no white spaces
+                    ".{8,}" +               //at least 8 characters
+                    "$"
+        )
         return passwordREGEX.matcher(password).matches()
     }
+
     private fun getPosition(position: Int) {
         semesterNo = when (position) {
             0 -> "1th Semester"
@@ -175,15 +183,21 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
         }
     }
 
+    private fun getGalleryImage(res: Uri) {
+        res.let { uri ->
+            binding.profileImage.setImageURI(uri)
+            myBitmap = getBitmapFromView(binding.profileImage)
+            binding.profileImage.setBackgroundColor(Color.WHITE)
+        }
+    }
+
     override fun sendData() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         requestCamera.launch(intent)
     }
 
-    override fun sendGalImage(string: Uri) {
-        binding.profileImage.setImageURI(string)
-        myBitmap = getBitmapFromView(binding.profileImage)
-        binding.profileImage.setBackgroundColor(Color.WHITE)
+    override fun sendGalImage() {
+        requestGallery.launch("image/*")
     }
 
     private fun getBitmapFromView(view: View): Bitmap? {
@@ -196,6 +210,7 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
 
     override fun urlImage() {
         lifecycleScope.launch {
+            customProgressBar.show(requireActivity(), "Image Is Loading..", false)
             myBitmap = getBitmap() ?: convertImage()
             binding.profileImage.setImageBitmap(myBitmap)
         }
@@ -205,7 +220,6 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
         BitmapFactory.decodeResource(resources, myImage)
 
     private suspend fun getBitmap(): Bitmap? {
-        customProgressBar.show(requireActivity(), "Image Is Loading..", false)
         val loading = ImageLoader(requireContext())
         val request = ImageRequest.Builder(requireContext())
             .data("https://picsum.photos/1000/1000")
@@ -219,6 +233,18 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
             Snackbar.make(requireView(), "No Internet :(", Snackbar.LENGTH_SHORT).show()
             null
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        customProgressBar.show(requireActivity(),null)
+        customProgressBar.dismiss()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        customProgressBar.show(requireActivity(),null)
+        customProgressBar.dismiss()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -243,7 +269,8 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
         val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdaown, weeks)
         binding.Autocom.setAdapter(arrayAdapter)
     }
-    private fun msg()="The Good Password Must contain Following thing ;) :- \n\n" +
+
+    private fun msg() = "The Good Password Must contain Following thing ;) :- \n\n" +
             "1.At least 1 digit i.e [0-9]\n" +
             "2.At least 1 lower case letter i.e [a-z]\n" +
             "3.At least 1 upper case letter i.e [A-Z]\n" +

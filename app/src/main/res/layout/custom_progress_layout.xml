@@ -38,6 +38,7 @@
         android:gravity="center"
         android:textColor="@color/black"
         android:textSize="16sp"
+        android:paddingBottom="10dp"
         android:fontFamily="@font/average_sans"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"

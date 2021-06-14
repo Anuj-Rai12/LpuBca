@@ -1,11 +1,9 @@
 package com.example.working.loginorsignup.createacc
 
 import android.annotation.SuppressLint
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -21,7 +19,7 @@ class DateDetailScr : Fragment(R.layout.date_detail_framgent) {
     private lateinit var binding: DateDetailFramgentBinding
     private val args: DateDetailScrArgs by navArgs()
 
-    @RequiresApi(Build.VERSION_CODES.O)
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = DateDetailFramgentBinding.bind(view)
