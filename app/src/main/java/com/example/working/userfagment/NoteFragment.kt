@@ -8,8 +8,10 @@ import com.example.working.R
 import com.example.working.databinding.NoteFramgnetBinding
 import com.example.working.loginorsignup.TAG
 import com.example.working.utils.Convertor
+import com.example.working.utils.userchannel.FireBaseUser
 import com.example.working.utils.userchannel.UserInfo1
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.Blob
 import com.google.firebase.firestore.FirebaseFirestore
 
 class NoteFragment : Fragment(R.layout.note_framgnet) {
@@ -29,14 +31,14 @@ class NoteFragment : Fragment(R.layout.note_framgnet) {
         binding = NoteFramgnetBinding.bind(view)
         reference.get().addOnSuccessListener {
             if (it.exists()) {
-                val info1 = it.toObject(UserInfo1()::class.java)
+                val info1 = it.toObject(FireBaseUser()::class.java)
                 info1?.let { userInfo1 ->
                     binding.op.text = ""
                     binding.op.append("User Id $udi\n")
                     binding.op.append("Email Id ${userInfo1.email}\n")
-                    binding.op.append("Icon Id ${userInfo1.icon?.toByteArray()}\n")
-                    val theByteArray = userInfo1.icon?.toByteArray()
+                    val theByteArray = Convertor.covertByteArray2image(userInfo1.icon?.toBytes()!!)
                     Log.i(TAG, "onViewCreated: ByteArray $theByteArray")
+                    binding.my.setImageBitmap(theByteArray)
                 }
             } else
                 Log.i(TAG, "onViewCreated: Empty Snapshot")

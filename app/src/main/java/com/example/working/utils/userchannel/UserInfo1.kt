@@ -1,10 +1,9 @@
 package com.example.working.utils.userchannel
 
 import android.os.Parcelable
-import com.google.firebase.firestore.IgnoreExtraProperties
+import com.google.firebase.firestore.Blob
 import kotlinx.parcelize.Parcelize
 
-@IgnoreExtraProperties
 @Parcelize
 data class UserInfo1(
     val firstname:String?=null,
@@ -15,7 +14,7 @@ data class UserInfo1(
     val phone:String?=null,
     val email:String?=null,
     val password:String?=null,
-    val icon:String?=null,
+    val icon:ByteArray?=null,
 ) : Parcelable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -43,3 +42,14 @@ data class UserInfo1(
         return result
     }
 }
+data class FireBaseUser(
+    val firstname:String?=null,
+    val lastname:String?=null,
+    val gender:String?=null,
+    val dob:String?=null,
+    val semester:String?=null,
+    val phone:String?=null,
+    val email:String?=null,
+    val password:String?=null,
+    val icon:Blob?=null,
+)

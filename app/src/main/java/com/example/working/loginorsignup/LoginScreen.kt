@@ -1,6 +1,7 @@
 package com.example.working.loginorsignup
 
 
+import android.content.SharedPreferences
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -11,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.working.MyViewModel
 import com.example.working.R
 import com.example.working.databinding.LoginFragmentBinding
+import com.example.working.repos.SUCCESS
 import com.example.working.utils.CustomProgressBar
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -29,11 +31,15 @@ class LoginScreen : Fragment(R.layout.login_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = LoginFragmentBinding.bind(view)
-        myViewModel.event.observe(viewLifecycleOwner){
-            it.getContentIfNotHandled()?.let {
-                Snackbar.make(requireView(),it,Snackbar.LENGTH_SHORT).setAction("OK"){
+        myViewModel.event.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let { string ->
+                if (string == SUCCESS) {
+                    customProgressBar.dismiss()
                     dir()
-                }.show()
+                } else {
+                    customProgressBar.dismiss()
+                    Snackbar.make(requireView(), string, Snackbar.LENGTH_SHORT).show()
+                }
             }
         }
         binding.nextBtn.setOnClickListener {
@@ -45,6 +51,7 @@ class LoginScreen : Fragment(R.layout.login_fragment) {
                     .show()
                 return@setOnClickListener
             }
+            customProgressBar.show(requireActivity(),"Details is been Processing..",flag = false)
             myViewModel.signInAccount(
                 binding.emailText.text.toString(),
                 binding.passwordText.text.toString()
@@ -66,9 +73,10 @@ class LoginScreen : Fragment(R.layout.login_fragment) {
             activity?.finish()
         }*/
         FirebaseAuth.getInstance().currentUser?.let {
-            dir()
+            //   dir()
         }
     }
+
     private fun dir() {
         val action = LoginScreenDirections.actionLoginScreenToMainActivity23()
         findNavController().navigate(action)
