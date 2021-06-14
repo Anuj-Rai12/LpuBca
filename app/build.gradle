@@ -57,6 +57,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
     //FireBase Auth
     implementation 'com.google.firebase:firebase-auth:21.0.1'
+    implementation 'com.google.firebase:firebase-auth-ktx'
     //Nav Graph
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")

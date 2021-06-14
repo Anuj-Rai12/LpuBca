@@ -58,6 +58,16 @@
         <action
             android:id="@+id/action_OTPScreen_to_mainActivity23"
             app:destination="@id/navigation2" />
+        <argument
+            android:name="userthree"
+            app:argType="com.example.working.utils.userchannel.UserInfo1"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <argument
+            android:name="myphoneno"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
     <fragment
         android:id="@+id/dateDetailScr"
