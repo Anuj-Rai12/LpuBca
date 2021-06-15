@@ -8,32 +8,42 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.working.MyViewModel
 import com.example.working.R
 import com.example.working.databinding.OptFramgnetBinding
 import com.example.working.loginorsignup.TAG
+import com.example.working.utils.Convertor
+import com.example.working.utils.CustomProgressBar
+import com.example.working.utils.MySealed
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+
+private const val KEY = "OUTAG"
 
 @AndroidEntryPoint
 class OTPScreen : Fragment(R.layout.opt_framgnet) {
     private lateinit var binding: OptFramgnetBinding
     private lateinit var navController: NavController
     private val args: OTPScreenArgs by navArgs()
-    private val myViewModel: MyViewModel by viewModels()
+    private val myViewModel: MyViewModel by activityViewModels()
     private var verificationProg = false
     private var auth: FirebaseAuth? = null
     private var verificationId: String? = null
     private var resendToken: PhoneAuthProvider.ForceResendingToken? = null
     private var myCallBack: PhoneAuthProvider.OnVerificationStateChangedCallbacks? = null
+
+    @Inject
+    lateinit var customProgressBar: CustomProgressBar
     private val timer = object : CountDownTimer(60000, 1000) {
         @SuppressLint("SetTextI18n")
         override fun onTick(millisUntilFinished: Long) {
@@ -52,14 +62,9 @@ class OTPScreen : Fragment(R.layout.opt_framgnet) {
         auth = FirebaseAuth.getInstance()
         binding = OptFramgnetBinding.bind(view)
         navController = Navigation.findNavController(view)
+        binding.phoneno.text = args.userthree?.phone ?: args.myphoneno
         savedInstanceState?.let {
-            verificationProg = savedInstanceState.getBoolean("OUTAG")
-        }
-        myViewModel.event.observe(viewLifecycleOwner) { event ->
-            event.getContentIfNotHandled()
-                ?.let {
-                    Snackbar.make(requireView(), it, Snackbar.LENGTH_SHORT).show()
-                }
+            verificationProg = savedInstanceState.getBoolean(KEY)
         }
         myCallBack = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {
@@ -72,12 +77,12 @@ class OTPScreen : Fragment(R.layout.opt_framgnet) {
                 binding.errorMsg.isVisible = true
                 binding.errorMsg.text = when (e) {
                     is FirebaseAuthInvalidCredentialsException -> {
-                        "Error :-\nInvalid Phone Number"
+                        "Error :(\nInvalid Phone Number"
                     }
                     is FirebaseTooManyRequestsException -> {
-                        "Error :-\nUsed Too Many Messages Try After 8hrs."
+                        "Error :(\nUsed Too Many Messages Try After 8hrs."
                     }
-                    else -> "Error :-\n ${e.message.toString()}"
+                    else -> "Error :(\n ${e.message.toString()}"
                 }
                 verificationProg = false
                 timer.cancel()
@@ -89,7 +94,8 @@ class OTPScreen : Fragment(R.layout.opt_framgnet) {
                 token: PhoneAuthProvider.ForceResendingToken
             ) {
                 super.onCodeSent(verificationId, token)
-                Snackbar.make(requireView(),"Code has Sent Successfully", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(requireView(), "Code has Sent Successfully", Snackbar.LENGTH_SHORT)
+                    .show()
                 this@OTPScreen.verificationId = verificationId
                 resendToken = token
             }
@@ -99,7 +105,7 @@ class OTPScreen : Fragment(R.layout.opt_framgnet) {
                 //myViewModel.userData = info
                 Log.i(TAG, "onViewCreated: OTP is ->${binding.pinView.text.toString()}")
                 Log.i(TAG, "onViewCreated: User Data is ->${info}")
-                Log.i(TAG,"PHONE IS ->${info.phone}")
+                Log.i(TAG, "PHONE IS ->${info.phone}")
                 //Send Code
                 signInWithPhoneNumber(info.phone!!)
             }
@@ -115,11 +121,11 @@ class OTPScreen : Fragment(R.layout.opt_framgnet) {
             checkCode(verificationId, code = binding.pinView.text.toString())
         }
         binding.resendotp.setOnClickListener {
-            if (args.myphoneno==null && args.userthree?.phone!=null)
+            if (args.myphoneno == null && args.userthree?.phone != null)
                 resendCode(args.userthree?.phone!!, resendToken)
-            else if (args.myphoneno!=null && args.userthree?.phone==null)
+            else if (args.myphoneno != null && args.userthree?.phone == null)
                 resendCode(args.myphoneno!!, resendToken)
-                else
+            else
                 Log.i(TAG, "onViewCreated: Invalid Resend Phone Number")
         }
     }
@@ -133,7 +139,7 @@ class OTPScreen : Fragment(R.layout.opt_framgnet) {
             .setForceResendingToken(resendToken!!).build()
         PhoneAuthProvider.verifyPhoneNumber(provide)
         timer.start()
-        binding.resendotp.isVisible=false
+        binding.resendotp.isVisible = false
         Toast.makeText(activity, "OTP Sent", Toast.LENGTH_SHORT).show()
     }
 
@@ -147,24 +153,11 @@ class OTPScreen : Fragment(R.layout.opt_framgnet) {
     private fun signInWithCredential(credential: PhoneAuthCredential) {
         auth?.signInWithCredential(credential)?.addOnCompleteListener { result ->
             if (result.isSuccessful) {
-                auth?.currentUser?.let {
-                    it.updateEmail(args.userthree?.email!!).addOnSuccessListener {
-                        Log.i(TAG, "signInWithCredential: Email is Update ${args.userthree?.email}")
-                    }.addOnFailureListener {ex->
-                        Log.i(TAG, "signInWithCredential: The Exception is ${ex.localizedMessage}")
-                    }
-                    it.updatePassword(args.userthree?.password!!).addOnSuccessListener {
-                        Log.i(
-                            TAG,
-                            "signInWithCredential: Email is Update ${args.userthree?.password}"
-                        )
-                    }.addOnFailureListener {e->
-                        Log.i(TAG, "signInWithCredential: The Exception is ${e.localizedMessage}")
-                    }
-                    myViewModel.createAccount(args.userthree!!)
-                    //Movie to Other Screen
-                    //dir()
+                args.userthree?.let {
+                    updateUser()
+                    return@addOnCompleteListener
                 }
+                //Only Phone Number
             } else {
                 binding.errorMsg.isVisible = true
                 Toast.makeText(activity, "Error", Toast.LENGTH_SHORT).show()
@@ -173,10 +166,65 @@ class OTPScreen : Fragment(R.layout.opt_framgnet) {
         }
     }
 
-    /*private fun dir() {
+    private fun updateUser() {
+        myViewModel.createUser(args.userthree?.email!!, args.userthree?.password!!)
+            .observe(viewLifecycleOwner) {
+                when (it) {
+                    is MySealed.Loading -> {
+                        showLoading(it.data)
+                    }
+                    is MySealed.Success -> {
+                        hideLoading()
+                        validUser()
+                    }
+                    is MySealed.Error -> {
+                        hideLoading()
+                        val action =
+                            OTPScreenDirections.actionGlobalPasswordDialog(
+                                "${it.exception?.localizedMessage}",
+                                "Error"
+                            )
+                        findNavController().navigate(action)
+                        Log.i(TAG, "validUser: Exception is -> ${it.exception?.localizedMessage}")
+                    }
+                }
+            }
+    }
+
+    private fun dir() {
         val action = OTPScreenDirections.actionOTPScreenToMainActivity23()
         findNavController().navigate(action)
-    }*/
+    }
+
+    private fun hideLoading() = customProgressBar.dismiss()
+    private fun showLoading(string: String?, boolean: Boolean = false) =
+        customProgressBar.show(requireActivity(), string, boolean)
+
+    private fun validUser() {
+        Log.i(TAG, "validUser: icon is ${Convertor.covertImages2ByteArray(myViewModel.imgage!!)}")
+        myViewModel.createAccount(myViewModel.imgage!!, args.userthree!!)
+            .observe(viewLifecycleOwner) {
+                when (it) {
+                    is MySealed.Loading -> {
+                        showLoading(it.data)
+                    }
+                    is MySealed.Success -> {
+                        hideLoading()
+                        dir()
+                    }
+                    is MySealed.Error -> {
+                        hideLoading()
+                        val action =
+                            OTPScreenDirections.actionGlobalPasswordDialog(
+                                "${it.exception?.localizedMessage}",
+                                "Error"
+                            )
+                        Log.i(TAG, "validUser: Exception is -> ${it.exception?.localizedMessage}")
+                        findNavController().navigate(action)
+                    }
+                }
+            }
+    }
 
     override fun onStart() {
         super.onStart()
@@ -186,7 +234,7 @@ class OTPScreen : Fragment(R.layout.opt_framgnet) {
             signInWithPhoneNumber(phone = args.myphoneno!!)
         else {
             Log.i(TAG, "onStart: Invalid Phone Number found")
-            Log.i(TAG,"PHONE IS ->${args.userthree?.phone}")
+            Log.i(TAG, "PHONE IS ->${args.userthree?.phone}")
         }
     }
 
@@ -206,6 +254,6 @@ class OTPScreen : Fragment(R.layout.opt_framgnet) {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putBoolean("OUTAG", verificationProg)
+        outState.putBoolean(KEY, verificationProg)
     }
 }

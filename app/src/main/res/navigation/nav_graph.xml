@@ -114,5 +114,8 @@
         <argument
             android:name="message"
             app:argType="string" />
+        <argument
+            android:name="title"
+            app:argType="string" />
     </dialog><action android:id="@+id/action_global_passwordDialog" app:destination="@id/passwordDialog"/>
 </navigation>

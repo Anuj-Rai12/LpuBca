@@ -17,15 +17,16 @@ import android.widget.ArrayAdapter
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
+import com.example.working.MyViewModel
 import com.example.working.R
 import com.example.working.databinding.SignFramgnetBinding
 import com.example.working.utils.BottomSheet
-import com.example.working.utils.Convertor
 import com.example.working.utils.CustomProgressBar
 import com.example.working.utils.SendData
 import com.example.working.utils.userchannel.UserInfo1
@@ -44,6 +45,7 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
     private var myBitmap: Bitmap? = null
     private var semesterNo: String? = null
 
+    private val myViewModel: MyViewModel by activityViewModels()
 
     @Inject
     lateinit var myBottomSheet: BottomSheet
@@ -56,20 +58,21 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
                 getCameraImage(it)
         }
     private val requestGallery = registerForActivityResult(ActivityResultContracts.GetContent()) {
-            if (it != null)
-                getGalleryImage(it)
-        }
+        if (it != null)
+            getGalleryImage(it)
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = SignFramgnetBinding.bind(view)
         setSemester()
         savedInstanceState?.let {
-            myBitmap = it.getByteArray("IMAGE")?.let { byte ->
+            /*myBitmap = it.getByteArray("IMAGE")?.let { byte ->
                 Convertor.covertByteArray2image(byte)
-            }
+            }*/
             semesterNo = it.getString("Sem")
         }
+        myBitmap = myViewModel.imgage
         myBitmap?.let {
             binding.profileImage.setImageBitmap(it)
             binding.profileImage.setBackgroundColor(Color.WHITE)
@@ -98,20 +101,24 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
             if (!isValidPassword(password.trim())) {
                 Snackbar.make(requireView(), "PassWord is Weak", Snackbar.LENGTH_LONG)
                     .setAction("Info") {
-                        val action = SignUpScreenDirections.actionGlobalPasswordDialog(msg())
+                        val action = SignUpScreenDirections.actionGlobalPasswordDialog(
+                            msg(),
+                            "Good Password?"
+                        )
                         findNavController().navigate(action)
                     }.show()
                 return@setOnClickListener
             }
 
-            val icon = myBitmap ?: convertImage()
+            //val icon = myBitmap ?: convertImage()
             val info1 = UserInfo1(
                 firstname = firstname,
                 lastname = lastname,
                 semester = semesterNo!!,
                 email = email,
                 password = password,
-                icon = Convertor.covertImages2ByteArray(icon)!!
+                //icon = Convertor.covertImages2ByteArray(icon)!!
+                icon = null
             )
             Log.i(TAG, "onViewCreated: $info1")
             dir(info1)
@@ -177,7 +184,8 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
         if (it.resultCode == Activity.RESULT_OK) {
             val bitmap: Bitmap? = it.data?.getParcelableExtra("data")
             if (bitmap != null) {
-                myBitmap = bitmap
+                myViewModel.imgage=bitmap
+                myBitmap = myViewModel.imgage
                 binding.profileImage.setImageBitmap(myBitmap)
             }
         }
@@ -211,7 +219,8 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
     override fun urlImage() {
         lifecycleScope.launch {
             customProgressBar.show(requireActivity(), "Image Is Loading..", false)
-            myBitmap = getBitmap() ?: convertImage()
+            myViewModel.imgage=getBitmap() ?: convertImage()
+            myBitmap = myViewModel.imgage
             binding.profileImage.setImageBitmap(myBitmap)
         }
     }
@@ -222,7 +231,7 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
     private suspend fun getBitmap(): Bitmap? {
         val loading = ImageLoader(requireContext())
         val request = ImageRequest.Builder(requireContext())
-            .data("https://picsum.photos/1000/1000")
+            .data("https://picsum.photos/800/800")
             .build()
         return try {
             val result = (loading.execute(request) as SuccessResult).drawable
@@ -237,22 +246,22 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
 
     override fun onPause() {
         super.onPause()
-        customProgressBar.show(requireActivity(),null)
+        customProgressBar.show(requireActivity(), null)
         customProgressBar.dismiss()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        customProgressBar.show(requireActivity(),null)
+        customProgressBar.show(requireActivity(), null)
         customProgressBar.dismiss()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        if (myBitmap != null)
+        /*if (myBitmap != null)
             outState.putByteArray("IMAGE", Convertor.covertImages2ByteArray(myBitmap!!))
         else
-            Log.i(TAG, "onSaveInstanceState: MyBit is Null")
+            Log.i(TAG, "onSaveInstanceState: MyBit is Null")*/
         if (semesterNo != null)
             outState.putString("Sem", semesterNo)
         else

@@ -1,29 +1,21 @@
 package com.example.working
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import com.example.working.repos.MyRepository
-import com.example.working.utils.Event
 import com.example.working.utils.userchannel.UserInfo1
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class MyViewModel @Inject constructor(private val myRepository: MyRepository) : ViewModel() {
+    var imgage:Bitmap?=null
+    fun createUser(email: String, password: String) =
+        myRepository.createUser(email, password).asLiveData()
 
-    private var _event = MutableLiveData<Event<String>>()
-    val event: LiveData<Event<String>>
-        get() = _event
+    fun createAccount(icon: Bitmap, userInfo1: UserInfo1) = myRepository.createAcc(icon,userInfo1).asLiveData()
 
-    fun createAccount(userInfo1: UserInfo1) {
-        val str=myRepository.createAcc(userInfo1)
-        if (str.isNotEmpty())
-            _event.value=Event(str)
-    }
-
-    fun signInAccount(email: String, password: String) {
-        _event.value=Event(myRepository.signInAccount(email,password))
-    }
-
+    fun signInAccount(email: String, password: String) =
+        myRepository.signInAccount(email, password).asLiveData()
 }

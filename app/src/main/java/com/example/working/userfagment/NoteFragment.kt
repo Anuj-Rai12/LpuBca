@@ -39,6 +39,7 @@ class NoteFragment : Fragment(R.layout.note_framgnet) {
                     val theByteArray = Convertor.covertByteArray2image(userInfo1.icon?.toBytes()!!)
                     Log.i(TAG, "onViewCreated: ByteArray $theByteArray")
                     binding.my.setImageBitmap(theByteArray)
+                    Log.i(TAG, "onViewCreated: $userInfo1")
                 }
             } else
                 Log.i(TAG, "onViewCreated: Empty Snapshot")
