@@ -68,7 +68,7 @@ class OTPScreen : Fragment(R.layout.opt_framgnet) {
         }
         myCallBack = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-                Snackbar.make(requireView(), "Successfully completed", Snackbar.LENGTH_SHORT).show()
+                Log.i(TAG, "onVerificationCompleted: Credential Created Successfully")
                 verificationProg = false
                 signInWithCredential(credential)
             }
@@ -94,8 +94,7 @@ class OTPScreen : Fragment(R.layout.opt_framgnet) {
                 token: PhoneAuthProvider.ForceResendingToken
             ) {
                 super.onCodeSent(verificationId, token)
-                Snackbar.make(requireView(), "Code has Sent Successfully", Snackbar.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(activity, "OTP Sent Successfully", Toast.LENGTH_SHORT).show()
                 this@OTPScreen.verificationId = verificationId
                 resendToken = token
             }
@@ -140,7 +139,7 @@ class OTPScreen : Fragment(R.layout.opt_framgnet) {
         PhoneAuthProvider.verifyPhoneNumber(provide)
         timer.start()
         binding.resendotp.isVisible = false
-        Toast.makeText(activity, "OTP Sent", Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity, "OTP Sent Successfully", Toast.LENGTH_SHORT).show()
     }
 
     private fun checkCode(verificationId: String?, code: String) {
@@ -171,7 +170,7 @@ class OTPScreen : Fragment(R.layout.opt_framgnet) {
             .observe(viewLifecycleOwner) {
                 when (it) {
                     is MySealed.Loading -> {
-                        showLoading(it.data)
+                        showLoading(it.data.toString())
                     }
                     is MySealed.Success -> {
                         hideLoading()
@@ -201,12 +200,12 @@ class OTPScreen : Fragment(R.layout.opt_framgnet) {
         customProgressBar.show(requireActivity(), string, boolean)
 
     private fun validUser() {
-        Log.i(TAG, "validUser: icon is ${Convertor.covertImages2ByteArray(myViewModel.imgage!!)}")
-        myViewModel.createAccount(myViewModel.imgage!!, args.userthree!!)
+        Log.i(TAG, "validUser: icon is ${Convertor.covertImages2ByteArray(myViewModel.image!!)}")
+        myViewModel.createAccount(myViewModel.image!!, args.userthree!!)
             .observe(viewLifecycleOwner) {
                 when (it) {
                     is MySealed.Loading -> {
-                        showLoading(it.data)
+                        showLoading(it.data.toString())
                     }
                     is MySealed.Success -> {
                         hideLoading()

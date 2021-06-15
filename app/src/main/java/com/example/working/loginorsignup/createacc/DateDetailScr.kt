@@ -51,7 +51,6 @@ class DateDetailScr : Fragment(R.layout.date_detail_framgent) {
                 semester = args.userone.semester,
                 email = args.userone.email,
                 password = args.userone.password,
-                icon = args.userone.icon
             )
             Log.i(TAG, "onViewCreated: $info1")
             dir(info1)

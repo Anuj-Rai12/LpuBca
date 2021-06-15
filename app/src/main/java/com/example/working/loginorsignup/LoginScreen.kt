@@ -63,7 +63,7 @@ class LoginScreen : Fragment(R.layout.login_fragment) {
         ).observe(viewLifecycleOwner) {
             when (it) {
                 is MySealed.Loading -> {
-                    showLoading(it.data)
+                    showLoading(it.data.toString())
                 }
                 is MySealed.Success -> {
                     hideLoading()

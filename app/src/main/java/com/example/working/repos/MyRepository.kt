@@ -28,7 +28,7 @@ class MyRepository @Inject constructor() {
         val data=try {
             udi.currentUser!!.updateEmail(email).await()
             udi.currentUser!!.updatePassword(password).await()
-            MySealed.Success(SUCCESS)
+            MySealed.Success(null)
         }catch (e:Exception){
             MySealed.Error(null,e)
         }
@@ -49,10 +49,10 @@ class MyRepository @Inject constructor() {
                 icon = ico
             )
 
-            emit(MySealed.Loading("User account is Been Created"))
+            emit(MySealed.Loading("User Profile is Been Updating"))
             val data = try {
                 reference.set(userdata).await()
-                MySealed.Success(SUCCESS)
+                MySealed.Success(null)
             } catch (e: Exception) {
                 MySealed.Error(null, e)
             }
@@ -63,7 +63,7 @@ class MyRepository @Inject constructor() {
             emit(MySealed.Loading("User is Been Validated"))
             val data = try {
                 FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).await()
-                MySealed.Success(SUCCESS)
+                MySealed.Success(null)
             } catch (e: Exception) {
                 MySealed.Error(null, e)
             }
@@ -71,4 +71,3 @@ class MyRepository @Inject constructor() {
         }
     }
 
-    const val SUCCESS = "Account is Created Successfully"

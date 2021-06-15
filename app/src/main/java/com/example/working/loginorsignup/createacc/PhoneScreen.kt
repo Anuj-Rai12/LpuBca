@@ -38,7 +38,6 @@ class PhoneScreen : Fragment(R.layout.phone_number) {
                 password = args.usertwo.password,
                 phone = phone,
                 semester = args.usertwo.semester,
-                icon = args.usertwo.icon,
                 email = args.usertwo.email
             )
             Log.i(TAG, "onViewCreated: $info1")

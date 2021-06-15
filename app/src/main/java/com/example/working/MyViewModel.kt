@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MyViewModel @Inject constructor(private val myRepository: MyRepository) : ViewModel() {
-    var imgage:Bitmap?=null
+    var image:Bitmap?=null
     fun createUser(email: String, password: String) =
         myRepository.createUser(email, password).asLiveData()
 

@@ -10,13 +10,15 @@ import android.widget.Toast
 import com.example.working.REQUEST_CAM
 import com.example.working.REQUEST_GAL
 import com.example.working.databinding.MybottomsheetBinding
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
 import javax.inject.Inject
 
 
-class BottomSheet @Inject constructor(): BottomSheetDialogFragment(), EasyPermissions.PermissionCallbacks {
+class BottomSheet @Inject constructor() : BottomSheetDialogFragment(),
+    EasyPermissions.PermissionCallbacks {
     private lateinit var binding: MybottomsheetBinding
     var sendData: SendData? = null
 
@@ -54,14 +56,14 @@ class BottomSheet @Inject constructor(): BottomSheetDialogFragment(), EasyPermis
 
     private fun grantPermission(int: Int) {
         if (!checkCameraPermission() && int == 1) {
-            request(Manifest.permission.CAMERA, REQUEST_CAM,"Camera")
+            request(Manifest.permission.CAMERA, REQUEST_CAM, "Camera")
         }
         if (!checkGalleryPermission() && int == 2) {
-            request(Manifest.permission.READ_EXTERNAL_STORAGE, REQUEST_GAL,"Gallery")
+            request(Manifest.permission.READ_EXTERNAL_STORAGE, REQUEST_GAL, "Gallery")
         }
     }
 
-    private fun request(camera: String, code: Int,s:String) = EasyPermissions.requestPermissions(
+    private fun request(camera: String, code: Int, s: String) = EasyPermissions.requestPermissions(
         this,
         "Kindly Give us $s permission,otherwise application may not work Properly.",
         code,
@@ -73,7 +75,6 @@ class BottomSheet @Inject constructor(): BottomSheetDialogFragment(), EasyPermis
 
     private fun checkGalleryPermission() =
         EasyPermissions.hasPermissions(activity, Manifest.permission.READ_EXTERNAL_STORAGE)
-
 
 
     override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {

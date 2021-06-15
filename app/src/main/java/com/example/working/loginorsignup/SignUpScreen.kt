@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -67,12 +68,9 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
         binding = SignFramgnetBinding.bind(view)
         setSemester()
         savedInstanceState?.let {
-            /*myBitmap = it.getByteArray("IMAGE")?.let { byte ->
-                Convertor.covertByteArray2image(byte)
-            }*/
             semesterNo = it.getString("Sem")
         }
-        myBitmap = myViewModel.imgage
+        myBitmap = myViewModel.image
         myBitmap?.let {
             binding.profileImage.setImageBitmap(it)
             binding.profileImage.setBackgroundColor(Color.WHITE)
@@ -110,15 +108,12 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
                 return@setOnClickListener
             }
 
-            //val icon = myBitmap ?: convertImage()
             val info1 = UserInfo1(
                 firstname = firstname,
                 lastname = lastname,
                 semester = semesterNo!!,
                 email = email,
                 password = password,
-                //icon = Convertor.covertImages2ByteArray(icon)!!
-                icon = null
             )
             Log.i(TAG, "onViewCreated: $info1")
             dir(info1)
@@ -175,8 +170,8 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
 
     private fun getImage() {
         binding.setimagedude.setOnClickListener {
-            myBottomSheet.sendData = this
-            myBottomSheet.show(childFragmentManager, "Bottom Sheet")
+                myBottomSheet.sendData = this
+                myBottomSheet.show(childFragmentManager, "Bottom Sheet")
         }
     }
 
@@ -184,8 +179,8 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
         if (it.resultCode == Activity.RESULT_OK) {
             val bitmap: Bitmap? = it.data?.getParcelableExtra("data")
             if (bitmap != null) {
-                myViewModel.imgage=bitmap
-                myBitmap = myViewModel.imgage
+                myViewModel.image = bitmap
+                myBitmap = myViewModel.image
                 binding.profileImage.setImageBitmap(myBitmap)
             }
         }
@@ -194,7 +189,8 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
     private fun getGalleryImage(res: Uri) {
         res.let { uri ->
             binding.profileImage.setImageURI(uri)
-            myBitmap = getBitmapFromView(binding.profileImage)
+            myViewModel.image = getBitmapFromView(binding.profileImage)
+            myBitmap = myViewModel.image
             binding.profileImage.setBackgroundColor(Color.WHITE)
         }
     }
@@ -219,8 +215,8 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
     override fun urlImage() {
         lifecycleScope.launch {
             customProgressBar.show(requireActivity(), "Image Is Loading..", false)
-            myViewModel.imgage=getBitmap() ?: convertImage()
-            myBitmap = myViewModel.imgage
+            myViewModel.image = getBitmap() ?: convertImage()
+            myBitmap = myViewModel.image
             binding.profileImage.setImageBitmap(myBitmap)
         }
     }
@@ -231,7 +227,7 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
     private suspend fun getBitmap(): Bitmap? {
         val loading = ImageLoader(requireContext())
         val request = ImageRequest.Builder(requireContext())
-            .data("https://picsum.photos/800/800")
+            .data("https://picsum.photos/1000/1000")
             .build()
         return try {
             val result = (loading.execute(request) as SuccessResult).drawable
@@ -258,10 +254,6 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        /*if (myBitmap != null)
-            outState.putByteArray("IMAGE", Convertor.covertImages2ByteArray(myBitmap!!))
-        else
-            Log.i(TAG, "onSaveInstanceState: MyBit is Null")*/
         if (semesterNo != null)
             outState.putString("Sem", semesterNo)
         else
