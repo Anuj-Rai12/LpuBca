@@ -1,7 +1,9 @@
 package com.example.working.loginorsignup
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -17,7 +19,6 @@ import android.widget.ArrayAdapter
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -170,8 +171,8 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
 
     private fun getImage() {
         binding.setimagedude.setOnClickListener {
-                myBottomSheet.sendData = this
-                myBottomSheet.show(childFragmentManager, "Bottom Sheet")
+            myBottomSheet.sendData = this
+            myBottomSheet.show(childFragmentManager, "Bottom Sheet")
         }
     }
 
@@ -214,11 +215,22 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
 
     override fun urlImage() {
         lifecycleScope.launch {
-            customProgressBar.show(requireActivity(), "Image Is Loading..", false)
+            showLoading("Image Is Loading..")
             myViewModel.image = getBitmap() ?: convertImage()
             myBitmap = myViewModel.image
             binding.profileImage.setImageBitmap(myBitmap)
         }
+    }
+
+    private fun hideLoading() {
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+        customProgressBar.dismiss()
+    }
+
+    @SuppressLint("SourceLockedOrientationActivity")
+    private fun showLoading(string: String?, boolean: Boolean = false) {
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        customProgressBar.show(requireActivity(), string, boolean)
     }
 
     private fun convertImage(myImage: Int = R.drawable.myimage): Bitmap =
@@ -231,25 +243,13 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
             .build()
         return try {
             val result = (loading.execute(request) as SuccessResult).drawable
-            customProgressBar.dismiss()
+            hideLoading()
             (result as BitmapDrawable).bitmap
         } catch (e: Exception) {
-            customProgressBar.dismiss()
+            hideLoading()
             Snackbar.make(requireView(), "No Internet :(", Snackbar.LENGTH_SHORT).show()
             null
         }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        customProgressBar.show(requireActivity(), null)
-        customProgressBar.dismiss()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        customProgressBar.show(requireActivity(), null)
-        customProgressBar.dismiss()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

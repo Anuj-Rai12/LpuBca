@@ -23,51 +23,52 @@ class MyRepository @Inject constructor() {
         fireStore.collection("Users").document(udi.currentUser?.uid!!)
     }
 
-    fun createUser(email:String,password:String) =flow{
+    fun createUser(email: String, password: String) = flow {
         emit(MySealed.Loading("User Account is Been Created"))
-        val data=try {
+        val data = try {
             udi.currentUser!!.updateEmail(email).await()
             udi.currentUser!!.updatePassword(password).await()
             MySealed.Success(null)
-        }catch (e:Exception){
-            MySealed.Error(null,e)
+        } catch (e: Exception) {
+            MySealed.Error(null, e)
         }
         emit(data)
-        }
-        fun createAcc(icon: Bitmap, info1: UserInfo1) = flow {
-            val byteArray=Convertor.covertImages2ByteArray(icon)
-            val ico = Blob.fromBytes(byteArray!!)
-            val userdata = FireBaseUser(
-                firstname = info1.firstname,
-                lastname = info1.lastname,
-                gender = info1.gender,
-                dob = info1.dob,
-                semester = info1.semester,
-                phone = info1.phone,
-                email = info1.email,
-                password = info1.password,
-                icon = ico
-            )
-
-            emit(MySealed.Loading("User Profile is Been Updating"))
-            val data = try {
-                reference.set(userdata).await()
-                MySealed.Success(null)
-            } catch (e: Exception) {
-                MySealed.Error(null, e)
-            }
-            emit(data)
-        }
-
-        fun signInAccount(email: String, password: String) = flow {
-            emit(MySealed.Loading("User is Been Validated"))
-            val data = try {
-                FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).await()
-                MySealed.Success(null)
-            } catch (e: Exception) {
-                MySealed.Error(null, e)
-            }
-            emit(data)
-        }
     }
+
+    fun createAcc(icon: Bitmap, info1: UserInfo1) = flow {
+        val byteArray = Convertor.covertImages2ByteArray(icon)
+        val ico = Blob.fromBytes(byteArray!!)
+        val userdata = FireBaseUser(
+            firstname = info1.firstname,
+            lastname = info1.lastname,
+            gender = info1.gender,
+            dob = info1.dob,
+            semester = info1.semester,
+            phone = info1.phone,
+            email = info1.email,
+            password = info1.password,
+            icon = ico
+        )
+
+        emit(MySealed.Loading("User Profile is Been Updating"))
+        val data = try {
+            reference.set(userdata).await()
+            MySealed.Success(null)
+        } catch (e: Exception) {
+            MySealed.Error(null, e)
+        }
+        emit(data)
+    }
+
+    fun signInAccount(email: String, password: String) = flow {
+        emit(MySealed.Loading("User is Been Validated"))
+        val data = try {
+            FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).await()
+            MySealed.Success(null)
+        } catch (e: Exception) {
+            MySealed.Error(null, e)
+        }
+        emit(data)
+    }
+}
 

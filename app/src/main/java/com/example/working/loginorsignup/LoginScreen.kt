@@ -1,6 +1,8 @@
 package com.example.working.loginorsignup
 
 
+import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -65,9 +67,16 @@ class LoginScreen : Fragment(R.layout.login_fragment) {
         }
     }
 
-    private fun hideLoading() = customProgressBar.dismiss()
-    private fun showLoading(string: String?, boolean: Boolean = false) =
+    private fun hideLoading() {
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+        customProgressBar.dismiss()
+    }
+
+    @SuppressLint("SourceLockedOrientationActivity")
+    private fun showLoading(string: String?, boolean: Boolean = false) {
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         customProgressBar.show(requireActivity(), string, boolean)
+    }
 
     private fun validUser() {
         myViewModel.signInAccount(
@@ -97,9 +106,13 @@ class LoginScreen : Fragment(R.layout.login_fragment) {
     }
 
     private fun remember() {
-        val flag=binding.remeberme.isChecked
+        val flag = binding.remeberme.isChecked
         if (flag)
-        myViewModel.storeInfo(binding.emailText.text.toString(),binding.passwordText.text.toString(),flag)
+            myViewModel.storeInfo(
+                binding.emailText.text.toString(),
+                binding.passwordText.text.toString(),
+                flag
+            )
     }
 
     override fun onStart() {

@@ -1,6 +1,7 @@
 package com.example.working.loginorsignup.forgertpass
 
 import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
@@ -195,9 +196,15 @@ class OTPScreen : Fragment(R.layout.opt_framgnet) {
         findNavController().navigate(action)
     }
 
-    private fun hideLoading() = customProgressBar.dismiss()
-    private fun showLoading(string: String?, boolean: Boolean = false) =
+    private fun hideLoading() {
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+        customProgressBar.dismiss()
+    }
+    @SuppressLint("SourceLockedOrientationActivity")
+    private fun showLoading(string: String?, boolean: Boolean = false) {
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         customProgressBar.show(requireActivity(), string, boolean)
+    }
 
     private fun validUser() {
         Log.i(TAG, "validUser: icon is ${Convertor.covertImages2ByteArray(myViewModel.image!!)}")
