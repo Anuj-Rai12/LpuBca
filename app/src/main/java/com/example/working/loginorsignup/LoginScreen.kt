@@ -42,6 +42,19 @@ class LoginScreen : Fragment(R.layout.login_fragment) {
             }
             validUser()
         }
+        myViewModel.event.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let { msg ->
+                Snackbar.make(requireView(), msg, Snackbar.LENGTH_SHORT).show()
+            }
+        }
+        myViewModel.read.observe(viewLifecycleOwner) { userStore ->
+            binding.apply {
+                emailText.setText(userStore.email)
+                passwordText.setText(userStore.password)
+                remeberme.isChecked = userStore.flag
+                Log.i(TAG, "onViewCreated: $userStore")
+            }
+        }
         binding.forpass.setOnClickListener {
             val action = LoginScreenDirections.actionLoginScreenToForgetPassWord()
             findNavController().navigate(action)
@@ -67,11 +80,12 @@ class LoginScreen : Fragment(R.layout.login_fragment) {
                 }
                 is MySealed.Success -> {
                     hideLoading()
+                    remember()
                     dir()
                 }
                 is MySealed.Error -> {
                     hideLoading()
-                    val action=LoginScreenDirections.actionGlobalPasswordDialog(
+                    val action = LoginScreenDirections.actionGlobalPasswordDialog(
                         "${it.exception?.localizedMessage}",
                         "Error"
                     )
@@ -82,11 +96,17 @@ class LoginScreen : Fragment(R.layout.login_fragment) {
         }
     }
 
+    private fun remember() {
+        val flag=binding.remeberme.isChecked
+        if (flag)
+        myViewModel.storeInfo(binding.emailText.text.toString(),binding.passwordText.text.toString(),flag)
+    }
+
     override fun onStart() {
         super.onStart()
         //activity?.finish()
         FirebaseAuth.getInstance().currentUser?.let {
-             //  dir()
+            //  dir()
         }
     }
 
