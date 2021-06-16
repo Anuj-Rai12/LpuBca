@@ -23,6 +23,10 @@ class MyRepository @Inject constructor() {
         fireStore.collection("Users").document(udi.currentUser?.uid!!)
     }
 
+    private val update by lazy {
+        fireStore.collection("version").document("check")
+    }
+
     fun createUser(email: String, password: String) = flow {
         emit(MySealed.Loading("User Account is Been Created"))
         val data = try {
@@ -70,5 +74,26 @@ class MyRepository @Inject constructor() {
         }
         emit(data)
     }
+
+    fun getUpdate() = flow {
+        emit(MySealed.Loading("Checking For Update"))
+        val data = try {
+            val user = update.get().await()
+            if (user.exists()) {
+                val info = user.toObject(Update::class.java)
+                MySealed.Success(info)
+            } else {
+                MySealed.Success(Update(null, null))
+            }
+        } catch (e: Exception) {
+            MySealed.Error(null, null)
+        }
+        emit(data)
+    }
 }
+
+data class Update(
+    val download: String? = null,
+    val version: Long? = null
+)
 

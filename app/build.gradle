@@ -28,7 +28,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    buildFeatures{
+    buildFeatures {
         viewBinding true
     }
     compileOptions {
@@ -91,7 +91,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:23.0.1'
     implementation 'com.google.firebase:firebase-firestore-ktx'
     //FireBase Kotlin Coroutine
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.5.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.5.0")
     //JetPack DataStore
     implementation("androidx.datastore:datastore-preferences:1.0.0-beta01")
+    //RealTime DataBase Firebase
+    implementation 'com.google.firebase:firebase-database-ktx:20.0.0'
 }

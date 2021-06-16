@@ -17,7 +17,6 @@ import com.example.working.databinding.LoginFragmentBinding
 import com.example.working.utils.CustomProgressBar
 import com.example.working.utils.MySealed
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -115,13 +114,6 @@ class LoginScreen : Fragment(R.layout.login_fragment) {
             )
     }
 
-    override fun onStart() {
-        super.onStart()
-        //activity?.finish()
-        FirebaseAuth.getInstance().currentUser?.let {
-            //  dir()
-        }
-    }
 
     private fun dir() {
         val action = LoginScreenDirections.actionLoginScreenToMainActivity23()

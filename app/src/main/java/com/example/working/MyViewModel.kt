@@ -1,8 +1,6 @@
 package com.example.working
 
-import android.app.usage.UsageEvents
 import android.graphics.Bitmap
-import android.util.EventLog
 import androidx.lifecycle.*
 import com.example.working.repos.ClassPersistence
 import com.example.working.repos.MyRepository
@@ -17,6 +15,8 @@ class MyViewModel @Inject constructor(
     private val myRepository: MyRepository,
     private val classPersistence: ClassPersistence
 ) : ViewModel() {
+    var msg: String? = null
+    var downloadLink: String? = null
     var image: Bitmap? = null
     private var _event = MutableLiveData<Event<String>>()
     val event: LiveData<Event<String>>
@@ -36,9 +36,11 @@ class MyViewModel @Inject constructor(
         updateUserInfo(email, password, flag)
     }
 
-   private fun updateUserInfo(email: String, password: String, flag: Boolean) = viewModelScope.launch {
-        classPersistence.updateInfo(email, password, flag)
-        _event.value = Event("Information Saved")
-    }
+    private fun updateUserInfo(email: String, password: String, flag: Boolean) =
+        viewModelScope.launch {
+            classPersistence.updateInfo(email, password, flag)
+            _event.value = Event("Information Saved")
+        }
 
+    fun getUpdate() = myRepository.getUpdate().asLiveData()
 }
