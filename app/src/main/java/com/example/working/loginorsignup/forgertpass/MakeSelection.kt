@@ -35,7 +35,7 @@ class MakeSelection : Fragment(R.layout.mke_framgent) {
             phoneDetail.text = "The OTP will send to your Registered phone number ${args.phone}"
         }
         binding.phoneOption.setOnClickListener {
-            val action = MakeSelectionDirections.actionMakeSelectionToOTPScreen(null, null)
+            val action = MakeSelectionDirections.actionMakeSelectionToOTPScreen(null, args.phone)
             findNavController().navigate(action)
         }
         binding.emailOption.setOnClickListener {
@@ -62,17 +62,18 @@ class MakeSelection : Fragment(R.layout.mke_framgent) {
                 }
                 is MySealed.Success -> {
                     hideLoading()
-                    dialog("Link Sent","${it.data}")
+                    dialog("Link Sent", "${it.data}")
                 }
                 is MySealed.Error -> {
                     hideLoading()
-                    dialog("Error","${it.exception?.localizedMessage}")
+                    dialog("Error", "${it.exception?.localizedMessage}")
                 }
             }
         }
     }
-    private fun  dialog(title:String,message:String){
-        val action= MakeSelectionDirections.actionGlobalPasswordDialog(message, title)
+
+    private fun dialog(title: String, message: String) {
+        val action = MakeSelectionDirections.actionGlobalPasswordDialog(message, title)
         findNavController().navigate(action)
     }
 }

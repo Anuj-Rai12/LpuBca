@@ -81,7 +81,7 @@ class OTPScreen : Fragment(R.layout.opt_framgnet) {
                         "Error :(\nInvalid Phone Number"
                     }
                     is FirebaseTooManyRequestsException -> {
-                        "Error :(\nUsed Too Many Messages Try After 8hrs."
+                        "Error :(\nUsed Too Many Messages Try After 8 hrs."
                     }
                     else -> "Error :(\n ${e.message.toString()}"
                 }
@@ -108,6 +108,12 @@ class OTPScreen : Fragment(R.layout.opt_framgnet) {
                 Log.i(TAG, "PHONE IS ->${info.phone}")
                 //Send Code
                 signInWithPhoneNumber(info.phone!!)
+            }
+        } else {
+            args.myphoneno?.let {phone->
+                Log.i(TAG, "onViewCreated: MyPhone number ->$phone")
+                //SendCode
+                signInWithPhoneNumber(phone)
             }
         }
         binding.verify.setOnClickListener {
@@ -157,7 +163,9 @@ class OTPScreen : Fragment(R.layout.opt_framgnet) {
                     updateUser()
                     return@addOnCompleteListener
                 }
-                //Only Phone Number
+                args.myphoneno?.let {
+                    dir()
+                }
             } else {
                 binding.errorMsg.isVisible = true
                 Toast.makeText(activity, "Error", Toast.LENGTH_SHORT).show()
@@ -200,6 +208,7 @@ class OTPScreen : Fragment(R.layout.opt_framgnet) {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
         customProgressBar.dismiss()
     }
+
     @SuppressLint("SourceLockedOrientationActivity")
     private fun showLoading(string: String?, boolean: Boolean = false) {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
