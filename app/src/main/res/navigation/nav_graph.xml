@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/splashScreen">
+    app:startDestination="@id/loginScreen">
 
     <fragment
         android:id="@+id/loginScreen"
@@ -49,6 +49,12 @@
         <action
             android:id="@+id/action_makeSelection_to_OTPScreen"
             app:destination="@id/OTPScreen" />
+        <argument
+            android:name="email"
+            app:argType="string" />
+        <argument
+            android:name="phone"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/OTPScreen"
