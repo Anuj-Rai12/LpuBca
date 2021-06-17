@@ -110,7 +110,7 @@ class OTPScreen : Fragment(R.layout.opt_framgnet) {
                 signInWithPhoneNumber(info.phone!!)
             }
         } else {
-            args.myphoneno?.let {phone->
+            args.myphoneno?.let { phone ->
                 Log.i(TAG, "onViewCreated: MyPhone number ->$phone")
                 //SendCode
                 signInWithPhoneNumber(phone)
@@ -202,6 +202,7 @@ class OTPScreen : Fragment(R.layout.opt_framgnet) {
     private fun dir() {
         val action = OTPScreenDirections.actionOTPScreenToMainActivity23()
         findNavController().navigate(action)
+        activity?.finish()
     }
 
     private fun hideLoading() {

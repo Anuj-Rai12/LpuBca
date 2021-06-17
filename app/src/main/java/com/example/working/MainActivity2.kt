@@ -1,9 +1,7 @@
 package com.example.working
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -34,15 +32,6 @@ class MainActivity2 : AppCompatActivity() {
         navController = navHostFragment.findNavController()
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding?.mybtnNag?.setupWithNavController(navController)
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                Log.i("MYTAG", "handleOnBackPressed: on Back Pressed")
-                // activity?.finish()
-                /*exitProcess(0)*/
-                MainActivity2Directions.actionGlobalLoginScreen2()
-            }
-        }
-        this.onBackPressedDispatcher.addCallback(callback)
     }
 
     override fun onSupportNavigateUp(): Boolean {

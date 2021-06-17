@@ -118,5 +118,6 @@ class LoginScreen : Fragment(R.layout.login_fragment) {
     private fun dir() {
         val action = LoginScreenDirections.actionLoginScreenToMainActivity23()
         findNavController().navigate(action)
+        activity?.finish()
     }
 }

@@ -1,14 +1,12 @@
 package com.example.working
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import com.example.working.databinding.SplashScreenBinding
 import com.example.working.repos.Update
 import com.example.working.utils.CustomProgressBar
@@ -20,22 +18,22 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-const val VERSION = 1
+private const val VERSION = 1
 
 @AndroidEntryPoint
-class SplashScreen : Fragment(R.layout.splash_screen) {
+class MainActivity3 : AppCompatActivity() {
     private lateinit var binding: SplashScreenBinding
 
     @Inject
     lateinit var customProgressBar: CustomProgressBar
 
-    @Inject
-    lateinit var updateDialog: UpdateDialog
-    private val myViewModel: MyViewModel by activityViewModels()
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        binding = SplashScreenBinding.bind(view)
-        (activity as AppCompatActivity?)!!.supportActionBar!!.hide()
+    private lateinit var updateDialog: UpdateDialog
+
+    private val myViewModel: MyViewModel by viewModels()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = SplashScreenBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         lifecycleScope.launch {
             delay(3000)
             checkUpdate()
@@ -43,18 +41,18 @@ class SplashScreen : Fragment(R.layout.splash_screen) {
     }
 
     private fun hideLoading() {
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+        this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
         customProgressBar.dismiss()
     }
 
     @SuppressLint("SourceLockedOrientationActivity")
     private fun showLoading(string: String?, boolean: Boolean = false) {
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        customProgressBar.show(requireActivity(), string, boolean)
+        this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        customProgressBar.show(this, string, boolean)
     }
 
     private fun checkUpdate() {
-        myViewModel.getUpdate().observe(viewLifecycleOwner) {
+        myViewModel.getUpdate().observe(this) {
             when (it) {
                 is MySealed.Loading -> {
                     showLoading(it.data.toString())
@@ -87,21 +85,22 @@ class SplashScreen : Fragment(R.layout.splash_screen) {
     }
 
     private fun dialog(message: String, link: String?) {
-        myViewModel.downloadLink = link
-        myViewModel.msg = message
-        updateDialog.show(parentFragmentManager, "UpdateTag")
+        updateDialog = UpdateDialog(message, link)
+        updateDialog.show(supportFragmentManager, "UpdateTag")
         updateDialog.isCancelable = false
     }
 
     private fun dir(choice: Int = 0) {
         when (choice) {
             1 -> {
-                val action = SplashScreenDirections.actionGlobalLoginScreen2()
-                findNavController().navigate(action)
+                val intent= Intent(this,MainActivity::class.java)
+                startActivity(intent)
+                finish()
             }
             else -> {
-                val action = SplashScreenDirections.actionSplashScreenToNavigation2()
-                findNavController().navigate(action)
+                val intent=Intent(this,MainActivity2::class.java)
+                startActivity(intent)
+                finish()
             }
         }
     }

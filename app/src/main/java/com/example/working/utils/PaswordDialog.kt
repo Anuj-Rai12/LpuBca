@@ -6,10 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDialogFragment
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
-import com.example.working.MyViewModel
-import javax.inject.Inject
 
 
 class PasswordDialog : androidx.fragment.app.DialogFragment() {
@@ -25,13 +22,15 @@ class PasswordDialog : androidx.fragment.app.DialogFragment() {
     //8.At End of Password you may use $ symbol or Any Special Symbol
 }
 
-class UpdateDialog @Inject constructor() : AppCompatDialogFragment() {
-    private val myViewModel: MyViewModel by activityViewModels()
+class UpdateDialog constructor(
+    private val message: String,
+    private val link: String?,
+) : AppCompatDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val alterDialog = AlertDialog.Builder(activity).setTitle("Update!")
-            .setMessage(myViewModel.msg!!)
+            .setMessage(message)
             .setPositiveButton("Update") { _, _ ->
-                myViewModel.downloadLink?.let {
+                link?.let {
                     loadUrl(it)
                 }
             }.setNegativeButton("Exit") { _, _ ->
