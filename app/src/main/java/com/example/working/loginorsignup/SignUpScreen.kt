@@ -71,6 +71,9 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
         savedInstanceState?.let {
             semesterNo = it.getString("Sem")
         }
+        if (myViewModel.image == null) {
+            myViewModel.image = convertImage()
+        }
         myBitmap = myViewModel.image
         myBitmap?.let {
             binding.profileImage.setImageBitmap(it)

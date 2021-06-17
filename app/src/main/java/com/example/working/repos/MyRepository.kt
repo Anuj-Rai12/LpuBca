@@ -90,6 +90,16 @@ class MyRepository @Inject constructor() {
         }
         emit(data)
     }
+    fun passwordRestEmail(email: String)= flow{
+        emit(MySealed.Loading("Checking Email address"))
+        val data=try {
+            udi.sendPasswordResetEmail(email).await()
+            MySealed.Success("Link Is Sent To your Email Address ")
+        }catch (e:Exception){
+            MySealed.Error(null,e)
+        }
+        emit(data)
+    }
 }
 
 data class Update(

@@ -43,4 +43,6 @@ class MyViewModel @Inject constructor(
         }
 
     fun getUpdate() = myRepository.getUpdate().asLiveData()
+
+    fun passwordRestEmail(email: String) = myRepository.passwordRestEmail(email).asLiveData()
 }
