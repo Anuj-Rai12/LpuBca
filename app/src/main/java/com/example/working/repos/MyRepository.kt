@@ -11,7 +11,11 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
+import javax.inject.Singleton
 
+const val User = "Users"
+
+@Singleton
 class MyRepository @Inject constructor() {
     private val fireStore by lazy {
         FirebaseFirestore.getInstance()
@@ -27,6 +31,7 @@ class MyRepository @Inject constructor() {
         fireStore.collection("version").document("check")
     }
 
+    @Singleton
     fun createUser(email: String, password: String) = flow {
         emit(MySealed.Loading("User Account is Been Created"))
         val data = try {
@@ -39,6 +44,20 @@ class MyRepository @Inject constructor() {
         emit(data)
     }
 
+    @Singleton
+    fun getProfileInfo() = flow {
+        emit(MySealed.Loading(null))
+        val data = try {
+            val info = reference.get().await()
+            val get = info.toObject(FireBaseUser::class.java)
+            MySealed.Success(get)
+        } catch (e: Exception) {
+            MySealed.Error(null, e)
+        }
+        emit(data)
+    }
+
+    @Singleton
     fun createAcc(icon: Bitmap, info1: UserInfo1) = flow {
         val byteArray = Convertor.covertImages2ByteArray(icon)
         val ico = Blob.fromBytes(byteArray!!)
@@ -64,6 +83,7 @@ class MyRepository @Inject constructor() {
         emit(data)
     }
 
+    @Singleton
     fun signInAccount(email: String, password: String) = flow {
         emit(MySealed.Loading("User is Been Validated"))
         val data = try {
@@ -75,6 +95,7 @@ class MyRepository @Inject constructor() {
         emit(data)
     }
 
+    @Singleton
     fun getUpdate() = flow {
         emit(MySealed.Loading("Checking For Update"))
         val data = try {
@@ -90,13 +111,14 @@ class MyRepository @Inject constructor() {
         }
         emit(data)
     }
-    fun passwordRestEmail(email: String)= flow{
+    @Singleton
+    fun passwordRestEmail(email: String) = flow {
         emit(MySealed.Loading("Checking Email address"))
-        val data=try {
+        val data = try {
             udi.sendPasswordResetEmail(email).await()
             MySealed.Success("Link Is Sent To your Email Address ")
-        }catch (e:Exception){
-            MySealed.Error(null,e)
+        } catch (e: Exception) {
+            MySealed.Error(null, e)
         }
         emit(data)
     }

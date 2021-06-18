@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:id="@+id/userProfileImage"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginEnd="4dp"
+            android:scaleType="fitCenter"
+            app:civ_border_color="#3f51b5"
+            app:civ_border_width="4dp"
+            app:civ_shadow="true"
+            app:civ_shadow_color="#3f51b5"
+            app:civ_shadow_radius="10dp"
+            tools:src="@drawable/myimage" />
+
+        <TextView
+            android:id="@+id/userNametext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/userProfileImage"
+            android:ellipsize="end"
+            android:fontFamily="@font/average_sans"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textColor="@color/black"
+            android:textSize="23sp"
+            android:textStyle="bold"
+            tools:text="User Name" />
+
+        <TextView
+            android:id="@+id/userEmailtext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/userNametext"
+            android:layout_marginTop="20dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/average_sans"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            tools:text="AnujRai@gmail.com" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/mylogoutText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="30dp"
+        android:drawablePadding="5dp"
+        android:drawableTint="@color/black"
+        android:text="Logout"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:drawableStartCompat="@drawable/ic_logout" />
+
+    <TextView
+        android:id="@+id/myshareText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:drawablePadding="5dp"
+        android:drawableTint="@color/black"
+        android:text="Share"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:drawableStartCompat="@drawable/ic_share" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/browser_actions_bg_grey" />
+</LinearLayout>
