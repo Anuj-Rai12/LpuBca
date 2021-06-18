@@ -14,4 +14,14 @@
         android:name="com.example.working.userfagment.BooksFragment"
         android:label="BooksFragment"
         tools:layout="@layout/book_fragment"/>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.working.userfagment.ProfileFragment"
+        android:label="profile_fragment"
+        tools:layout="@layout/profile_fragment" />
+    <fragment
+        android:id="@+id/downloadFragment"
+        android:name="com.example.working.userfagment.DownloadFragment"
+        android:label="download_framgnet"
+        tools:layout="@layout/download_framgnet" />
 </navigation>

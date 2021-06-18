@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/profileFragment"
+        android:icon="@drawable/ic_person"
+        android:iconTint="@color/black"
+        android:title="Profile" />
+
+    <item
+        android:id="@+id/downloadFragment"
+        android:icon="@drawable/ic_dowload"
+        android:iconTint="@color/black"
+        android:title="My Downloads" />
+
+</menu>

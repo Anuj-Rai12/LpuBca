@@ -6,6 +6,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.working.databinding.ActivityMain2Binding
@@ -25,17 +26,20 @@ class MainActivity2 : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.noteFragment,
-                R.id.booksFragment
-            )
+                R.id.booksFragment,
+                R.id.profileFragment,
+                R.id.downloadFragment,
+            ), binding?.drawLayout
         )
 
         navController = navHostFragment.findNavController()
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding?.mybtnNag?.setupWithNavController(navController)
+        binding?.nagView?.setupWithNavController(navController)
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp() || super.onNavigateUp()
+        return navController.navigateUp(appBarConfiguration) || super.onNavigateUp()
     }
 
     override fun onDestroy() {
