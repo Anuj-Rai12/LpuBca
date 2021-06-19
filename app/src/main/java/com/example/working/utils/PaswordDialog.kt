@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.navigation.fragment.navArgs
+import com.google.firebase.auth.FirebaseAuth
 
 
 class PasswordDialog : androidx.fragment.app.DialogFragment() {
@@ -25,17 +26,31 @@ class PasswordDialog : androidx.fragment.app.DialogFragment() {
 class UpdateDialog constructor(
     private val message: String,
     private val link: String?,
+    private val title: String,
 ) : AppCompatDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val alterDialog = AlertDialog.Builder(activity).setTitle("Update!")
-            .setMessage(message)
-            .setPositiveButton("Update") { _, _ ->
-                link?.let {
-                    loadUrl(it)
+        val alterDialog = AlertDialog.Builder(activity)
+        if (title != "LogOut!") {
+            alterDialog
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("Update") { _, _ ->
+                    link?.let {
+                        loadUrl(it)
+                    }
+                }.setNegativeButton("Exit") { _, _ ->
+                    activity?.finish()
                 }
-            }.setNegativeButton("Exit") { _, _ ->
-                activity?.finish()
-            }
+        } else {
+            alterDialog.setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("Yes") { _, _ ->
+                    FirebaseAuth.getInstance().signOut()
+                    activity?.finish()
+                }.setNegativeButton("No") { _, _ ->
+                    dismiss()
+                }
+        }
         return alterDialog.create()
     }
 

@@ -19,8 +19,8 @@ import com.example.working.databinding.ActivityMain2Binding
 import com.example.working.utils.Convertor
 import com.example.working.utils.CustomProgressBar
 import com.example.working.utils.MySealed
+import com.example.working.utils.UpdateDialog
 import com.example.working.utils.userchannel.FireBaseUser
-import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -52,8 +52,8 @@ class MainActivity2 : AppCompatActivity() {
             binding?.nagView?.getHeaderView(0)?.findViewById(R.id.mylogoutText)!!
         share = binding?.nagView?.getHeaderView(0)?.findViewById(R.id.myshareText)!!
         logout.setOnClickListener {
-            FirebaseAuth.getInstance().signOut()
-            finish()
+            val updateDialog = UpdateDialog("Do You Really Want to LogOut?", null, "LogOut!")
+            updateDialog.show(supportFragmentManager, "LogOUt")
         }
         share.setOnClickListener {
             Toast.makeText(this, "Doing", Toast.LENGTH_SHORT).show()

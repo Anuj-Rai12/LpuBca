@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val VERSION = 1
-private const val ADMIN_PHONE = "+918004048261"
+private const val ADMIN_PHONE = "+917777755555"
 
 @AndroidEntryPoint
 class MainActivity3 : AppCompatActivity() {
@@ -92,7 +92,7 @@ class MainActivity3 : AppCompatActivity() {
     }
 
     private fun dialog(message: String, link: String?) {
-        updateDialog = UpdateDialog(message, link)
+        updateDialog = UpdateDialog(message, link, "Update!")
         updateDialog.show(supportFragmentManager, "UpdateTag")
         updateDialog.isCancelable = false
     }

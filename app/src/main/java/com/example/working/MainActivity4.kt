@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -19,8 +18,8 @@ import com.example.working.databinding.ActivityMain4Binding
 import com.example.working.utils.Convertor
 import com.example.working.utils.CustomProgressBar
 import com.example.working.utils.MySealed
+import com.example.working.utils.UpdateDialog
 import com.example.working.utils.userchannel.FireBaseUser
-import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -50,8 +49,8 @@ class MainActivity4 : AppCompatActivity() {
             binding.nagViewAdmin.getHeaderView(0).findViewById(R.id.mylogoutText)!!
         share = binding.nagViewAdmin.getHeaderView(0).findViewById(R.id.myshareText)!!
         logout.setOnClickListener {
-            FirebaseAuth.getInstance().signOut()
-            finish()
+            val updateDialog = UpdateDialog("Do You Really Want to LogOut?", null, "LogOut!")
+            updateDialog.show(supportFragmentManager, "LogOUt")
         }
         setUpProfile()
         share.setOnClickListener {
