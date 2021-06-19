@@ -14,7 +14,6 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 
-@Singleton
 class MyRepository @Inject constructor() {
     private val fireStore by lazy {
         FirebaseFirestore.getInstance()

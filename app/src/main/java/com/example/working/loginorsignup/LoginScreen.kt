@@ -11,12 +11,14 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.example.working.ADMIN_PHONE
 import com.example.working.MyViewModel
 import com.example.working.R
 import com.example.working.databinding.LoginFragmentBinding
 import com.example.working.utils.CustomProgressBar
 import com.example.working.utils.MySealed
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -116,7 +118,11 @@ class LoginScreen : Fragment(R.layout.login_fragment) {
 
 
     private fun dir() {
-        val action = LoginScreenDirections.actionLoginScreenToMainActivity23()
+        val action = if (FirebaseAuth.getInstance().currentUser?.phoneNumber != ADMIN_PHONE)
+            LoginScreenDirections.actionLoginScreenToMainActivity23()
+        else
+            LoginScreenDirections.actionLoginScreenToMainActivity4()
+
         findNavController().navigate(action)
         activity?.finish()
     }

@@ -18,10 +18,10 @@
             app:destination="@id/signUpScreen" />
         <action
             android:id="@+id/action_loginScreen_to_mainActivity23"
-            app:destination="@id/navigation2" />
+            app:destination="@id/mainActivity23" />
         <action
-            android:id="@+id/action_loginScreen_to_navigation"
-            app:destination="@id/navigation" />
+            android:id="@+id/action_loginScreen_to_mainActivity4"
+            app:destination="@id/mainActivity4" />
     </fragment>
     <fragment
         android:id="@+id/signUpScreen"
@@ -66,7 +66,7 @@
         tools:layout="@layout/opt_framgnet">
         <action
             android:id="@+id/action_OTPScreen_to_mainActivity23"
-            app:destination="@id/navigation2" />
+            app:destination="@id/mainActivity23" />
         <argument
             android:name="userthree"
             app:argType="com.example.working.utils.userchannel.UserInfo1"
@@ -101,14 +101,12 @@
             android:name="usertwo"
             app:argType="com.example.working.utils.userchannel.UserInfo1" />
     </fragment>
-    <navigation android:id="@+id/navigation2"
-        app:startDestination="@id/mainActivity23">
+
         <activity
             android:id="@+id/mainActivity23"
             android:name="com.example.working.MainActivity2"
             android:label="activity_main2"
             tools:layout="@layout/activity_main2" />
-    </navigation>
     <action android:id="@+id/action_global_loginScreen2" app:destination="@id/loginScreen" />
     <dialog
         android:id="@+id/bottomSheet"
@@ -127,12 +125,11 @@
             android:name="title"
             app:argType="string" />
     </dialog><action android:id="@+id/action_global_passwordDialog" app:destination="@id/passwordDialog"/>
-    <navigation android:id="@+id/navigation"
-        app:startDestination="@id/mainActivity4">
+
         <activity
             android:id="@+id/mainActivity4"
             android:name="com.example.working.MainActivity4"
             android:label="activity_main4"
             tools:layout="@layout/activity_main4" />
-    </navigation>
+
 </navigation>
