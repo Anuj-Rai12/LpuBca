@@ -16,7 +16,6 @@ class MyViewModel @Inject constructor(
     private val classPersistence: ClassPersistence
 ) : ViewModel() {
     var msg: String? = null
-    var downloadLink: String? = null
     var image: Bitmap? = null
     private var _event = MutableLiveData<Event<String>>()
     val event: LiveData<Event<String>>
@@ -42,9 +41,8 @@ class MyViewModel @Inject constructor(
             _event.value = Event("Information Saved")
         }
 
-    fun getUpdate() = myRepository.getUpdate().asLiveData()
-
-    fun getUserProfile() = myRepository.getProfileInfo().asLiveData()
+    val getUpdate = myRepository.getUpdate().asLiveData()
+    val userData = myRepository.getProfileInfo().asLiveData()
 
     fun passwordRestEmail(email: String) = myRepository.passwordRestEmail(email).asLiveData()
 }

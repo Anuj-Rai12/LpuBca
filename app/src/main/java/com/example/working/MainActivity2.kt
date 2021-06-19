@@ -88,7 +88,7 @@ class MainActivity2 : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     private fun setUpProfile() {
 
-        myViewModel.getUserProfile().observe(this) {
+        myViewModel.userData.observe(this) {
             when (it) {
                 is MySealed.Loading -> {
                     showLoading("User Profile is Loading")

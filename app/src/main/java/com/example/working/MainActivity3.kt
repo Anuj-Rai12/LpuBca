@@ -52,7 +52,7 @@ class MainActivity3 : AppCompatActivity() {
     }
 
     private fun checkUpdate() {
-        myViewModel.getUpdate().observe(this) {
+        myViewModel.getUpdate.observe(this) {
             when (it) {
                 is MySealed.Loading -> {
                     showLoading(it.data.toString())
@@ -93,12 +93,12 @@ class MainActivity3 : AppCompatActivity() {
     private fun dir(choice: Int = 0) {
         when (choice) {
             1 -> {
-                val intent= Intent(this,MainActivity::class.java)
+                val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
                 finish()
             }
             else -> {
-                val intent=Intent(this,MainActivity2::class.java)
+                val intent = Intent(this, MainActivity2::class.java)
                 startActivity(intent)
                 finish()
             }
