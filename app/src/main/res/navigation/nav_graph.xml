@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_loginScreen_to_mainActivity23"
             app:destination="@id/navigation2" />
+        <action
+            android:id="@+id/action_loginScreen_to_navigation"
+            app:destination="@id/navigation" />
     </fragment>
     <fragment
         android:id="@+id/signUpScreen"
@@ -124,4 +127,12 @@
             android:name="title"
             app:argType="string" />
     </dialog><action android:id="@+id/action_global_passwordDialog" app:destination="@id/passwordDialog"/>
+    <navigation android:id="@+id/navigation"
+        app:startDestination="@id/mainActivity4">
+        <activity
+            android:id="@+id/mainActivity4"
+            android:name="com.example.working.MainActivity4"
+            android:label="activity_main4"
+            tools:layout="@layout/activity_main4" />
+    </navigation>
 </navigation>

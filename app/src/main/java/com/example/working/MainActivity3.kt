@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val VERSION = 1
+private const val ADMIN_PHONE = "+918004048261"
 
 @AndroidEntryPoint
 class MainActivity3 : AppCompatActivity() {
@@ -70,7 +71,10 @@ class MainActivity3 : AppCompatActivity() {
                     } else if (flag && user)//User is Not Sign In
                         dir(1)
                     else //User is Sign In
-                        dir()
+                        if (FirebaseAuth.getInstance().currentUser?.phoneNumber == ADMIN_PHONE)
+                            dir(4)
+                        else
+                            dir()
                 }
                 is MySealed.Error -> {
                     hideLoading()
@@ -78,7 +82,10 @@ class MainActivity3 : AppCompatActivity() {
                     if (user)//User is Not Sign In
                         dir(1)
                     else//User is Sign In
-                        dir()
+                        if (FirebaseAuth.getInstance().currentUser?.phoneNumber == ADMIN_PHONE)
+                            dir(4)
+                        else
+                            dir()
                 }
             }
         }
@@ -94,6 +101,11 @@ class MainActivity3 : AppCompatActivity() {
         when (choice) {
             1 -> {
                 val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+            4 -> {
+                val intent = Intent(this, MainActivity4::class.java)
                 startActivity(intent)
                 finish()
             }

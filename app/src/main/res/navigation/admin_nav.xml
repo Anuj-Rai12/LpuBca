@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/admin_nav"
+    app:startDestination="@id/uploader">
+    <fragment
+        android:id="@+id/uploader"
+        android:name="com.example.working.adminui.Uploader"
+        android:label="uplod_fragment"
+        tools:layout="@layout/uplod_fragment" />
+    <fragment
+        android:id="@+id/modifier"
+        android:name="com.example.working.adminui.Modifier"
+        android:label="modifer_fragment"
+        tools:layout="@layout/modifer_fragment" />
+</navigation>
