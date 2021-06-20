@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-<item
-    android:id="@+id/modifier"
-    android:title="Modifier"
-    android:icon="@drawable/ic_dowload"/>
+    <item
+        android:id="@+id/uploader"
+        android:icon="@drawable/ic_upload"
+        android:title="Upload File Storage" />
+
+    <item
+        android:id="@+id/modifier"
+        android:icon="@drawable/ic_dowload"
+        android:title="Modifier" />
 
 </menu>

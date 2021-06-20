@@ -7,11 +7,21 @@
     <fragment
         android:id="@+id/uploader"
         android:name="com.example.working.adminui.Uploader"
-        android:label="uplod_fragment"
+        android:label="Upload File Storage"
         tools:layout="@layout/uplod_fragment" />
     <fragment
         android:id="@+id/modifier"
         android:name="com.example.working.adminui.Modifier"
         android:label="modifer_fragment"
         tools:layout="@layout/modifer_fragment" />
+    <dialog
+        android:id="@+id/passwordDialog2"
+        android:name="com.example.working.utils.PasswordDialog"
+        android:label="PasswordDialog" >
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument android:name="message"
+            app:argType="string" />
+    </dialog><action android:id="@+id/action_global_passwordDialog2" app:destination="@id/passwordDialog2"/>
 </navigation>
