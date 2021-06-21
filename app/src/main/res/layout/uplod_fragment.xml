@@ -32,6 +32,47 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/materialLayoutDrop"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="Material"
+            app:boxStrokeColor="@color/purple_700"
+            app:layout_constraintLeft_toLeftOf="@id/uploaderlayoutdrop"
+            app:layout_constraintTop_toBottomOf="@id/uploaderlayoutdrop">
+
+            <AutoCompleteTextView
+                android:id="@+id/materialCollection"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:inputType="none"
+                android:text="Material" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/sourceNameCollection"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Source Name"
+            android:textColorHint="@color/black"
+            app:boxStrokeColor="@color/black"
+            app:boxStrokeWidthFocused="2dp"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/black"
+            app:hintTextColor="@color/black"
+            app:layout_constraintLeft_toLeftOf="@id/materialLayoutDrop"
+            app:layout_constraintTop_toBottomOf="@id/materialLayoutDrop"
+            app:startIconDrawable="@drawable/ic_person">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/sourceName"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/uploaderFolderNameCollection"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
@@ -43,8 +84,8 @@
             app:endIconMode="clear_text"
             app:endIconTint="@color/black"
             app:hintTextColor="@color/black"
-            app:layout_constraintLeft_toLeftOf="@id/uploaderlayoutdrop"
-            app:layout_constraintTop_toBottomOf="@id/uploaderlayoutdrop"
+            app:layout_constraintLeft_toLeftOf="@id/sourceNameCollection"
+            app:layout_constraintTop_toBottomOf="@id/sourceNameCollection"
             app:startIconDrawable="@drawable/ic_user">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -120,9 +161,9 @@
             android:id="@+id/uploadfile"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:text="Upload FIle"
             android:textAllCaps="false"
-            android:layout_margin="8dp"
             app:layout_constraintBaseline_toBaselineOf="@id/UpdateFile"
             app:layout_constraintEnd_toStartOf="@+id/deletebtn"
             app:layout_constraintHorizontal_bias="0.5"
@@ -132,9 +173,9 @@
             android:id="@+id/deletebtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
             android:text="delete File"
             android:textAllCaps="false"
-            android:layout_margin="8dp"
             app:layout_constraintBaseline_toBaselineOf="@id/uploadfile"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -145,8 +186,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginRight="8dp"
             android:layout_marginTop="20dp"
+            android:layout_marginRight="8dp"
             android:text="Update File"
             android:textAllCaps="false"
             app:layout_constraintEnd_toStartOf="@+id/uploadfile"

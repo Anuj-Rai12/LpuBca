@@ -8,4 +8,9 @@
         <item>5th Semester</item>
         <item>6th Semester</item>
     </string-array>
+    <string-array name="Course">
+        <item>PPT</item>
+        <item>Book</item>
+        <item>Other Material</item>
+    </string-array>
 </resources>

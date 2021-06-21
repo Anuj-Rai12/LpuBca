@@ -15,13 +15,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.working.R
+import com.example.working.adminui.respotry.FileInfo
 import com.example.working.adminui.viewmodel.AdminViewModel
 import com.example.working.databinding.UplodFragmentBinding
 import com.example.working.loginorsignup.TAG
 import com.example.working.utils.CustomProgressBar
+import com.example.working.utils.MySealed
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.File
 import java.util.*
 import javax.inject.Inject
 
@@ -29,14 +31,16 @@ import javax.inject.Inject
 private const val FILETYPE = "FILE_KEY"
 private const val SEM = "SEMESTER_No"
 private const val SIZE = "FileSize"
+private const val METADATA = "METALS"
 
 @AndroidEntryPoint
 class Uploader : Fragment(R.layout.uplod_fragment) {
     private lateinit var binding: UplodFragmentBinding
     private val adminViewModel: AdminViewModel by activityViewModels()
     private var semesterNo: String? = null
-    private var localFileSize: String? = null
+    private var material: String? = null
     private var fileType: String? = null
+    private var filSize: String? = null
 
     @Inject
     lateinit var customProgressBar: CustomProgressBar
@@ -48,19 +52,12 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
 
     private fun setUI(fileUrl: Uri?) {
         fileUrl?.let {
+            binding.uploadSize.text = ""
             try {
                 if (getMimeType(it)!! == "image/png" || getMimeType(it)!! == "image/jpeg") {
                     fileType = "Image"
                     binding.fileImage.setImageURI(it)
-                    binding.uploadSize.text = ""
                 } else {
-                    val file = File(it.path!!)
-                    val fileSize = java.lang.String.valueOf(file.length() / 1024).toDouble()
-                    localFileSize = if (fileSize.toInt() <= 1000)
-                        "Size :${fileSize} KB"
-                    else
-                        "Size :${file.length() / 1048576} MB"
-                    binding.uploadSize.text = localFileSize
                     getMimeType(it)?.let { type ->
                         Log.i(TAG, "setUI: $type")
                         fileType = type
@@ -81,9 +78,10 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
         savedInstanceState?.let {
             fileType = it.getString(FILETYPE)
             semesterNo = it.getString(SEM)
-            localFileSize = it.getString(SIZE)
+            filSize = it.getString(SIZE)
+            material = it.getString(METADATA)
         }
-        localFileSize?.let {
+        filSize?.let {
             binding.uploadSize.text = it
         }
         fileType?.let {
@@ -95,6 +93,9 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
         binding.uploaderCollection.setOnItemClickListener { _, _, position, _ ->
             getPosition(position)
         }
+        binding.materialCollection.setOnItemClickListener { _, _, position, _ ->
+            getMaterial(position)
+        }
         binding.uploadfile.setOnClickListener {
             val fileName = binding.uploaderFileName.text.toString()
             val folderName = binding.uploaderFolderName.text.toString()
@@ -103,6 +104,7 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
                 || fileName.isBlank()
                 || fileName.isEmpty()
                 || semesterNo.isNullOrEmpty()
+                || material.isNullOrEmpty()
             ) {
                 Log.i(TAG, "onViewCreated: folderName->$folderName")
                 Log.i(TAG, "onViewCreated: fileName->$fileName")
@@ -112,16 +114,24 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
                 return@setOnClickListener
             }
             adminViewModel.fileUrl?.let {
-                setUpload(it, folderName, fileName)
-                return@setOnClickListener
+                setUpload(folderName, fileName)
             }
         }
         binding.UpdateFile.setOnClickListener {
-            val message =
+            /*val message =
                 "File Name ->${binding.uploaderFileName.text.toString()}\n" +
                         "File Uploaded Size ->" +
                         "Local File Path ->${adminViewModel.fileUrl?.path}"
-            dialog(message = message)
+            dialog(message = message)*/
+        }
+    }
+
+    private fun getMaterial(position: Int) {
+        material = when (position) {
+            0 -> "PPT"
+            1 -> "BOOK"
+            2 -> "OTHER Material"
+            else -> null
         }
     }
 
@@ -144,20 +154,63 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
         val action = UploaderDirections.actionGlobalPasswordDialog2(title, message)
         findNavController().navigate(action)
     }
-    private fun setUpload(uri: Uri, folderName: String, fileName: String) {
+
+    private fun setUpload(folderName: String, fileName: String) {
         val tagArray = folderName.split("\\s*,\\s*".toRegex()).toTypedArray()
         val tags: List<String> = tagArray.toList()
-        Log.i(
-            TAG,
-            "setUpload: File Uri -> $uri \nfolderName -> $tags \nfile Name -> $fileName \nSemester Name $semesterNo"
+        val source =
+            if (binding.sourceName.text.toString().isEmpty() || binding.sourceName.text.toString()
+                    .isBlank()
+            )
+                FirebaseAuth.getInstance().currentUser?.uid!!
+            else
+                binding.sourceName.text.toString()
+
+        adminViewModel.uploadFile(
+            folderName = "$semesterNo/$material/${tags[0]}",
+            subFolder = tags[1],
+            fileName = fileName,
+            source = source
         )
-        Log.i(TAG, "setUpload: file path ->${uri.lastPathSegment}")
+            .observe(viewLifecycleOwner) {
+                when (it) {
+                    is MySealed.Loading -> {
+                        showLoading("File Is Uploading.")
+                    }
+                    is MySealed.Error -> {
+                        hideLoading()
+                        dialog("Error", "${it.exception?.localizedMessage}")
+                    }
+                    is MySealed.Success -> {
+                        hideLoading()
+                        val fileInfo = it.data as FileInfo
+                        val message = "Local Source\n" +
+                                "File name : ${adminViewModel.fileUrl?.lastPathSegment}\n" +
+                                "File Type : $fileType\n" +
+                                "File Path : ${adminViewModel.fileUrl}\n" +
+                                "\nRemote Source\n" +
+                                "File Path :${fileInfo.folderName}/" +
+                                "${fileInfo.subFolder}/" +
+                                "${fileInfo.fileName}\n" +
+                                "File Size :${fileInfo.fileSize}\n" +
+                                "Upload ID :${fileInfo.source}\n" +
+                                "Download Url:${fileInfo.downloadUrl}"
+                        filSize = "Size :${fileInfo.fileSize}"
+                        binding.uploadSize.text = filSize
+                        dialog("Success", message)
+                        Log.i(TAG, "setUpload: $fileInfo")
+                    }
+                }
+            }
     }
 
     private fun setSemester() {
         val weeks = resources.getStringArray(R.array.timers)
+        val course = resources.getStringArray(R.array.Course)
         val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdaown, weeks)
+        val courseArrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdaown, course)
         binding.uploaderCollection.setAdapter(arrayAdapter)
+        binding.materialCollection.setAdapter(courseArrayAdapter)
     }
 
     private fun hideLoading() {
@@ -210,8 +263,11 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
         semesterNo?.let {
             outState.putString(SEM, it)
         }
-        localFileSize?.let {
+        filSize?.let {
             outState.putString(SIZE, it)
+        }
+        material?.let {
+            outState.putString(METADATA, it)
         }
     }
 }
