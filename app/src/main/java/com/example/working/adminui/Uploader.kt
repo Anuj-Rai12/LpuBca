@@ -110,9 +110,7 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
         binding.deletebtn.setOnClickListener {
             val fileName = binding.uploaderFileName.text.toString()
             val folderName = binding.uploaderFolderName.text.toString()
-            val path: String = if (adminViewModel.fileInfo != null) {
-                adminViewModel.fileInfo?.folderPath!!
-            } else if (!checkUI(fileName, folderName))
+            val path: String =  if (!checkUI(fileName, folderName))
                 return@setOnClickListener
             else if (checkUI(fileName, folderName)) {
                 generatePath(folderName, fileName)
