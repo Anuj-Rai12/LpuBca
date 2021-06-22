@@ -48,6 +48,17 @@ class AdminRepository @Inject constructor() {
         else
             "${(fileSize / 1048576).toDouble()} Mb"
     }
+
+    fun deleteFile(path: String)= flow {
+        emit(MySealed.Loading("Deleting the File."))
+        val data=try {
+            storageReference.child(path).delete().await()
+            MySealed.Success("File Path :$path\n\nDeleted Successfully.")
+        }catch (e:Exception){
+            MySealed.Error(null,e)
+        }
+        emit(data)
+    }
 }
 
 data class FileInfo(

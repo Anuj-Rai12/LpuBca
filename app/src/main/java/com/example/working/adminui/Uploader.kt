@@ -99,33 +99,62 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
         binding.uploadfile.setOnClickListener {
             val fileName = binding.uploaderFileName.text.toString()
             val folderName = binding.uploaderFolderName.text.toString()
-            if (folderName.isEmpty()
-                || folderName.isBlank()
-                || fileName.isBlank()
-                || fileName.isEmpty()
-                || semesterNo.isNullOrEmpty()
-                || material.isNullOrEmpty()
-            ) {
-                Log.i(TAG, "onViewCreated: folderName->$folderName")
-                Log.i(TAG, "onViewCreated: fileName->$fileName")
-                Log.i(TAG, "onViewCreated: Semester number->$semesterNo")
-                Snackbar.make(requireView(), "Please File The Details", Snackbar.LENGTH_SHORT)
-                    .show()
+            if (!checkUI(folderName, fileName))
                 return@setOnClickListener
-            }
             adminViewModel.fileUrl?.let {
                 setUpload(folderName, fileName)
                 return@setOnClickListener
             }
             Snackbar.make(requireView(), "please Select Image", Snackbar.LENGTH_SHORT).show()
         }
-        binding.UpdateFile.setOnClickListener {
-            /*val message =
-                "File Name ->${binding.uploaderFileName.text.toString()}\n" +
-                        "File Uploaded Size ->" +
-                        "Local File Path ->${adminViewModel.fileUrl?.path}"
-            dialog(message = message)*/
+        binding.deletebtn.setOnClickListener {
+            val fileName = binding.uploaderFileName.text.toString()
+            val folderName = binding.uploaderFolderName.text.toString()
+            val path: String = if (adminViewModel.fileInfo != null) {
+                adminViewModel.fileInfo?.folderPath!!
+            } else if (!checkUI(fileName, folderName))
+                return@setOnClickListener
+            else if (checkUI(fileName, folderName)) {
+                generatePath(folderName, fileName)
+            } else {
+                Toast.makeText(activity, "Unexpected Error", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            Log.i(TAG, "onViewCreated: path -> $path")
+            adminViewModel.deleteFile(path).observe(viewLifecycleOwner) {
+                when (it) {
+                    is MySealed.Loading -> {
+                        showLoading(it.data as String)
+                    }
+                    is MySealed.Error -> {
+                        hideLoading()
+                        dialog("Error", "${it.exception?.localizedMessage}")
+                    }
+                    is MySealed.Success -> {
+                        hideLoading()
+                        dialog(title = "Success", message = it.data as String)
+                    }
+                }
+            }
         }
+    }
+
+    private fun checkUI(fileName: String, folderName: String): Boolean {
+        return if (folderName.isEmpty()
+            || folderName.isBlank()
+            || fileName.isBlank()
+            || fileName.isEmpty()
+            || semesterNo.isNullOrEmpty()
+            || material.isNullOrEmpty()
+        ) {
+            Log.i(TAG, "onViewCreated: folderName->$folderName")
+            Log.i(TAG, "onViewCreated: fileName->$fileName")
+            Log.i(TAG, "onViewCreated: Semester number->$semesterNo")
+            Snackbar.make(requireView(), "Please File The Details", Snackbar.LENGTH_SHORT)
+                .show()
+            false
+        } else
+            true
     }
 
     private fun getMaterial(position: Int) {
@@ -156,9 +185,17 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
         findNavController().navigate(action)
     }
 
-    private fun setUpload(folderName: String, fileName: String) {
+    private fun generatePath(folderName: String, fileName: String): String {
         val tagArray = folderName.split("\\s*,\\s*".toRegex()).toTypedArray()
         val tags: List<String> = tagArray.toList()
+        var str = "$semesterNo/$material/"
+        tags.forEach { char ->
+            str = "$str$char/"
+        }
+        return "$str$fileName"
+    }
+
+    private fun setUpload(folderName: String, fileName: String) {
         val sourceId =
             if (binding.sourceName.text.toString().isEmpty() || binding.sourceName.text.toString()
                     .isBlank()
@@ -166,14 +203,9 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
                 FirebaseAuth.getInstance().currentUser?.uid!!
             else
                 binding.sourceName.text.toString()
-        var str = "$semesterNo/$material/"
-        tags.forEach { char ->
-            str = "$str$char/"
-        }
-        str = "$str$fileName"
-        Log.i(TAG, "setUpload: $str")
+        Log.i(TAG, "setUpload: ${generatePath(folderName, fileName)}")
         adminViewModel.uploadFile(
-            folderName = str,
+            folderName = generatePath(folderName, fileName),
             fileName = fileName,
             source = sourceId
         )
@@ -189,7 +221,7 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
                     is MySealed.Success -> {
                         hideLoading()
                         val fileInfo = it.data as FileInfo
-                        adminViewModel.fileInfo=fileInfo
+                        adminViewModel.fileInfo = fileInfo
                         val message = "Local Source\n" +
                                 "File name : ${adminViewModel.fileUrl?.lastPathSegment}\n" +
                                 "File Type : $fileType\n" +

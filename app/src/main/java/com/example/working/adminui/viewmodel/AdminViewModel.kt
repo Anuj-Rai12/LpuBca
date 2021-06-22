@@ -22,4 +22,6 @@ class AdminViewModel @Inject constructor(
         source: String
     ) = adminRepository.uploadFile(folderName, fileName, fileUrl!!, source).asLiveData()
 
+    fun deleteFile(path: String) =adminRepository.deleteFile(path).asLiveData()
+
 }
