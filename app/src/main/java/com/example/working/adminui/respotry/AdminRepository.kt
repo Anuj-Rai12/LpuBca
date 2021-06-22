@@ -19,23 +19,21 @@ class AdminRepository @Inject constructor() {
 
     fun uploadFile(
         folderName: String,
-        subFolder: String,
         fileName: String,
         fileUrl: Uri,
         source: String
     ) = flow {
         emit(MySealed.Loading(null))
         val data = try {
-            val fileUpload = storageReference.child("$folderName/$subFolder/$fileName")
+            val fileUpload = storageReference.child(folderName)
             val fileInfo = fileUpload.putFile(fileUrl).await()
             val url = fileUpload.downloadUrl.await()
             val data = FileInfo(
                 fileSize = getFileSize(fileInfo.totalByteCount),
                 downloadUrl = url.toString(),
-                folderName = folderName,
-                subFolder = subFolder,
+                folderPath = folderName,
                 fileName = fileName,
-                source = source
+                sourceId = source
             )
             MySealed.Success(data)
         } catch (e: Exception) {
@@ -46,18 +44,16 @@ class AdminRepository @Inject constructor() {
 
     private fun getFileSize(fileSize: Long): String {
         return if (fileSize.toInt() / 1024 <= 1000)
-            "${(fileSize/1024).toDouble()} Kb"
+            "${(fileSize / 1024).toDouble()} Kb"
         else
             "${(fileSize / 1048576).toDouble()} Mb"
     }
-    //Log.i(TAG, "setUpload: ${(it.bytesTransferred / 1048576).toBigDecimal()} mb/s")
 }
 
 data class FileInfo(
     val fileSize: String? = null,
     val downloadUrl: String? = null,
-    val folderName: String? = null,
-    val subFolder: String? = null,
+    val folderPath: String? = null,
     val fileName: String? = null,
-    val source: String? = null
+    val sourceId: String? = null
 )

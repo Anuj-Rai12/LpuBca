@@ -7,7 +7,7 @@
 
     <item
         android:id="@+id/modifier"
-        android:icon="@drawable/ic_dowload"
-        android:title="Modifier" />
+        android:icon="@drawable/ic_upload"
+        android:title="Upload File Cloud" />
 
 </menu>

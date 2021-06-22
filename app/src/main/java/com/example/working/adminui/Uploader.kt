@@ -115,7 +115,9 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
             }
             adminViewModel.fileUrl?.let {
                 setUpload(folderName, fileName)
+                return@setOnClickListener
             }
+            Snackbar.make(requireView(), "please Select Image", Snackbar.LENGTH_SHORT).show()
         }
         binding.UpdateFile.setOnClickListener {
             /*val message =
@@ -129,8 +131,8 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
     private fun getMaterial(position: Int) {
         material = when (position) {
             0 -> "PPT"
-            1 -> "BOOK"
-            2 -> "OTHER Material"
+            1 -> "Book"
+            2 -> "Other Material"
             else -> null
         }
     }
@@ -144,7 +146,6 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
                 .fileImage.setImageResource(R.drawable.wordfile)
             "Image" -> {
                 binding.fileImage.setImageURI(adminViewModel.fileUrl)
-                binding.uploadSize.text = ""
             }
             else -> binding.fileImage.setImageResource(R.drawable.unknownfile)
         }
@@ -158,19 +159,23 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
     private fun setUpload(folderName: String, fileName: String) {
         val tagArray = folderName.split("\\s*,\\s*".toRegex()).toTypedArray()
         val tags: List<String> = tagArray.toList()
-        val source =
+        val sourceId =
             if (binding.sourceName.text.toString().isEmpty() || binding.sourceName.text.toString()
                     .isBlank()
             )
                 FirebaseAuth.getInstance().currentUser?.uid!!
             else
                 binding.sourceName.text.toString()
-
+        var str = "$semesterNo/$material/"
+        tags.forEach { char ->
+            str = "$str$char/"
+        }
+        str = "$str$fileName"
+        Log.i(TAG, "setUpload: $str")
         adminViewModel.uploadFile(
-            folderName = "$semesterNo/$material/${tags[0]}",
-            subFolder = tags[1],
+            folderName = str,
             fileName = fileName,
-            source = source
+            source = sourceId
         )
             .observe(viewLifecycleOwner) {
                 when (it) {
@@ -184,16 +189,15 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
                     is MySealed.Success -> {
                         hideLoading()
                         val fileInfo = it.data as FileInfo
+                        adminViewModel.fileInfo=fileInfo
                         val message = "Local Source\n" +
                                 "File name : ${adminViewModel.fileUrl?.lastPathSegment}\n" +
                                 "File Type : $fileType\n" +
                                 "File Path : ${adminViewModel.fileUrl}\n" +
                                 "\nRemote Source\n" +
-                                "File Path :${fileInfo.folderName}/" +
-                                "${fileInfo.subFolder}/" +
-                                "${fileInfo.fileName}\n" +
+                                "File Path :${fileInfo.folderPath}\n" +
                                 "File Size :${fileInfo.fileSize}\n" +
-                                "Upload ID :${fileInfo.source}\n" +
+                                "Upload ID :${fileInfo.sourceId}\n" +
                                 "Download Url:${fileInfo.downloadUrl}"
                         filSize = "Size :${fileInfo.fileSize}"
                         binding.uploadSize.text = filSize

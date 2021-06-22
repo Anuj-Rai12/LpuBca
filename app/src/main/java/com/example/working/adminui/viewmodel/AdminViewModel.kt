@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import com.example.working.adminui.respotry.AdminRepository
+import com.example.working.adminui.respotry.FileInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -13,12 +14,12 @@ class AdminViewModel @Inject constructor(
 ) :
     ViewModel() {
 
+    var fileInfo: FileInfo? = null
     var fileUrl: Uri? = null
     fun uploadFile(
         folderName: String,
-        subFolder: String,
         fileName: String,
         source: String
-    ) = adminRepository.uploadFile(folderName, subFolder, fileName, fileUrl!!, source).asLiveData()
+    ) = adminRepository.uploadFile(folderName, fileName, fileUrl!!, source).asLiveData()
 
 }
