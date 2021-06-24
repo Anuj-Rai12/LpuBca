@@ -41,6 +41,19 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
     private var material: String? = null
     private var fileType: String? = null
     private var filSize: String? = null
+    private var unitNo: String? = null
+    private val courseArrayAdapter: ArrayAdapter<String> by lazy {
+        val course = resources.getStringArray(R.array.Course)
+        ArrayAdapter(requireContext(), R.layout.dropdaown, course)
+    }
+    private val arrayAdapter: ArrayAdapter<String> by lazy {
+        val weeks = resources.getStringArray(R.array.timers)
+        ArrayAdapter(requireContext(), R.layout.dropdaown, weeks)
+    }
+    private val unitAdapter: ArrayAdapter<String> by lazy {
+        val unit = resources.getStringArray(R.array.UnitName)
+        ArrayAdapter(requireContext(), R.layout.dropdaown, unit)
+    }
 
     @Inject
     lateinit var customProgressBar: CustomProgressBar
@@ -91,10 +104,13 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
             request.launch("*/*")
         }
         binding.uploaderCollection.setOnItemClickListener { _, _, position, _ ->
-            getPosition(position)
+            semesterNo = arrayAdapter.getItem(position)
         }
         binding.materialCollection.setOnItemClickListener { _, _, position, _ ->
-            getMaterial(position)
+            material = courseArrayAdapter.getItem(position)
+        }
+        binding.unitTypeLayout.setOnItemClickListener { _, _, position, _ ->
+            unitNo = unitAdapter.getItem(position)
         }
         binding.uploadfile.setOnClickListener {
             val fileName = binding.uploaderFileName.text.toString()
@@ -110,7 +126,7 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
         binding.deletebtn.setOnClickListener {
             val fileName = binding.uploaderFileName.text.toString()
             val folderName = binding.uploaderFolderName.text.toString()
-            val path: String =  if (!checkUI(fileName, folderName))
+            val path: String = if (!checkUI(fileName, folderName))
                 return@setOnClickListener
             else if (checkUI(fileName, folderName)) {
                 generatePath(folderName, fileName)
@@ -144,6 +160,7 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
             || fileName.isEmpty()
             || semesterNo.isNullOrEmpty()
             || material.isNullOrEmpty()
+            || unitNo.isNullOrEmpty()
         ) {
             Log.i(TAG, "onViewCreated: folderName->$folderName")
             Log.i(TAG, "onViewCreated: fileName->$fileName")
@@ -153,15 +170,6 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
             false
         } else
             true
-    }
-
-    private fun getMaterial(position: Int) {
-        material = when (position) {
-            0 -> "PPT"
-            1 -> "Book"
-            2 -> "Other Material"
-            else -> null
-        }
     }
 
     private fun setImage(imageType: String) {
@@ -190,7 +198,7 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
         tags.forEach { char ->
             str = "$str$char/"
         }
-        return "$str$fileName"
+        return "$str$unitNo/$fileName"
     }
 
     private fun setUpload(folderName: String, fileName: String) {
@@ -231,20 +239,23 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
                                 "Download Url:${fileInfo.downloadUrl}"
                         filSize = "Size :${fileInfo.fileSize}"
                         binding.uploadSize.text = filSize
+                        setMap(fileInfo)
                         dialog("Success", message)
-                        Log.i(TAG, "setUpload: $fileInfo")
+                        Log.i(TAG, "setUpload: $fileInfo\n\n\n")
+                        Log.i(TAG, "setUpload: ${adminViewModel.fileName}")
                     }
                 }
             }
     }
 
+    private fun setMap(fileInfo: FileInfo) {
+        adminViewModel.fileName.putAll(setOf("${fileInfo.fileName}" to "${fileInfo.downloadUrl}"))
+    }
+
     private fun setSemester() {
-        val weeks = resources.getStringArray(R.array.timers)
-        val course = resources.getStringArray(R.array.Course)
-        val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdaown, weeks)
-        val courseArrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdaown, course)
         binding.uploaderCollection.setAdapter(arrayAdapter)
         binding.materialCollection.setAdapter(courseArrayAdapter)
+        binding.unitTypeLayout.setAdapter(unitAdapter)
     }
 
     private fun hideLoading() {
@@ -269,18 +280,6 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
             MimeTypeMap.getSingleton().getMimeTypeFromExtension(
                 fileExtension.lowercase(Locale.getDefault())
             )
-        }
-    }
-
-    private fun getPosition(position: Int) {
-        semesterNo = when (position) {
-            0 -> "1th Semester"
-            1 -> "2th Semester"
-            2 -> "3th Semester"
-            3 -> "4th Semester"
-            4 -> "5th Semester"
-            5 -> "6th Semester"
-            else -> null
         }
     }
 

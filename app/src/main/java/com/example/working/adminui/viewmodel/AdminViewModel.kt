@@ -16,12 +16,13 @@ class AdminViewModel @Inject constructor(
 
     var fileInfo: FileInfo? = null
     var fileUrl: Uri? = null
+    var fileName: MutableMap<String, String> = mutableMapOf()
     fun uploadFile(
         folderName: String,
         fileName: String,
         source: String
     ) = adminRepository.uploadFile(folderName, fileName, fileUrl!!, source).asLiveData()
 
-    fun deleteFile(path: String) =adminRepository.deleteFile(path).asLiveData()
+    fun deleteFile(path: String) = adminRepository.deleteFile(path).asLiveData()
 
 }

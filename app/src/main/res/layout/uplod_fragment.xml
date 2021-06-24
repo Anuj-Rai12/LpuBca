@@ -93,7 +93,25 @@
                 android:layout_height="match_parent"
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/unitTypeLayoutDrop"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="Unit No?"
+            app:boxStrokeColor="@color/purple_700"
+            app:layout_constraintLeft_toLeftOf="@id/uploaderFolderNameCollection"
+            app:layout_constraintTop_toBottomOf="@id/uploaderFolderNameCollection">
 
+            <AutoCompleteTextView
+                android:id="@+id/unitTypeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:inputType="none"
+                android:text="Unit No?" />
+        </com.google.android.material.textfield.TextInputLayout>
         <Button
             android:id="@+id/openFileExplore"
             android:layout_width="0dp"
@@ -102,9 +120,9 @@
             android:layout_marginTop="10dp"
             android:text="Open File Explore"
             android:textAllCaps="false"
-            app:layout_constraintLeft_toLeftOf="@id/uploaderFolderNameCollection"
+            app:layout_constraintLeft_toLeftOf="@id/unitTypeLayoutDrop"
             app:layout_constraintRight_toRightOf="@id/barrier2"
-            app:layout_constraintTop_toBottomOf="@id/uploaderFolderNameCollection"
+            app:layout_constraintTop_toBottomOf="@id/unitTypeLayoutDrop"
             app:layout_constraintWidth_min="100dp" />
 
         <ImageView
@@ -116,8 +134,8 @@
             android:background="#F5F4F4"
             android:scaleType="fitXY"
             app:layout_constraintLeft_toRightOf="@id/barrier2"
-            app:layout_constraintRight_toRightOf="@id/uploaderFolderNameCollection"
-            app:layout_constraintTop_toBottomOf="@id/uploaderFolderNameCollection" />
+            app:layout_constraintRight_toRightOf="@id/unitTypeLayoutDrop"
+            app:layout_constraintTop_toBottomOf="@id/unitTypeLayoutDrop" />
 
         <TextView
             android:id="@+id/uploadSize"
