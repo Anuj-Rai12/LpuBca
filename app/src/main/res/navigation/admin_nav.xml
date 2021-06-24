@@ -13,7 +13,11 @@
         android:id="@+id/modifier"
         android:name="com.example.working.adminui.Modifier"
         android:label="Upload File Cloud"
-        tools:layout="@layout/modifer_fragment" />
+        tools:layout="@layout/modifer_fragment" >
+        <action
+            android:id="@+id/action_modifier_to_subjectFragment"
+            app:destination="@id/subjectFragment" />
+    </fragment>
     <dialog
         android:id="@+id/passwordDialog2"
         android:name="com.example.working.utils.PasswordDialog"
@@ -28,4 +32,13 @@
     <action
         android:id="@+id/action_global_passwordDialog2"
         app:destination="@id/passwordDialog2" />
+    <fragment
+        android:id="@+id/subjectFragment"
+        android:name="com.example.working.adminui.SubjectFragment"
+        android:label="subject_fragment"
+        tools:layout="@layout/subject_fragment" >
+        <argument
+            android:name="pathname"
+            app:argType="string" />
+    </fragment>
 </navigation>
