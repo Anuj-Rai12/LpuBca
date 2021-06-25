@@ -1,6 +1,7 @@
 package com.example.working.adminui.respotry
 
 import android.net.Uri
+import com.example.working.adminui.AllData
 import com.example.working.utils.Materials
 import com.example.working.utils.MyFilePath
 import com.example.working.utils.MySealed
@@ -10,6 +11,7 @@ import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
+import kotlin.random.Random
 
 class AdminRepository @Inject constructor() {
     //    private var uploadTask: UploadTask? = null
@@ -75,6 +77,36 @@ class AdminRepository @Inject constructor() {
             MySealed.Error(null, e)
         }
         emit(data)
+    }
+
+    fun addSecondSet(path: List<MyFilePath>, allData: AllData) = flow {
+        emit(MySealed.Loading("2 Set is Being Uploading"))
+        val data = try {
+            fireStore.collection(path.first().collection!!).document(path.first().document!!)
+                .collection(path.last().collection!!).document(path.last().document!!)
+                .set(allData).await()
+            MySealed.Success("All File is Uploaded Successfully")
+        } catch (e: Exception) {
+            MySealed.Error(null, e)
+        }
+        emit(data)
+    }
+
+    fun updateSecondPath(path: List<MyFilePath>, allData: FileInfo) = flow {
+        emit(MySealed.Loading("File Is Updating..."))
+        val data = try {
+            fireStore.collection(path.first().collection!!).document(path.first().document!!)
+                .collection(path.last().collection!!).document(path.last().document!!)
+                .update("map.${rand()}", allData).await()
+            MySealed.Success("File is  Updated")
+        } catch (e: Exception) {
+            MySealed.Error(null, e)
+        }
+        emit(data)
+    }
+
+    private fun rand(from: Int=1, to: Int=10000000): Int {
+        return Random.nextInt(to - from) + from
     }
 }
 

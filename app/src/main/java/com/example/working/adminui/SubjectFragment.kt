@@ -14,10 +14,7 @@ import com.example.working.adminui.respotry.FileInfo
 import com.example.working.adminui.viewmodel.AdminViewModel
 import com.example.working.databinding.SubjectFragmentBinding
 import com.example.working.loginorsignup.TAG
-import com.example.working.utils.CustomProgress
-import com.example.working.utils.MyFilePath
-import com.example.working.utils.MySealed
-import com.example.working.utils.getDateTime
+import com.example.working.utils.*
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -58,10 +55,52 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
             setFirst(teacherName)
         }
         Log.i(TAG, "onViewCreated: $args")
+        binding.updateFile.setOnClickListener {
+            if (
+                material.isNullOrEmpty()
+                || binding.FolderName.text.toString().isBlank()
+                || binding.FolderName.text.toString().isEmpty()
+                ||myViewModel.fileName.isNullOrEmpty()
+            ) {
+                Snackbar.make(requireView(), "Please Enter Info", Snackbar.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            updateFile()
+        }
+    }
+
+    private fun updateFile() {
+        val folderName = binding.FolderName.text.toString()
+        val myFilePath = MyFilePath(folderName, material)
+        val filePath = listOf(args.path, myFilePath)
+        val map=myViewModel.fileName.values.last()
+        myViewModel.updateSecondPath(filePath,map).observe(viewLifecycleOwner){
+            when(it){
+                is MySealed.Error -> {
+                    customProgress.hideLoading(requireActivity())
+                    dialog("${it.exception?.localizedMessage}")
+                }
+                is MySealed.Loading -> {
+                    customProgress.showLoading(requireActivity(), it.data.toString())
+                }
+                is MySealed.Success -> {
+                    customProgress.hideLoading(requireActivity())
+                    myViewModel.fileName.clear()
+                    dialog(it.data.toString(),"Success!")
+                }
+            }
+        }
     }
 
     private fun setFirst(teacherName: String) {
-        myViewModel.addFirstSet(args.path, args.meta).observe(viewLifecycleOwner) {
+        val materials = Materials(
+            udi = args.meta.udi,
+            time = args.meta.time,
+            description = args.meta.description,
+            subject = listOf(binding.FolderName.text.toString())
+        )
+        myViewModel.addFirstSet(args.path, materials = materials).observe(viewLifecycleOwner) {
             when (it) {
                 is MySealed.Error -> {
                     customProgress.hideLoading(requireActivity())
@@ -84,16 +123,28 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
         val myFilePath = MyFilePath(folderName, material)
         val filePath = listOf(args.path, myFilePath)
         val allData = AllData(
-            fileInfo = myViewModel.fileInfo,
             date = getDateTime(),
             map = myViewModel.fileName,
             teacher = teacher
         )
-        Log.i(TAG, "setUploading: $allData\n\n\n\n")
-        Log.i(TAG, "setUploading: $filePath")
+        myViewModel.addSecondSet(filePath, allData).observe(viewLifecycleOwner) {
+            when (it) {
+                is MySealed.Error -> {
+                    customProgress.hideLoading(requireActivity())
+                    dialog("${it.exception?.localizedMessage}")
+                }
+                is MySealed.Loading -> {
+                    customProgress.showLoading(requireActivity(), it.data.toString())
+                }
+                is MySealed.Success -> {
+                    customProgress.hideLoading(requireActivity())
+                    dialog(it.data.toString(), title = "Success!!")
+                }
+            }
+        }
     }
 
-    private fun dialog(message: String, title: String="Error!") {
+    private fun dialog(message: String, title: String = "Error!") {
         val action = SubjectFragmentDirections.actionGlobalPasswordDialog2(title, message)
         findNavController().navigate(action)
     }
@@ -107,8 +158,7 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
 }
 
 data class AllData(
-    val fileInfo: FileInfo? = null,
     val date: String? = null,
     val teacher: String? = null,
-    val map: Map<String, String>? = null
+    val map: Map<String, FileInfo>? = null
 )

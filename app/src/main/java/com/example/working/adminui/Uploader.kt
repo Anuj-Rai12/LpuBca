@@ -153,6 +153,11 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
         }
     }
 
+    private fun useRegex(input: String): Boolean {
+        val regex = Regex(pattern = "^[a-zA-Z]+\\.[a-zA-Z]+$", options = setOf(RegexOption.IGNORE_CASE))
+        return regex.matches(input)
+    }
+
     private fun checkUI(fileName: String, folderName: String): Boolean {
         return if (folderName.isEmpty()
             || folderName.isBlank()
@@ -161,10 +166,12 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
             || semesterNo.isNullOrEmpty()
             || material.isNullOrEmpty()
             || unitNo.isNullOrEmpty()
+            ||!useRegex(folderName)
         ) {
             Log.i(TAG, "onViewCreated: folderName->$folderName")
             Log.i(TAG, "onViewCreated: fileName->$fileName")
             Log.i(TAG, "onViewCreated: Semester number->$semesterNo")
+            Log.i(TAG, "checkUI: File name TYPe ${useRegex(folderName)}")
             Snackbar.make(requireView(), "Please File The Details", Snackbar.LENGTH_SHORT)
                 .show()
             false
@@ -227,7 +234,6 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
                     is MySealed.Success -> {
                         hideLoading()
                         val fileInfo = it.data as FileInfo
-                        adminViewModel.fileInfo = fileInfo
                         val message = "Local Source\n" +
                                 "File name : ${adminViewModel.fileUrl?.lastPathSegment}\n" +
                                 "File Type : $fileType\n" +
@@ -249,7 +255,7 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
     }
 
     private fun setMap(fileInfo: FileInfo) {
-        adminViewModel.fileName.putAll(setOf("${fileInfo.fileName}" to "${fileInfo.downloadUrl}"))
+        adminViewModel.fileName.putAll(setOf("${fileInfo.fileName}" to fileInfo))
     }
 
     private fun setSemester() {

@@ -23,7 +23,8 @@ fun getDateTime(): String {
 data class Materials(
     val udi: String? = null,
     val time: String? = null,
-    val description: String? = null
+    val description: String? = null,
+    val subject:List<String>?=null
 ) : Parcelable
 
 @Parcelize

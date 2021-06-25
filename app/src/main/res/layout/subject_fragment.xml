@@ -86,13 +86,25 @@
             android:layout_height="match_parent"
             android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/updateFile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textAllCaps="false"
+        android:text="Update The set of document"
+        app:layout_constraintLeft_toLeftOf="@id/second_btn"
+        app:layout_constraintRight_toRightOf="@id/second_btn"
+        app:layout_constraintTop_toBottomOf="@id/second_btn" />
+
     <Button
         android:id="@+id/second_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        app:layout_constraintTop_toBottomOf="@id/TeacherNameCollection"
+        android:text="Add Second Set"
         app:layout_constraintLeft_toLeftOf="@id/TeacherNameCollection"
         app:layout_constraintRight_toRightOf="@id/TeacherNameCollection"
-        android:text="Add Second Set" />
+        app:layout_constraintTop_toBottomOf="@id/TeacherNameCollection" />
 </androidx.constraintlayout.widget.ConstraintLayout>
