@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import com.example.working.adminui.respotry.AdminRepository
 import com.example.working.adminui.respotry.FileInfo
+import com.example.working.utils.Materials
+import com.example.working.utils.MyFilePath
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -24,5 +26,12 @@ class AdminViewModel @Inject constructor(
     ) = adminRepository.uploadFile(folderName, fileName, fileUrl!!, source).asLiveData()
 
     fun deleteFile(path: String) = adminRepository.deleteFile(path).asLiveData()
+
+    fun addFirstSet(path: MyFilePath, materials: Materials) =
+        adminRepository.addFirstSet(path, materials).asLiveData()
+
+    fun addSecondSet(){
+
+    }
 
 }

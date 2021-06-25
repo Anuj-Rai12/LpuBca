@@ -1,7 +1,10 @@
 package com.example.working.adminui.respotry
 
 import android.net.Uri
+import com.example.working.utils.Materials
+import com.example.working.utils.MyFilePath
 import com.example.working.utils.MySealed
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.flow.flow
@@ -15,6 +18,9 @@ class AdminRepository @Inject constructor() {
     }
     private val storageReference: StorageReference by lazy {
         storage.getReferenceFromUrl("gs://testfile-de86e.appspot.com/")
+    }
+    private val fireStore by lazy {
+        FirebaseFirestore.getInstance()
     }
 
     fun uploadFile(
@@ -49,13 +55,24 @@ class AdminRepository @Inject constructor() {
             "${(fileSize / 1048576).toDouble()} Mb"
     }
 
-    fun deleteFile(path: String)= flow {
+    fun deleteFile(path: String) = flow {
         emit(MySealed.Loading("Deleting the File."))
-        val data=try {
+        val data = try {
             storageReference.child(path).delete().await()
             MySealed.Success("File Path :$path\n\nDeleted Successfully.")
-        }catch (e:Exception){
-            MySealed.Error(null,e)
+        } catch (e: Exception) {
+            MySealed.Error(null, e)
+        }
+        emit(data)
+    }
+
+    fun addFirstSet(path: MyFilePath, materials: Materials) = flow {
+        emit(MySealed.Loading("1 Set is Being Uploading"))
+        val data = try {
+            fireStore.collection(path.collection!!).document(path.document!!).set(materials).await()
+            MySealed.Success(null)
+        } catch (e: Exception) {
+            MySealed.Error(null, e)
         }
         emit(data)
     }

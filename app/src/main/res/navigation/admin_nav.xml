@@ -38,7 +38,10 @@
         android:label="subject_fragment"
         tools:layout="@layout/subject_fragment" >
         <argument
-            android:name="pathname"
-            app:argType="string" />
+            android:name="meta"
+            app:argType="com.example.working.utils.Materials" />
+        <argument
+            android:name="path"
+            app:argType="com.example.working.utils.MyFilePath" />
     </fragment>
 </navigation>
