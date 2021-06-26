@@ -87,7 +87,7 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
 
     private fun addSubject(teacher: String) {
         val map = mapOf(
-            "${rand()}" to SubjectInfo(
+            binding.FolderName.text.toString() to SubjectInfo(
                 subject = binding.FolderName.text.toString(),
                 description = binding.myFolderName.text.toString(),
                 teacher = teacher
@@ -135,7 +135,7 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
 
     private fun setFirst(teacherName: String) {
         val map = mapOf(
-            "${rand()}" to SubjectInfo(
+            binding.FolderName.text.toString() to SubjectInfo(
                 subject = binding.FolderName.text.toString(),
                 description = binding.myFolderName.text.toString(),
                 teacher = teacherName,

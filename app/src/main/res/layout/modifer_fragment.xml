@@ -1,83 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="10dp"
     tools:context="com.example.working.adminui.Modifier">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/semeesterlayoutdrop"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:hint="Semester"
-        app:boxStrokeColor="@color/purple_700"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:padding="10dp">
 
-        <AutoCompleteTextView
-            android:id="@+id/semesterCollection"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/semeesterlayoutdrop"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:inputType="none"
-            android:text="Semester" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:hint="Semester"
+            app:boxStrokeColor="@color/purple_700"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/subjectTypeLayoutDrop"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:hint="Material"
-        app:boxStrokeColor="@color/purple_700"
-        app:layout_constraintLeft_toLeftOf="@id/semeesterlayoutdrop"
-        app:layout_constraintTop_toBottomOf="@id/semeesterlayoutdrop">
+            <AutoCompleteTextView
+                android:id="@+id/semesterCollection"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:inputType="none"
+                android:text="Semester" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <AutoCompleteTextView
-            android:id="@+id/subjectTypeLayout"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/subjectTypeLayoutDrop"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:inputType="none"
-            android:text="Material" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="Material"
+            app:boxStrokeColor="@color/purple_700"
+            app:layout_constraintLeft_toLeftOf="@id/semeesterlayoutdrop"
+            app:layout_constraintTop_toBottomOf="@id/semeesterlayoutdrop">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/setFolderNameCollection"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:hint="Folder Description"
-        android:textColorHint="@color/black"
-        app:boxStrokeColor="@color/black"
-        app:boxStrokeWidthFocused="2dp"
-        app:endIconMode="clear_text"
-        app:endIconTint="@color/black"
-        app:hintTextColor="@color/black"
-        app:layout_constraintLeft_toLeftOf="@id/subjectTypeLayoutDrop"
-        app:layout_constraintTop_toBottomOf="@id/subjectTypeLayoutDrop"
-        app:startIconDrawable="@drawable/ic_user">
+            <AutoCompleteTextView
+                android:id="@+id/subjectTypeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:inputType="none"
+                android:text="Material" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/setFolderName"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/setFolderNameCollection"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:inputType="text" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:hint="Folder Description"
+            android:textColorHint="@color/black"
+            app:boxStrokeColor="@color/black"
+            app:boxStrokeWidthFocused="2dp"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/black"
+            app:hintTextColor="@color/black"
+            app:layout_constraintLeft_toLeftOf="@id/subjectTypeLayoutDrop"
+            app:layout_constraintTop_toBottomOf="@id/subjectTypeLayoutDrop"
+            app:startIconDrawable="@drawable/ic_user">
 
-    <Button
-        android:id="@+id/firstSetBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:text="Add First Set"
-        app:layout_constraintLeft_toLeftOf="@id/setFolderNameCollection"
-        app:layout_constraintRight_toRightOf="@id/setFolderNameCollection"
-        app:layout_constraintTop_toBottomOf="@id/setFolderNameCollection" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/setFolderName"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/firstSetBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="Add First Set"
+            app:layout_constraintLeft_toLeftOf="@id/setFolderNameCollection"
+            app:layout_constraintRight_toRightOf="@id/setFolderNameCollection"
+            app:layout_constraintTop_toBottomOf="@id/setFolderNameCollection" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

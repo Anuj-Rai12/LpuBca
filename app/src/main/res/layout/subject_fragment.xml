@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="10dp"
     tools:context="com.example.working.adminui.SubjectFragment">
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
 
     <TextView
         android:id="@+id/path_text"
@@ -115,7 +118,7 @@
         android:id="@+id/addSubject"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add More Subjects"
+        android:text="Add More Subjects/Unit"
         app:layout_constraintLeft_toLeftOf="@id/updateFile"
         app:layout_constraintRight_toRightOf="@id/updateFile"
         app:layout_constraintTop_toBottomOf="@id/updateFile" />
@@ -125,7 +128,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="Update The set of document"
+        android:text="Update File In Existing Subject"
         android:textAllCaps="false"
         app:layout_constraintLeft_toLeftOf="@id/second_btn"
         app:layout_constraintRight_toRightOf="@id/second_btn"
@@ -136,7 +139,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Add Second Set"
+        android:text="Add First Subject"
         app:layout_constraintLeft_toLeftOf="@id/myFolderNameCollection"
         app:layout_constraintRight_toRightOf="@id/myFolderNameCollection"
         app:layout_constraintTop_toBottomOf="@id/myFolderNameCollection" />
@@ -161,3 +164,4 @@
         app:layout_constraintLeft_toRightOf="@id/second_btn"
         app:layout_constraintTop_toTopOf="@id/second_btn" />
 </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
