@@ -87,13 +87,46 @@
             android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/myFolderNameCollection"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:hint="Folder Description"
+        android:textColorHint="@color/black"
+        app:boxStrokeColor="@color/black"
+        app:boxStrokeWidthFocused="2dp"
+        app:endIconMode="clear_text"
+        app:endIconTint="@color/black"
+        app:hintTextColor="@color/black"
+        app:layout_constraintLeft_toLeftOf="@id/TeacherNameCollection"
+        app:layout_constraintTop_toBottomOf="@id/TeacherNameCollection"
+        app:startIconDrawable="@drawable/ic_user">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/myFolderName"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="text" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/addSubject"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add More Subjects"
+        app:layout_constraintLeft_toLeftOf="@id/updateFile"
+        app:layout_constraintRight_toRightOf="@id/updateFile"
+        app:layout_constraintTop_toBottomOf="@id/updateFile" />
+
     <Button
         android:id="@+id/updateFile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:textAllCaps="false"
         android:text="Update The set of document"
+        android:textAllCaps="false"
         app:layout_constraintLeft_toLeftOf="@id/second_btn"
         app:layout_constraintRight_toRightOf="@id/second_btn"
         app:layout_constraintTop_toBottomOf="@id/second_btn" />
@@ -104,7 +137,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="Add Second Set"
-        app:layout_constraintLeft_toLeftOf="@id/TeacherNameCollection"
-        app:layout_constraintRight_toRightOf="@id/TeacherNameCollection"
-        app:layout_constraintTop_toBottomOf="@id/TeacherNameCollection" />
+        app:layout_constraintLeft_toLeftOf="@id/myFolderNameCollection"
+        app:layout_constraintRight_toRightOf="@id/myFolderNameCollection"
+        app:layout_constraintTop_toBottomOf="@id/myFolderNameCollection" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,16 +2,14 @@ package com.example.working.adminui.respotry
 
 import android.net.Uri
 import com.example.working.adminui.AllData
-import com.example.working.utils.Materials
-import com.example.working.utils.MyFilePath
-import com.example.working.utils.MySealed
+import com.example.working.utils.*
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
-import kotlin.random.Random
+
 
 class AdminRepository @Inject constructor() {
     //    private var uploadTask: UploadTask? = null
@@ -105,8 +103,16 @@ class AdminRepository @Inject constructor() {
         emit(data)
     }
 
-    private fun rand(from: Int=1, to: Int=10000000): Int {
-        return Random.nextInt(to - from) + from
+    fun addMoreSubject(path: MyFilePath, map: Map<String, SubjectInfo>) = flow {
+        emit(MySealed.Loading("Adding More Subject"))
+        val data = try {
+            fireStore.collection(path.collection!!).document(path.document!!)
+                .update("subject.${map.keys.first()}", map.values.first()).await()
+            MySealed.Success("File Is Added")
+        } catch (e: Exception) {
+            MySealed.Error(null, e)
+        }
+        emit(data)
     }
 }
 

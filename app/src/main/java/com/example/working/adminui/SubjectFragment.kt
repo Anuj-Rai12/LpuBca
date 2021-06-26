@@ -48,6 +48,8 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
                 || teacherName.isEmpty() || teacherName.isBlank()
                 || binding.FolderName.text.toString().isBlank()
                 || binding.FolderName.text.toString().isEmpty()
+                || binding.myFolderName.text.toString().isBlank()
+                || binding.myFolderName.text.toString().isEmpty()
             ) {
                 Snackbar.make(requireView(), "Please Enter Info", Snackbar.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -60,7 +62,7 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
                 material.isNullOrEmpty()
                 || binding.FolderName.text.toString().isBlank()
                 || binding.FolderName.text.toString().isEmpty()
-                ||myViewModel.fileName.isNullOrEmpty()
+                || myViewModel.fileName.isNullOrEmpty()
             ) {
                 Snackbar.make(requireView(), "Please Enter Info", Snackbar.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -68,15 +70,53 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
 
             updateFile()
         }
+        binding.addSubject.setOnClickListener {
+            val teacherName = binding.TeacherName.text.toString()
+            if (material.isNullOrEmpty() || teacherName.isEmpty() || teacherName.isBlank()
+                || binding.FolderName.text.toString().isBlank()
+                || binding.FolderName.text.toString().isEmpty()
+                || binding.myFolderName.text.toString().isBlank()
+                || binding.myFolderName.text.toString().isEmpty()
+            ) {
+                Snackbar.make(requireView(), "Please Enter Info", Snackbar.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            addSubject(teacherName)
+        }
+    }
+
+    private fun addSubject(teacher: String) {
+        val map = mapOf(
+            "${rand()}" to SubjectInfo(
+                subject = binding.FolderName.text.toString(),
+                description = binding.myFolderName.text.toString(),
+                teacher = teacher
+            )
+        )
+        myViewModel.addMoreSubject(args.path, map).observe(viewLifecycleOwner) {
+            when (it) {
+                is MySealed.Error -> {
+                    customProgress.hideLoading(requireActivity())
+                    dialog("${it.exception?.localizedMessage}")
+                }
+                is MySealed.Loading -> {
+                    customProgress.showLoading(requireActivity(), it.data.toString())
+                }
+                is MySealed.Success -> {
+                    customProgress.hideLoading(requireActivity())
+                    setUploading()
+                }
+            }
+        }
     }
 
     private fun updateFile() {
         val folderName = binding.FolderName.text.toString()
         val myFilePath = MyFilePath(folderName, material)
         val filePath = listOf(args.path, myFilePath)
-        val map=myViewModel.fileName.values.last()
-        myViewModel.updateSecondPath(filePath,map).observe(viewLifecycleOwner){
-            when(it){
+        val map = myViewModel.fileName.values.last()
+        myViewModel.updateSecondPath(filePath, map).observe(viewLifecycleOwner) {
+            when (it) {
                 is MySealed.Error -> {
                     customProgress.hideLoading(requireActivity())
                     dialog("${it.exception?.localizedMessage}")
@@ -87,18 +127,25 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
                 is MySealed.Success -> {
                     customProgress.hideLoading(requireActivity())
                     myViewModel.fileName.clear()
-                    dialog(it.data.toString(),"Success!")
+                    dialog(it.data.toString(), "Success!")
                 }
             }
         }
     }
 
     private fun setFirst(teacherName: String) {
+        val map = mapOf(
+            "${rand()}" to SubjectInfo(
+                subject = binding.FolderName.text.toString(),
+                description = binding.myFolderName.text.toString(),
+                teacher = teacherName,
+            )
+        )
         val materials = Materials(
             udi = args.meta.udi,
             time = args.meta.time,
             description = args.meta.description,
-            subject = listOf(binding.FolderName.text.toString())
+            subject = map
         )
         myViewModel.addFirstSet(args.path, materials = materials).observe(viewLifecycleOwner) {
             when (it) {
@@ -111,21 +158,20 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
                 }
                 is MySealed.Success -> {
                     customProgress.hideLoading(requireActivity())
-                    setUploading(teacherName)
+                    setUploading()
                     //dialog(it.data.toString(), "Success!")
                 }
             }
         }
     }
 
-    private fun setUploading(teacher: String) {
+    private fun setUploading() {
         val folderName = binding.FolderName.text.toString()
         val myFilePath = MyFilePath(folderName, material)
         val filePath = listOf(args.path, myFilePath)
         val allData = AllData(
             date = getDateTime(),
             map = myViewModel.fileName,
-            teacher = teacher
         )
         myViewModel.addSecondSet(filePath, allData).observe(viewLifecycleOwner) {
             when (it) {
@@ -159,6 +205,5 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
 
 data class AllData(
     val date: String? = null,
-    val teacher: String? = null,
     val map: Map<String, FileInfo>? = null
 )

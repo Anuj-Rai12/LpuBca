@@ -8,6 +8,7 @@ import com.example.working.adminui.respotry.AdminRepository
 import com.example.working.adminui.respotry.FileInfo
 import com.example.working.utils.Materials
 import com.example.working.utils.MyFilePath
+import com.example.working.utils.SubjectInfo
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -33,6 +34,9 @@ class AdminViewModel @Inject constructor(
         adminRepository.addSecondSet(filePath, allData).asLiveData()
 
     fun updateSecondPath(filePath: List<MyFilePath>, map: FileInfo) =
-        adminRepository.updateSecondPath(filePath,map).asLiveData()
+        adminRepository.updateSecondPath(filePath, map).asLiveData()
+
+    fun addMoreSubject(path: MyFilePath, map: Map<String, SubjectInfo>) =
+        adminRepository.addMoreSubject(path,map).asLiveData()
 
 }
