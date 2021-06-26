@@ -115,7 +115,7 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
         binding.uploadfile.setOnClickListener {
             val fileName = binding.uploaderFileName.text.toString()
             val folderName = binding.uploaderFolderName.text.toString()
-            if (!checkUI(folderName, fileName))
+            if (!checkUI(fileName, folderName))
                 return@setOnClickListener
             adminViewModel.fileUrl?.let {
                 setUpload(folderName, fileName)
@@ -152,9 +152,9 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
             }
         }
     }
-
     private fun useRegex(input: String): Boolean {
-        val regex = Regex(pattern = "^[a-zA-Z]+\\.[a-zA-Z]+$", options = setOf(RegexOption.IGNORE_CASE))
+        val regex =
+            Regex(pattern = "^[a-zA-Z]+\\.[a-zA-Z]+$", options = setOf(RegexOption.IGNORE_CASE))
         return regex.matches(input)
     }
 
@@ -166,7 +166,7 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
             || semesterNo.isNullOrEmpty()
             || material.isNullOrEmpty()
             || unitNo.isNullOrEmpty()
-            ||!useRegex(folderName)
+            || !useRegex(fileName)
         ) {
             Log.i(TAG, "onViewCreated: folderName->$folderName")
             Log.i(TAG, "onViewCreated: fileName->$fileName")
@@ -240,6 +240,7 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
                                 "File Path : ${adminViewModel.fileUrl}\n" +
                                 "\nRemote Source\n" +
                                 "File Path :${fileInfo.folderPath}\n" +
+                                "Upload Date:${fileInfo.date}\n" +
                                 "File Size :${fileInfo.fileSize}\n" +
                                 "Upload ID :${fileInfo.sourceId}\n" +
                                 "Download Url:${fileInfo.downloadUrl}"

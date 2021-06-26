@@ -141,5 +141,23 @@
         app:layout_constraintRight_toRightOf="@id/myFolderNameCollection"
         app:layout_constraintTop_toBottomOf="@id/myFolderNameCollection" />
 
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_margin="4dp"
+        android:background="@drawable/ic_warning"
+        android:backgroundTint="@color/red_color"
+        app:layout_constraintBottom_toBottomOf="@id/second_btn"
+        app:layout_constraintRight_toLeftOf="@id/second_btn"
+        app:layout_constraintTop_toTopOf="@id/second_btn" />
 
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_margin="4dp"
+        android:background="@drawable/ic_warning"
+        android:backgroundTint="@color/red_color"
+        app:layout_constraintBottom_toBottomOf="@id/second_btn"
+        app:layout_constraintLeft_toRightOf="@id/second_btn"
+        app:layout_constraintTop_toTopOf="@id/second_btn" />
 </androidx.constraintlayout.widget.ConstraintLayout>

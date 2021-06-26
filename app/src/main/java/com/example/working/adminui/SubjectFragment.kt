@@ -184,6 +184,7 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
                 }
                 is MySealed.Success -> {
                     customProgress.hideLoading(requireActivity())
+                    myViewModel.fileName.clear()
                     dialog(it.data.toString(), title = "Success!!")
                 }
             }

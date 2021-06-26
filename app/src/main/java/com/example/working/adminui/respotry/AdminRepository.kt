@@ -39,7 +39,8 @@ class AdminRepository @Inject constructor() {
                 downloadUrl = url.toString(),
                 folderPath = folderName,
                 fileName = fileName,
-                sourceId = source
+                sourceId = source,
+                date = getDateTime()
             )
             MySealed.Success(data)
         } catch (e: Exception) {
@@ -121,5 +122,6 @@ data class FileInfo(
     val downloadUrl: String? = null,
     val folderPath: String? = null,
     val fileName: String? = null,
-    val sourceId: String? = null
+    val sourceId: String? = null,
+    val date:String?=null
 )
