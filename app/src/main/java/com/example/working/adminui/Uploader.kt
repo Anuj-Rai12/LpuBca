@@ -202,6 +202,9 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
         val tagArray = folderName.split("\\s*,\\s*".toRegex()).toTypedArray()
         val tags: List<String> = tagArray.toList()
         var str = "$semesterNo/$material/"
+        if (tags.size>=2){
+            adminViewModel.folderName=tags[1]
+        }
         tags.forEach { char ->
             str = "$str$char/"
         }

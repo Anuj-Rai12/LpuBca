@@ -93,6 +93,7 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
                 teacher = teacher
             )
         )
+        if (checkBeforeUpload())
         myViewModel.addMoreSubject(args.path, map).observe(viewLifecycleOwner) {
             when (it) {
                 is MySealed.Error -> {
@@ -107,6 +108,15 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
                     setUploading()
                 }
             }
+        }
+    }
+
+    private fun checkBeforeUpload(): Boolean {
+        return if (!myViewModel.fileName.isNullOrEmpty()) {
+            true
+        } else {
+            Snackbar.make(requireView(), "File Is Empty ", Snackbar.LENGTH_SHORT).show()
+            false
         }
     }
 
@@ -147,6 +157,7 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
             description = args.meta.description,
             subject = map
         )
+        if (checkBeforeUpload())
         myViewModel.addFirstSet(args.path, materials = materials).observe(viewLifecycleOwner) {
             when (it) {
                 is MySealed.Error -> {
@@ -172,6 +183,7 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
         val allData = AllData(
             date = getDateTime(),
             map = myViewModel.fileName,
+            unit = myViewModel.folderName
         )
         myViewModel.addSecondSet(filePath, allData).observe(viewLifecycleOwner) {
             when (it) {
@@ -185,6 +197,7 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
                 is MySealed.Success -> {
                     customProgress.hideLoading(requireActivity())
                     myViewModel.fileName.clear()
+                    myViewModel.folderName = null
                     dialog(it.data.toString(), title = "Success!!")
                 }
             }
@@ -206,5 +219,6 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
 
 data class AllData(
     val date: String? = null,
-    val map: Map<String, FileInfo>? = null
+    val map: Map<String, FileInfo>? = null,
+    val unit: String? = null
 )

@@ -17,6 +17,7 @@ class AdminViewModel @Inject constructor(
     private val adminRepository: AdminRepository
 ) :
     ViewModel() {
+    var folderName: String? = null
     var fileUrl: Uri? = null
     var fileName: MutableMap<String, FileInfo> = mutableMapOf()
     fun uploadFile(
@@ -37,6 +38,6 @@ class AdminViewModel @Inject constructor(
         adminRepository.updateSecondPath(filePath, map).asLiveData()
 
     fun addMoreSubject(path: MyFilePath, map: Map<String, SubjectInfo>) =
-        adminRepository.addMoreSubject(path,map).asLiveData()
+        adminRepository.addMoreSubject(path, map).asLiveData()
 
 }
