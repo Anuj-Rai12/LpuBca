@@ -51,6 +51,7 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
                 || binding.myFolderName.text.toString().isBlank()
                 || binding.myFolderName.text.toString().isEmpty()
             ) {
+                Log.i(TAG, "onViewCreated: material->$material")
                 Snackbar.make(requireView(), "Please Enter Info", Snackbar.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -94,21 +95,21 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
             )
         )
         if (checkBeforeUpload())
-        myViewModel.addMoreSubject(args.path, map).observe(viewLifecycleOwner) {
-            when (it) {
-                is MySealed.Error -> {
-                    customProgress.hideLoading(requireActivity())
-                    dialog("${it.exception?.localizedMessage}")
-                }
-                is MySealed.Loading -> {
-                    customProgress.showLoading(requireActivity(), it.data.toString())
-                }
-                is MySealed.Success -> {
-                    customProgress.hideLoading(requireActivity())
-                    setUploading()
+            myViewModel.addMoreSubject(args.path, map).observe(viewLifecycleOwner) {
+                when (it) {
+                    is MySealed.Error -> {
+                        customProgress.hideLoading(requireActivity())
+                        dialog("${it.exception?.localizedMessage}")
+                    }
+                    is MySealed.Loading -> {
+                        customProgress.showLoading(requireActivity(), it.data.toString())
+                    }
+                    is MySealed.Success -> {
+                        customProgress.hideLoading(requireActivity())
+                        setUploading()
+                    }
                 }
             }
-        }
     }
 
     private fun checkBeforeUpload(): Boolean {
@@ -158,22 +159,22 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
             subject = map
         )
         if (checkBeforeUpload())
-        myViewModel.addFirstSet(args.path, materials = materials).observe(viewLifecycleOwner) {
-            when (it) {
-                is MySealed.Error -> {
-                    customProgress.hideLoading(requireActivity())
-                    dialog("${it.exception?.localizedMessage}")
-                }
-                is MySealed.Loading -> {
-                    customProgress.showLoading(requireActivity(), it.data.toString())
-                }
-                is MySealed.Success -> {
-                    customProgress.hideLoading(requireActivity())
-                    setUploading()
-                    //dialog(it.data.toString(), "Success!")
+            myViewModel.addFirstSet(args.path, materials = materials).observe(viewLifecycleOwner) {
+                when (it) {
+                    is MySealed.Error -> {
+                        customProgress.hideLoading(requireActivity())
+                        dialog("${it.exception?.localizedMessage}")
+                    }
+                    is MySealed.Loading -> {
+                        customProgress.showLoading(requireActivity(), it.data.toString())
+                    }
+                    is MySealed.Success -> {
+                        customProgress.hideLoading(requireActivity())
+                        setUploading()
+                        //dialog(it.data.toString(), "Success!")
+                    }
                 }
             }
-        }
     }
 
     private fun setUploading() {
@@ -209,7 +210,11 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
         findNavController().navigate(action)
     }
 
-    private fun setUnitSpinner() = binding.unitTypeLayout.setAdapter(unitAdapter)
+    private fun setUnitSpinner() {
+        val unit = resources.getStringArray(R.array.UnitName)
+        val unitO = ArrayAdapter(requireContext(), R.layout.dropdaown, unit)
+        binding.unitTypeLayout.setAdapter(unitO)
+    }
 
     override fun onResume() {
         super.onResume()

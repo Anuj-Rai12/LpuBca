@@ -2,14 +2,15 @@ package com.example.working.adminui
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.annotation.RequiresApi
-
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.working.R
 import com.example.working.databinding.ModiferFragmentBinding
+import com.example.working.loginorsignup.TAG
 import com.example.working.utils.Materials
 import com.example.working.utils.MyFilePath
 import com.example.working.utils.getDateTime
@@ -45,6 +46,9 @@ class Modifier : Fragment(R.layout.modifer_fragment) {
             if (semesterNo.isNullOrEmpty() || material.isNullOrEmpty()
                 || desc.isEmpty() || desc.isBlank()
             ) {
+                Log.i(TAG, "onViewCreated: SemesterNo-> $semesterNo")
+                Log.i(TAG, "onViewCreated: materialsNo-> $material")
+                Log.i(TAG, "onViewCreated: description-> $desc")
                 Snackbar.make(requireView(), "Please Enter Value", Snackbar.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -66,8 +70,12 @@ class Modifier : Fragment(R.layout.modifer_fragment) {
 
     private fun setSpinner() {
         binding.apply {
-            semesterCollection.setAdapter(arrayAdapter)
-            subjectTypeLayout.setAdapter(courseArrayAdapter)
+            val course = resources.getStringArray(R.array.Course)
+            val courseArray = ArrayAdapter(requireContext(), R.layout.dropdaown, course)
+            val weeks = resources.getStringArray(R.array.timers)
+            val weekArray = ArrayAdapter(requireContext(), R.layout.dropdaown, weeks)
+            semesterCollection.setAdapter(weekArray)
+            subjectTypeLayout.setAdapter(courseArray)
         }
     }
 

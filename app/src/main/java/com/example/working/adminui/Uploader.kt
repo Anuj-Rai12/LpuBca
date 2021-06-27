@@ -152,6 +152,7 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
             }
         }
     }
+
     private fun useRegex(input: String): Boolean {
         val regex =
             Regex(pattern = "^[a-zA-Z]+\\.[a-zA-Z]+$", options = setOf(RegexOption.IGNORE_CASE))
@@ -170,7 +171,9 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
         ) {
             Log.i(TAG, "onViewCreated: folderName->$folderName")
             Log.i(TAG, "onViewCreated: fileName->$fileName")
+            Log.i(TAG, "onViewCreated: Material IS Here->$material")
             Log.i(TAG, "onViewCreated: Semester number->$semesterNo")
+            Log.i(TAG, "onViewCreated: Unit number->$unitNo")
             Log.i(TAG, "checkUI: File name TYPe ${useRegex(folderName)}")
             Snackbar.make(requireView(), "Please File The Details", Snackbar.LENGTH_SHORT)
                 .show()
@@ -202,8 +205,8 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
         val tagArray = folderName.split("\\s*,\\s*".toRegex()).toTypedArray()
         val tags: List<String> = tagArray.toList()
         var str = "$semesterNo/$material/"
-        if (tags.size>=2){
-            adminViewModel.folderName=tags[1]
+        if (tags.size >= 2) {
+            adminViewModel.folderName = tags[1]
         }
         tags.forEach { char ->
             str = "$str$char/"
@@ -263,9 +266,15 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
     }
 
     private fun setSemester() {
-        binding.uploaderCollection.setAdapter(arrayAdapter)
-        binding.materialCollection.setAdapter(courseArrayAdapter)
-        binding.unitTypeLayout.setAdapter(unitAdapter)
+        val weeks = resources.getStringArray(R.array.timers)
+        val weekArray = ArrayAdapter(requireContext(), R.layout.dropdaown, weeks)
+        val unit = resources.getStringArray(R.array.UnitName)
+        val unitO = ArrayAdapter(requireContext(), R.layout.dropdaown, unit)
+        val course = resources.getStringArray(R.array.Course)
+        val courseArray = ArrayAdapter(requireContext(), R.layout.dropdaown, course)
+        binding.uploaderCollection.setAdapter(weekArray)
+        binding.materialCollection.setAdapter(courseArray)
+        binding.unitTypeLayout.setAdapter(unitO)
     }
 
     private fun hideLoading() {
