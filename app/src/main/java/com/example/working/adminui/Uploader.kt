@@ -21,6 +21,7 @@ import com.example.working.databinding.UplodFragmentBinding
 import com.example.working.loginorsignup.TAG
 import com.example.working.utils.CustomProgressBar
 import com.example.working.utils.MySealed
+import com.example.working.utils.getDateTime
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
@@ -151,6 +152,44 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
                 }
             }
         }
+
+        binding.UpdateFile.setOnClickListener {
+            val fileName = binding.uploaderFileName.text.toString()
+            val downloadLink = binding.getDownloadLink.text.toString()
+            val folderName = binding.uploaderFolderName.text.toString()
+            if (fileName.isBlank() || fileName.isEmpty()
+                || !useRegex(fileName) || downloadLink.isEmpty() || downloadLink.isBlank()
+            ) {
+                Log.i(TAG, "onViewCreated: fileName-> $fileName")
+                Log.i(TAG, "onViewCreated: UseRegex -> ${useRegex(fileName)}")
+                Snackbar.make(requireView(), "Please enter the value", Snackbar.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if ( folderName.isNotBlank() && folderName.isNotEmpty())
+                generatePath(folderName, fileName)
+            Log.i(TAG, "onViewCreated: ${adminViewModel.folderName}")
+            downloadLink(downloadLink, fileName)
+        }
+    }
+
+    private fun downloadLink(downloadLink: String, fileName: String) {
+        val fileInfo = FileInfo(
+            fileSize = null,
+            downloadUrl = downloadLink,
+            folderPath = null,
+            fileName = fileName,
+            sourceId = getSourceId(),
+            date = getDateTime()
+        )
+        setMap(fileInfo)
+        val msg = "Download Link ->${fileInfo.downloadUrl}\n" +
+                "File Size -> ${fileInfo.fileSize}\n" +
+                "Data -> ${fileInfo.date}\n" +
+                "SourceId ->${fileInfo.sourceId}\n" +
+                "FolderPath ->${fileInfo.folderPath}\n" +
+                "File Name ->${fileInfo.fileName}"
+        Log.i(TAG, "downloadLink: ${adminViewModel.fileName}")
+        dialog(title = "Success!", message = msg)
     }
 
     private fun useRegex(input: String): Boolean {
@@ -214,19 +253,22 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
         return "$str$unitNo/$fileName"
     }
 
+    private fun getSourceId(): String {
+        return if (binding.sourceName.text.toString()
+                .isEmpty() || binding.sourceName.text.toString()
+                .isBlank()
+        )
+            FirebaseAuth.getInstance().currentUser?.uid!!
+        else
+            binding.sourceName.text.toString()
+    }
+
     private fun setUpload(folderName: String, fileName: String) {
-        val sourceId =
-            if (binding.sourceName.text.toString().isEmpty() || binding.sourceName.text.toString()
-                    .isBlank()
-            )
-                FirebaseAuth.getInstance().currentUser?.uid!!
-            else
-                binding.sourceName.text.toString()
         Log.i(TAG, "setUpload: ${generatePath(folderName, fileName)}")
         adminViewModel.uploadFile(
             folderName = generatePath(folderName, fileName),
             fileName = fileName,
-            source = sourceId
+            source = getSourceId()
         )
             .observe(viewLifecycleOwner) {
                 when (it) {

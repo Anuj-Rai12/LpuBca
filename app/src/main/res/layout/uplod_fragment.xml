@@ -173,6 +173,29 @@
                 android:layout_height="match_parent"
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/getDownloadLinkLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Download Link"
+            android:textColorHint="@color/black"
+            app:boxStrokeColor="@color/black"
+            app:boxStrokeWidthFocused="2dp"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/black"
+            app:hintTextColor="@color/black"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/uploaderFileNameLayout"
+            app:startIconDrawable="@drawable/ic_user">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/getDownloadLink"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/uploadfile"
@@ -205,14 +228,13 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="20dp"
             android:layout_marginRight="8dp"
-            android:text="Update File"
-            android:visibility="invisible"
+            android:text="Get Link"
             android:textAllCaps="false"
             app:layout_constraintEnd_toStartOf="@+id/uploadfile"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/uploaderFileNameLayout" />
+            app:layout_constraintTop_toBottomOf="@id/getDownloadLinkLayout" />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/barrier2"
