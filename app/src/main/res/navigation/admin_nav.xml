@@ -44,4 +44,10 @@
             android:name="path"
             app:argType="com.example.working.utils.MyFilePath" />
     </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.working.adminui.ProfileFragment"
+        android:label="ProfileFragment"
+        tools:layout="@layout/porfile_fragment"/>
+
 </navigation>

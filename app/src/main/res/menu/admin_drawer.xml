@@ -9,5 +9,8 @@
         android:id="@+id/modifier"
         android:icon="@drawable/ic_upload"
         android:title="Upload File Cloud" />
-
+    <item
+        android:id="@+id/profileFragment"
+        android:icon="@drawable/ic_person"
+        android:title="Profile" />
 </menu>
