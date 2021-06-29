@@ -19,4 +19,9 @@
         android:name="com.example.working.userfagment.DownloadFragment"
         android:label="download_framgnet"
         tools:layout="@layout/download_framgnet" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.working.adminui.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/porfile_fragment" />
 </navigation>

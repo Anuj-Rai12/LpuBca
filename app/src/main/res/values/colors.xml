@@ -10,5 +10,6 @@
     <color name="dialogBackgroundColor">#00000000</color>
     <!-- App Color-->
         <color name="red_color">#D50000</color>
+        <color name="light_grey">#f8f8ff</color>
 
 </resources>

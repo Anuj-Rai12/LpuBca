@@ -1,8 +1,330 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sipeit"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.working.adminui.ProfileFragment">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/MyRelative"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#D3BCF1"
+                android:orientation="horizontal">
+
+                <com.mikhaellopez.circularimageview.CircularImageView
+                    android:id="@+id/userProfileImage"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginEnd="4dp"
+                    android:background="#D3BCF1"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/myimage"
+                    app:civ_border_color="#3f51b5"
+                    app:civ_border_width="4dp"
+                    app:civ_shadow="true"
+                    app:civ_shadow_color="#3f51b5"
+                    app:civ_shadow_radius="10dp" />
+
+                <TextView
+                    android:id="@+id/userNameText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/userProfileImage"
+                    android:layout_centerInParent="true"
+                    android:drawablePadding="5dp"
+                    android:drawableTint="@color/black"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/allerta"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    tools:text="User Name"
+                    android:textColor="@color/black"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:drawableStartCompat="@drawable/ic_person" />
+
+                <TextView
+                    android:id="@+id/userEmailText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/userNameText"
+                    android:layout_centerInParent="true"
+                    android:layout_marginTop="2dp"
+                    android:drawablePadding="5dp"
+                    android:drawableTint="@color/black"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/average_sans"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:paddingBottom="8dp"
+                    tools:text="AnujRai@gmail.com"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    app:drawableStartCompat="@drawable/ic_email" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:text="Account Info,"
+                android:textColor="@color/black"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/MyRelative" />
+
+            <RelativeLayout
+                android:id="@+id/nameLayout"
+                android:layout_width="300dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/light_grey"
+                android:padding="8dp"
+                app:layout_constraintLeft_toLeftOf="@id/account"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/account">
+
+                <ImageView
+                    android:id="@+id/userGender"
+                    android:layout_width="55dp"
+                    android:layout_height="60dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/tansicon"
+                    android:backgroundTint="@color/black"
+                    android:scaleType="centerInside" />
+
+                <TextView
+                    android:id="@+id/nameTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@id/userGender"
+                    android:text="Name"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/userName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/nameTitle"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_toRightOf="@id/userGender"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/average_sans"
+                    android:maxLines="2"
+                    tools:text="AnujRaifhgfjtyfhfgjgkhgkhjhkhjlhjlgfdfgtytfgdftrhcbvnvbggtyg"
+                    android:textColor="#696969" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/mobileLayout"
+                android:layout_width="300dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/light_grey"
+                android:padding="8dp"
+                app:layout_constraintLeft_toLeftOf="@id/nameLayout"
+                app:layout_constraintTop_toBottomOf="@id/nameLayout">
+
+                <ImageView
+                    android:id="@+id/Mobile"
+                    android:layout_width="55dp"
+                    android:layout_height="60dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/mobilecoutomicon"
+                    android:backgroundTint="@color/black" />
+
+                <TextView
+                    android:id="@+id/mobileTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@id/Mobile"
+                    android:text="Mobile"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/userPhoneNo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/mobileTitle"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_toRightOf="@id/Mobile"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/average_sans"
+                    android:maxLines="2"
+                    tools:text="+9177001438393385478488587383875843"
+                    android:textColor="#696969" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/emailLayout"
+                android:layout_width="300dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/light_grey"
+                android:padding="8dp"
+                app:layout_constraintLeft_toLeftOf="@id/mobileLayout"
+                app:layout_constraintTop_toBottomOf="@id/mobileLayout">
+
+                <ImageView
+                    android:id="@+id/emailImg"
+                    android:layout_width="55dp"
+                    android:layout_height="60dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/ic_email"
+                    android:backgroundTint="@color/black"
+                    android:scaleType="fitStart" />
+
+                <TextView
+                    android:id="@+id/emialTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@id/emailImg"
+                    android:text="Email"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/userEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/emialTitle"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_toRightOf="@id/emailImg"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/average_sans"
+                    android:maxLines="2"
+                    tools:text="ansdfkjdjgdjffjkldkjlsgkgjkflgkljdfdklgjdjkgfjkdslfkjdjfllsd"
+                    android:textColor="#696969" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/dobLayout"
+                android:layout_width="300dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/light_grey"
+                android:padding="8dp"
+                app:layout_constraintLeft_toLeftOf="@id/emailLayout"
+                app:layout_constraintTop_toBottomOf="@id/emailLayout">
+
+                <ImageView
+                    android:id="@+id/dobImg"
+                    android:layout_width="55dp"
+                    android:layout_height="60dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/dobicon"
+                    android:backgroundTint="@color/black"
+                    android:scaleType="fitStart" />
+
+                <TextView
+                    android:id="@+id/dobTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@id/dobImg"
+                    android:text="D.O.B"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/userDob"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/dobTitle"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_toRightOf="@id/dobImg"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/average_sans"
+                    android:maxLines="2"
+                    tools:text="04/48/8926"
+                    android:textColor="#696969" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/semesterLayout"
+                android:layout_width="300dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/light_grey"
+                android:padding="8dp"
+                app:layout_constraintLeft_toLeftOf="@id/dobLayout"
+                app:layout_constraintTop_toBottomOf="@id/dobLayout">
+
+                <ImageView
+                    android:id="@+id/semesterImg"
+                    android:layout_width="55dp"
+                    android:layout_height="60dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/mysemestericon"
+                    android:backgroundTint="@color/black"
+                    android:scaleType="fitStart" />
+
+                <TextView
+                    android:id="@+id/semesterTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@id/semesterImg"
+                    android:text="Semester"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/userSemester"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/semesterTitle"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_toRightOf="@id/semesterImg"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/average_sans"
+                    android:maxLines="2"
+                    tools:text="Semester No"
+                    android:textColor="#696969" />
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/semesterLayout" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

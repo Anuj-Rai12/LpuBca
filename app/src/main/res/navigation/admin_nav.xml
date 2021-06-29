@@ -47,7 +47,7 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.working.adminui.ProfileFragment"
-        android:label="ProfileFragment"
+        android:label="Profile"
         tools:layout="@layout/porfile_fragment"/>
 
 </navigation>
