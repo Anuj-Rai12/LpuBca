@@ -71,9 +71,9 @@ class DateDetailScr : Fragment(R.layout.date_detail_framgent) {
 
     private fun getGender(): String? {
         return when {
-            binding.radioButton1.isChecked -> "Male"
-            binding.radioButton2.isChecked -> "Female"
-            binding.radioButton3.isChecked -> "Others"
+            binding.radioButton1.isChecked -> MALE
+            binding.radioButton2.isChecked -> FEMALE
+            binding.radioButton3.isChecked -> OTHER
             else -> null
         }
     }
@@ -83,3 +83,6 @@ class DateDetailScr : Fragment(R.layout.date_detail_framgent) {
         findNavController().navigate(action)
     }
 }
+const val MALE="Male"
+const val FEMALE="Female"
+const val OTHER="Others"

@@ -24,4 +24,18 @@
         android:name="com.example.working.adminui.ProfileFragment"
         android:label="Profile"
         tools:layout="@layout/porfile_fragment" />
+    <dialog
+        android:id="@+id/passwordDialog2"
+        android:name="com.example.working.utils.PasswordDialog"
+        android:label="PasswordDialog">
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="message"
+            app:argType="string" />
+    </dialog>
+    <action
+        android:id="@+id/action_global_passwordDialog2"
+        app:destination="@id/passwordDialog2" />
 </navigation>
