@@ -38,4 +38,16 @@
     <action
         android:id="@+id/action_global_passwordDialog2"
         app:destination="@id/passwordDialog2" />
+    <dialog
+        android:id="@+id/userInfoUpdateDialog"
+        android:name="com.example.working.utils.UserInfoUpdateDialog"
+        android:label="UserInfoUpdateDialog" >
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="work"
+            app:argType="string" />
+    </dialog>
+    <action android:id="@+id/action_global_userInfoUpdateDialog" app:destination="@id/userInfoUpdateDialog" />
 </navigation>

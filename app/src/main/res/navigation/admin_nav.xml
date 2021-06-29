@@ -13,7 +13,7 @@
         android:id="@+id/modifier"
         android:name="com.example.working.adminui.Modifier"
         android:label="Upload File Cloud"
-        tools:layout="@layout/modifer_fragment" >
+        tools:layout="@layout/modifer_fragment">
         <action
             android:id="@+id/action_modifier_to_subjectFragment"
             app:destination="@id/subjectFragment" />
@@ -36,7 +36,7 @@
         android:id="@+id/subjectFragment"
         android:name="com.example.working.adminui.SubjectFragment"
         android:label="Step-2 To upload file"
-        tools:layout="@layout/subject_fragment" >
+        tools:layout="@layout/subject_fragment">
         <argument
             android:name="meta"
             app:argType="com.example.working.utils.Materials" />
@@ -48,6 +48,20 @@
         android:id="@+id/profileFragment"
         android:name="com.example.working.adminui.ProfileFragment"
         android:label="Profile"
-        tools:layout="@layout/porfile_fragment"/>
+        tools:layout="@layout/porfile_fragment" />
+    <dialog
+        android:id="@+id/userInfoUpdateDialog"
+        android:name="com.example.working.utils.UserInfoUpdateDialog"
+        android:label="UserInfoUpdateDialog">
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="work"
+            app:argType="string" />
+    </dialog>
+    <action
+        android:id="@+id/action_global_userInfoUpdateDialog"
+        app:destination="@id/userInfoUpdateDialog" />
 
 </navigation>

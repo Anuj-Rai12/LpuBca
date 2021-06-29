@@ -1,18 +1,19 @@
 package com.example.working.loginorsignup.forgertpass
 
 import android.os.Bundle
-import android.util.Patterns
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.example.working.MyViewModel
 import com.example.working.R
 import com.example.working.databinding.ForgetFragementBinding
 import com.google.android.material.snackbar.Snackbar
-import java.util.regex.Pattern
 
 
 class ForgetPassWord : Fragment(R.layout.forget_fragement) {
     private lateinit var binding: ForgetFragementBinding
+    private val myViewModel:MyViewModel by activityViewModels()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = ForgetFragementBinding.bind(view)
@@ -27,12 +28,12 @@ class ForgetPassWord : Fragment(R.layout.forget_fragement) {
                     .show()
                 return@setOnClickListener
             }
-            if (!isValidPhone(codePhone)){
+            if (!myViewModel.isValidPhone(codePhone)){
                 Snackbar.make(requireView(), "Please enter Correct Registered PhoneNo", Snackbar.LENGTH_SHORT)
                     .show()
                 return@setOnClickListener
             }
-            if (!isValidEmail(binding.emailText.text.toString()))
+            if (!myViewModel.isValidEmail(binding.emailText.text.toString()))
             {
                 Snackbar.make(requireView(), "Please enter the Correct Email Address", Snackbar.LENGTH_SHORT)
                     .show()
@@ -51,17 +52,4 @@ class ForgetPassWord : Fragment(R.layout.forget_fragement) {
         findNavController().navigate(action)
     }
 
-    private fun isValidPhone(phone: String): Boolean {
-        val phonetic = "^[+]?[0-9]{10,13}\$"
-        val pattern = Pattern.compile(phonetic)
-        return pattern.matcher(phone).matches()
-    }
-
-    private fun isValidEmail(target: CharSequence?): Boolean {
-        return if (target == null) {
-            false
-        } else {
-            Patterns.EMAIL_ADDRESS.matcher(target).matches()
-        }
-    }
 }

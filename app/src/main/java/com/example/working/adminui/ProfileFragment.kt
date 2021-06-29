@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -43,6 +44,23 @@ class ProfileFragment : Fragment(R.layout.porfile_fragment) {
             loading = true
             getUserInfo()
         }
+        binding.nameLayout.setOnClickListener {
+            if (checkUI(binding.userNameText)) {
+                dialog(UPDATE, NAME)
+            }
+        }
+        binding.emailLayout.setOnClickListener {
+            if (checkUI(binding.userEmailText))
+            dialog(UPDATE, EMAIL)
+        }
+        binding.mobileLayout.setOnClickListener {
+            if (checkUI(binding.userPhoneNo))
+                dialog(UPDATE, PHONE_NO)
+        }
+        binding.semesterLayout.setOnClickListener {
+            if (checkUI(binding.userSemester))
+                dialog(UPDATE, SEMESTER)
+        }
     }
 
     private fun showLoading() {
@@ -67,35 +85,42 @@ class ProfileFragment : Fragment(R.layout.porfile_fragment) {
                 }
                 is MySealed.Success -> {
                     hideLoading()
-                    val fireBaseUser=it.data as FireBaseUser
+                    val fireBaseUser = it.data as FireBaseUser
                     setUI(fireBaseUser)
                 }
             }
         }
     }
 
-    private fun dialog(title:String="Error!",message: String) {
-        val action=ProfileFragmentDirections.actionGlobalPasswordDialog2(title, message)
+    private fun dialog(title: String = "Error!", message: String) {
+        val action = when (title) {
+            UPDATE -> ProfileFragmentDirections.actionGlobalUserInfoUpdateDialog(title, message)
+            else -> ProfileFragmentDirections.actionGlobalPasswordDialog2(title, message)//Error
+        }
         findNavController().navigate(action)
     }
+
+    private fun checkUI(textView: TextView) =
+        !(textView.text.toString().isEmpty() || textView.text.toString().isBlank())
+
 
     @SuppressLint("SetTextI18n")
     private fun setUI(fireBaseUser: FireBaseUser) {
         binding.apply {
-            fireBaseUser.gender?.let {gender->
+            fireBaseUser.gender?.let { gender ->
                 when (gender) {
                     MALE -> userGender.setBackgroundResource(R.drawable.boyicon)
                     FEMALE -> userGender.setBackgroundResource(R.drawable.girlcon)
                     else -> userGender.setBackgroundResource(R.drawable.tansicon)
                 }
             }
-            userNameText.text="${fireBaseUser.firstname} ${fireBaseUser.lastname}"
-            userName.text="${fireBaseUser.firstname} ${fireBaseUser.lastname}"
-            userEmail.text=fireBaseUser.email?:""
-            userEmailText.text=fireBaseUser.email?:""
-            userPhoneNo.text=fireBaseUser.phone?:""
-            userDob.text=fireBaseUser.dob?:""
-            userSemester.text=fireBaseUser.semester?:""
+            userNameText.text = "${fireBaseUser.firstname} ${fireBaseUser.lastname}"
+            userName.text = "${fireBaseUser.firstname} ${fireBaseUser.lastname}"
+            userEmail.text = fireBaseUser.email ?: ""
+            userEmailText.text = fireBaseUser.email ?: ""
+            userPhoneNo.text = fireBaseUser.phone ?: ""
+            userDob.text = fireBaseUser.dob ?: ""
+            userSemester.text = fireBaseUser.semester ?: ""
             userProfileImage.setImageBitmap(Convertor.covertByteArray2image(fireBaseUser.icon?.toBytes()!!))
         }
     }
@@ -107,3 +132,8 @@ class ProfileFragment : Fragment(R.layout.porfile_fragment) {
         }
     }
 }
+private const val UPDATE="Update"
+const val NAME="Name,"
+const val EMAIL="Email,"
+const val PHONE_NO="Phone,"
+const val SEMESTER="Semester,"
