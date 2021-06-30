@@ -14,21 +14,26 @@ import com.example.working.databinding.PorfileFragmentBinding
 import com.example.working.loginorsignup.TAG
 import com.example.working.loginorsignup.createacc.FEMALE
 import com.example.working.loginorsignup.createacc.MALE
-import com.example.working.utils.Convertor
-import com.example.working.utils.MySealed
+import com.example.working.utils.*
 import com.example.working.utils.userchannel.FireBaseUser
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 private const val ROTATION = "Rotation"
 
 @AndroidEntryPoint
-class ProfileFragment : Fragment(R.layout.porfile_fragment) {
+class ProfileFragment : Fragment(R.layout.porfile_fragment), UpdateMyInfo {
     private lateinit var binding: PorfileFragmentBinding
     private val myViewModel: MyViewModel by activityViewModels()
     private var loading: Boolean? = null
+    private lateinit var userInfoUpdateDialog: UserInfoUpdateDialog
+
+    @Inject
+    lateinit var customProgress: CustomProgress
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = PorfileFragmentBinding.bind(view)
+        Log.i(TAG, "onViewCreated: Welcome")
         savedInstanceState?.let {
             loading = it.getBoolean(ROTATION)
         }
@@ -51,7 +56,7 @@ class ProfileFragment : Fragment(R.layout.porfile_fragment) {
         }
         binding.emailLayout.setOnClickListener {
             if (checkUI(binding.userEmailText))
-            dialog(UPDATE, EMAIL)
+                dialog(UPDATE, EMAIL)
         }
         binding.mobileLayout.setOnClickListener {
             if (checkUI(binding.userPhoneNo))
@@ -63,14 +68,17 @@ class ProfileFragment : Fragment(R.layout.porfile_fragment) {
         }
     }
 
-    private fun showLoading() {
+
+    private fun showLoading(string: String = "") {
         binding.sipeit.isRefreshing = true
         loading = true
+        customProgress.showLoading(requireActivity(), string)
     }
 
     private fun hideLoading() {
         binding.sipeit.isRefreshing = false
         loading = false
+        customProgress.hideLoading(requireActivity())
     }
 
     private fun getUserInfo() {
@@ -93,17 +101,23 @@ class ProfileFragment : Fragment(R.layout.porfile_fragment) {
     }
 
     private fun dialog(title: String = "Error!", message: String) {
-        val action = when (title) {
-            UPDATE -> ProfileFragmentDirections.actionGlobalUserInfoUpdateDialog(title, message)
-            else -> ProfileFragmentDirections.actionGlobalPasswordDialog2(title, message)//Error
+        when (title) {
+            UPDATE -> {
+                userInfoUpdateDialog = UserInfoUpdateDialog(title, message)
+                userInfoUpdateDialog.updateMyInfo = this
+                userInfoUpdateDialog.show(childFragmentManager, "MyFragment")
+
+            }
+            else -> {
+                val action =
+                    ProfileFragmentDirections.actionGlobalPasswordDialog2(title, message)//Error
+                findNavController().navigate(action)
+            }
         }
-        findNavController().navigate(action)
     }
 
     private fun checkUI(textView: TextView) =
         !(textView.text.toString().isEmpty() || textView.text.toString().isBlank())
-
-
     @SuppressLint("SetTextI18n")
     private fun setUI(fireBaseUser: FireBaseUser) {
         binding.apply {
@@ -131,9 +145,65 @@ class ProfileFragment : Fragment(R.layout.porfile_fragment) {
             outState.putBoolean(ROTATION, it)
         }
     }
+
+    override fun updateName(firstName: String, lastName: String) {
+        myViewModel.updateValue("$firstName,$lastName", NAME).observe(viewLifecycleOwner){
+            showResult(it)
+        }
+    }
+
+    override fun updateEmail(email: String, password: String, newEmail: String) {
+        myViewModel.signInAccount(email, password).observe(viewLifecycleOwner) {
+            when (it) {
+                is MySealed.Error -> {
+                    hideLoading()
+                    dialog("Error", "${it.exception?.localizedMessage}")
+                }
+                is MySealed.Loading -> {
+                    showLoading(it.data.toString())
+                }
+                is MySealed.Success -> {
+                    hideLoading()
+                    updateNewEmail(newEmail)
+                }
+            }
+        }
+    }
+
+    private fun updateNewEmail(newEmail: String) {
+        myViewModel.updateNewEmail(newEmail).observe(viewLifecycleOwner) {
+            showResult(it)
+        }
+    }
+    private fun showResult(it: MySealed<out String>) {
+        when (it) {
+            is MySealed.Error -> {
+                hideLoading()
+                dialog("Error", "${it.exception?.localizedMessage}")
+            }
+            is MySealed.Loading -> {
+                showLoading(it.data.toString())
+            }
+            is MySealed.Success -> {
+                hideLoading()
+                dialog("Success", it.data.toString())
+            }
+        }
+    }
+
+    override fun updateSemester(semesterNo: String) {
+        myViewModel.updateValue(semesterNo,SEMESTER).observe(viewLifecycleOwner) {
+            showResult(it)
+        }
+    }
+
+    override fun updatePhoneNo(phoneWithCode: String, email: String, password: String) {
+        Log.i(TAG, "updatePhone: Phone -> $phoneWithCode email -> $email password -> $password")
+    }
 }
-private const val UPDATE="Update"
-const val NAME="Name,"
-const val EMAIL="Email,"
-const val PHONE_NO="Phone,"
-const val SEMESTER="Semester,"
+
+private const val UPDATE = "Update"
+const val NAME = "name"
+const val EMAIL = "email"
+const val PHONE_NO = "phone"
+const val SEMESTER = "semester"

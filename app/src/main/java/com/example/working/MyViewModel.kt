@@ -61,4 +61,6 @@ class MyViewModel @Inject constructor(
     val userData = myRepository.getProfileInfo().asLiveData()
 
     fun passwordRestEmail(email: String) = myRepository.passwordRestEmail(email).asLiveData()
+    fun updateValue(semesterNo: String, SEMESTER: String) =myRepository.updateValue(semesterNo,SEMESTER).asLiveData()
+    fun updateNewEmail(newEmail: String)=myRepository.updateNewEmail(newEmail).asLiveData()
 }

@@ -22,6 +22,7 @@ import com.example.working.adminui.SEMESTER
 import com.example.working.databinding.AlertDialogBinding
 import com.example.working.loginorsignup.TAG
 import com.google.firebase.auth.FirebaseAuth
+import javax.inject.Inject
 
 
 class PasswordDialog : androidx.fragment.app.DialogFragment() {
@@ -37,11 +38,10 @@ class PasswordDialog : androidx.fragment.app.DialogFragment() {
     //8.At End of Password you may use $ symbol or Any Special Symbol
 }
 
-
-class UserInfoUpdateDialog : DialogFragment() {
+class UserInfoUpdateDialog @Inject constructor(private val title: String,private val work:String): DialogFragment() {
     private lateinit var binding: AlertDialogBinding
-    private val args: UserInfoUpdateDialogArgs by navArgs()
     private val myViewModel: MyViewModel by activityViewModels()
+    var updateMyInfo: UpdateMyInfo? = null
     private val arrayAdapter: ArrayAdapter<String> by lazy {
         val weeks = resources.getStringArray(R.array.timers)
         ArrayAdapter(requireContext(), R.layout.dropdaown, weeks)
@@ -50,7 +50,8 @@ class UserInfoUpdateDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         binding = AlertDialogBinding.inflate(layoutInflater)
         val alertDialog =
-            AlertDialog.Builder(requireActivity()).setView(binding.root).setTitle("${args.title} ${args.work}")
+            AlertDialog.Builder(requireActivity()).setView(binding.root)
+                .setTitle("$title $work,")
         getUI()
         setSemester()
         binding.chooseSemester.setOnItemClickListener { _, _, position, _ ->
@@ -64,14 +65,13 @@ class UserInfoUpdateDialog : DialogFragment() {
         }
         return alertDialog.create()
     }
-
     private fun setValue() {
-        when (args.work) {
+        when (work) {
             NAME -> {
                 val firstName = binding.newUserFirstName.text.toString()
                 val lastName = binding.newLastName.text.toString()
                 if (checkUI(firstName) && checkUI(lastName))
-                    updateName(firstName, lastName)
+                    updateMyInfo?.updateName(firstName,lastName)
                 else
                     msg()
             }
@@ -83,7 +83,7 @@ class UserInfoUpdateDialog : DialogFragment() {
                         newEmail
                     )
                 )
-                    checkEmail(email, password, newEmail)
+                    updateMyInfo?.updateEmail(email,password,newEmail)
                 else
                     msg()
             }
@@ -93,30 +93,18 @@ class UserInfoUpdateDialog : DialogFragment() {
                 val phoneWithCode = binding.newCodePicker.selectedCountryCodeWithPlus +
                         binding.newPhoneText.text.toString()
                 if (myViewModel.isValidPhone(phoneWithCode) && checkUI(email) && checkUI(password))
-                    updatePhone(phoneWithCode, email, password)
+                    updateMyInfo?.updatePhoneNo(phoneWithCode,email,password)
                 else
                     msg()
 
             }
             SEMESTER -> {
                 if (!semesterNo.isNullOrEmpty())
-                    updateSemester()
+                    updateMyInfo?.updateSemester(semesterNo!!)
                 else
                     msg()
             }
         }
-    }
-
-    private fun updatePhone(phoneWithCode: String, email: String, password: String) {
-        Log.i(TAG, "updatePhone: Phone -> $phoneWithCode email -> $email password -> $password")
-    }
-
-    private fun updateSemester() {
-        Log.i(TAG, "updateSemester: Semester is ->$semesterNo")
-    }
-
-    private fun updateName(firstName: String, lastName: String) {
-        Log.i(TAG, "updateName: FirstName ->$firstName,lastName -> $lastName")
     }
 
     private fun msg(string: String = "Please Enter the Correct value.") {
@@ -125,10 +113,6 @@ class UserInfoUpdateDialog : DialogFragment() {
 
     private fun checkUI(string: String) = !(string.isBlank() || string.isEmpty())
 
-
-    private fun checkEmail(email: String, password: String, newEmail: String) {
-        Log.i(TAG, "checkEmail: Email -> $email,password ->$password newEmail ->$newEmail")
-    }
 
     override fun onResume() {
         super.onResume()
@@ -143,24 +127,33 @@ class UserInfoUpdateDialog : DialogFragment() {
 
     private fun getUI() {
         binding.root.isVisible = true
-        when (args.work) {
+        when (work) {
             NAME -> {
                 binding.newFireFirstLayout.isVisible = true
                 binding.newUserLastLayout.isVisible = true
             }
             EMAIL -> {
                 binding.passwordEmail.isVisible = true
-                binding.passwordEmail.isVisible = true
                 binding.newEmailLayout.isVisible = true
+                setEmailPassword()
             }
             PHONE_NO -> {
                 binding.passwordEmail.isVisible = true
                 binding.newCodePicker.isVisible = true
                 binding.newPhoneTextLayout.isVisible = true
+                setEmailPassword()
             }
             SEMESTER -> {
                 binding.semesterLayout.isVisible = true
             }
+        }
+    }
+
+    private fun setEmailPassword() {
+        myViewModel.read.observe(requireActivity()) { userStore ->
+            binding.currentEmail.setText(userStore.email)
+            binding.currentPassword.setText(userStore.password)
+            Log.i(TAG, "setValue: $userStore")
         }
     }
 }

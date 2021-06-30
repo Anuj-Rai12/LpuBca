@@ -1,6 +1,8 @@
 package com.example.working.repos
 
 import android.graphics.Bitmap
+import com.example.working.adminui.NAME
+import com.example.working.adminui.SEMESTER
 import com.example.working.utils.Convertor
 import com.example.working.utils.MySealed
 import com.example.working.utils.userchannel.FireBaseUser
@@ -109,12 +111,51 @@ class MyRepository @Inject constructor() {
         }
         emit(data)
     }
+
     @Singleton
     fun passwordRestEmail(email: String) = flow {
         emit(MySealed.Loading("Checking Email address"))
         val data = try {
             udi.sendPasswordResetEmail(email).await()
             MySealed.Success("Link Is Sent To your Email Address ")
+        } catch (e: Exception) {
+            MySealed.Error(null, e)
+        }
+        emit(data)
+    }
+
+    private val msg = "\n\n" +
+            "Tip:\n" +
+            "If you Want to see the changes so,re-open this App :)"
+
+    fun updateValue(semesterNo: String, fileName: String) = flow {
+        emit(MySealed.Loading("Your Semester is Updating."))
+        val data = try {
+            when (fileName) {
+                SEMESTER -> reference.update(fileName, semesterNo).await()
+                NAME -> {
+                    fireStore.runBatch {writeBatch->
+                        val tagArray = semesterNo.split("\\s*,\\s*".toRegex()).toTypedArray()
+                        val tags: List<String> = tagArray.toList()
+                        writeBatch.update(reference,"firstname",tags.first())
+                        writeBatch.update(reference,"lastname",tags.last())
+                    }.await()
+                }
+            }
+            MySealed.Success("$fileName Is Updated Successfully.$msg")
+        } catch (e: Exception) {
+            MySealed.Error(null, e)
+        }
+        emit(data)
+    }
+    fun updateNewEmail(newEmail: String) = flow {
+        emit(MySealed.Loading("Email is Updating.."))
+        val data = try {
+            fireStore.runBatch { batch ->
+                udi.currentUser?.updateEmail(newEmail)
+                batch.update(reference, "email", newEmail)
+            }.await()
+            MySealed.Success("Email Is Updated Successfully.$msg")
         } catch (e: Exception) {
             MySealed.Error(null, e)
         }
