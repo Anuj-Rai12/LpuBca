@@ -1,10 +1,12 @@
 package com.example.working.repos
 
 import android.graphics.Bitmap
+import com.example.working.adminui.EMAIL
 import com.example.working.adminui.NAME
 import com.example.working.adminui.SEMESTER
 import com.example.working.utils.Convertor
 import com.example.working.utils.MySealed
+import com.example.working.utils.getPathFile
 import com.example.working.utils.userchannel.FireBaseUser
 import com.example.working.utils.userchannel.UserInfo1
 import com.google.firebase.auth.FirebaseAuth
@@ -135,8 +137,7 @@ class MyRepository @Inject constructor() {
                 SEMESTER -> reference.update(fileName, semesterNo).await()
                 NAME -> {
                     fireStore.runBatch {writeBatch->
-                        val tagArray = semesterNo.split("\\s*,\\s*".toRegex()).toTypedArray()
-                        val tags: List<String> = tagArray.toList()
+                        val tags= getPathFile(semesterNo)
                         writeBatch.update(reference,"firstname",tags.first())
                         writeBatch.update(reference,"lastname",tags.last())
                     }.await()
@@ -153,7 +154,7 @@ class MyRepository @Inject constructor() {
         val data = try {
             fireStore.runBatch { batch ->
                 udi.currentUser?.updateEmail(newEmail)
-                batch.update(reference, "email", newEmail)
+                batch.update(reference, EMAIL, newEmail)
             }.await()
             MySealed.Success("Email Is Updated Successfully.$msg")
         } catch (e: Exception) {

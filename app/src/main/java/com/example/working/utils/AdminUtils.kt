@@ -60,3 +60,8 @@ class CustomProgress @Inject constructor(private val customProgressBar: CustomPr
         customProgressBar.show(con, string, boolean)
     }
 }
+
+fun getPathFile(file: String): List<String> {
+    val tagArray = file.split("\\s*,\\s*".toRegex()).toTypedArray()
+    return tagArray.toList()
+}

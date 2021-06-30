@@ -22,6 +22,7 @@ import com.example.working.loginorsignup.TAG
 import com.example.working.utils.CustomProgressBar
 import com.example.working.utils.MySealed
 import com.example.working.utils.getDateTime
+import com.example.working.utils.getPathFile
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
@@ -241,8 +242,7 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
     }
 
     private fun generatePath(folderName: String, fileName: String): String {
-        val tagArray = folderName.split("\\s*,\\s*".toRegex()).toTypedArray()
-        val tags: List<String> = tagArray.toList()
+        val tags= getPathFile(folderName)
         var str = "$semesterNo/$material/"
         if (tags.size >= 2) {
             adminViewModel.folderName = tags[1]

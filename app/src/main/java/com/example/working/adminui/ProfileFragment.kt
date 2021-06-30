@@ -58,10 +58,10 @@ class ProfileFragment : Fragment(R.layout.porfile_fragment), UpdateMyInfo {
             if (checkUI(binding.userEmailText))
                 dialog(UPDATE, EMAIL)
         }
-        binding.mobileLayout.setOnClickListener {
-            if (checkUI(binding.userPhoneNo))
+        /*binding.mobileLayout.setOnClickListener {
+            if (checkUI(binding.userPhoneNo) && binding.userPhoneNo.text.toString() != ADMIN_PHONE)
                 dialog(UPDATE, PHONE_NO)
-        }
+        }*/
         binding.semesterLayout.setOnClickListener {
             if (checkUI(binding.userSemester))
                 dialog(UPDATE, SEMESTER)
@@ -118,6 +118,7 @@ class ProfileFragment : Fragment(R.layout.porfile_fragment), UpdateMyInfo {
 
     private fun checkUI(textView: TextView) =
         !(textView.text.toString().isEmpty() || textView.text.toString().isBlank())
+
     @SuppressLint("SetTextI18n")
     private fun setUI(fireBaseUser: FireBaseUser) {
         binding.apply {
@@ -147,7 +148,7 @@ class ProfileFragment : Fragment(R.layout.porfile_fragment), UpdateMyInfo {
     }
 
     override fun updateName(firstName: String, lastName: String) {
-        myViewModel.updateValue("$firstName,$lastName", NAME).observe(viewLifecycleOwner){
+        myViewModel.updateValue("$firstName,$lastName", NAME).observe(viewLifecycleOwner) {
             showResult(it)
         }
     }
@@ -175,6 +176,7 @@ class ProfileFragment : Fragment(R.layout.porfile_fragment), UpdateMyInfo {
             showResult(it)
         }
     }
+
     private fun showResult(it: MySealed<out String>) {
         when (it) {
             is MySealed.Error -> {
@@ -192,7 +194,7 @@ class ProfileFragment : Fragment(R.layout.porfile_fragment), UpdateMyInfo {
     }
 
     override fun updateSemester(semesterNo: String) {
-        myViewModel.updateValue(semesterNo,SEMESTER).observe(viewLifecycleOwner) {
+        myViewModel.updateValue(semesterNo, SEMESTER).observe(viewLifecycleOwner) {
             showResult(it)
         }
     }
