@@ -128,7 +128,7 @@ class MyRepository @Inject constructor() {
 
     private val msg = "\n\n" +
             "Tip:\n" +
-            "If you Want to see the changes so,re-open this App :)"
+            "If you Want to see the changes so,re-start this App :)"
 
     fun updateValue(semesterNo: String, fileName: String) = flow {
         emit(MySealed.Loading("Your Semester is Updating."))
@@ -136,10 +136,10 @@ class MyRepository @Inject constructor() {
             when (fileName) {
                 SEMESTER -> reference.update(fileName, semesterNo).await()
                 NAME -> {
-                    fireStore.runBatch {writeBatch->
-                        val tags= getPathFile(semesterNo)
-                        writeBatch.update(reference,"firstname",tags.first())
-                        writeBatch.update(reference,"lastname",tags.last())
+                    fireStore.runBatch { writeBatch ->
+                        val tags = getPathFile(semesterNo)
+                        writeBatch.update(reference, "firstname", tags.first())
+                        writeBatch.update(reference, "lastname", tags.last())
                     }.await()
                 }
             }
@@ -149,13 +149,12 @@ class MyRepository @Inject constructor() {
         }
         emit(data)
     }
+
     fun updateNewEmail(newEmail: String) = flow {
         emit(MySealed.Loading("Email is Updating.."))
         val data = try {
-            fireStore.runBatch { batch ->
-                udi.currentUser?.updateEmail(newEmail)
-                batch.update(reference, EMAIL, newEmail)
-            }.await()
+            udi.currentUser?.updateEmail(newEmail)?.await()
+            reference.update(EMAIL, newEmail).await()
             MySealed.Success("Email Is Updated Successfully.$msg")
         } catch (e: Exception) {
             MySealed.Error(null, e)
