@@ -6,14 +6,14 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class UserInfo1(
-    val firstname:String?=null,
-    val lastname:String?=null,
-    val gender:String?=null,
-    val dob:String?=null,
-    val semester:String?=null,
-    val phone:String?=null,
-    val email:String?=null,
-    val password:String?=null,
+    val firstname: String? = null,
+    val lastname: String? = null,
+    val gender: String? = null,
+    val dob: String? = null,
+    val semester: String? = null,
+    val phone: String? = null,
+    val email: String? = null,
+    val password: String? = null,
 ) : Parcelable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -40,13 +40,14 @@ data class UserInfo1(
     }
 }
 data class FireBaseUser(
-    val firstname:String?=null,
-    val lastname:String?=null,
-    val gender:String?=null,
-    val dob:String?=null,
-    val semester:String?=null,
-    val phone:String?=null,
-    val email:String?=null,
-    val password:String?=null,
-    val icon:Blob?=null,
+    var id: String? = null,
+    val firstname: String? = null,
+    val lastname: String? = null,
+    val gender: String? = null,
+    val dob: String? = null,
+    val semester: String? = null,
+    val phone: String? = null,
+    val email: String? = null,
+    val password: String? = null,
+    val icon: Blob? = null,
 )

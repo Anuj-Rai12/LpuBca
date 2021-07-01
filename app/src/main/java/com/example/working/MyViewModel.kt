@@ -6,6 +6,7 @@ import androidx.lifecycle.*
 import com.example.working.repos.ClassPersistence
 import com.example.working.repos.MyRepository
 import com.example.working.utils.Event
+import com.example.working.utils.userchannel.FireBaseUser
 import com.example.working.utils.userchannel.UserInfo1
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -17,6 +18,7 @@ class MyViewModel @Inject constructor(
     private val myRepository: MyRepository,
     private val classPersistence: ClassPersistence
 ) : ViewModel() {
+    var getAllFireBaseUsers: MutableList<FireBaseUser> = mutableListOf()
     var msg: String? = null
     var image: Bitmap? = null
     private var _event = MutableLiveData<Event<String>>()
@@ -59,7 +61,7 @@ class MyViewModel @Inject constructor(
 
     val getUpdate = myRepository.getUpdate().asLiveData()
     val userData = myRepository.getProfileInfo().asLiveData()
-
+    fun getAllUser()=myRepository.getProfileInfo(false).asLiveData()
     fun passwordRestEmail(email: String) = myRepository.passwordRestEmail(email).asLiveData()
     fun updateValue(semesterNo: String, SEMESTER: String) =myRepository.updateValue(semesterNo,SEMESTER).asLiveData()
     fun updateNewEmail(newEmail: String)=myRepository.updateNewEmail(newEmail).asLiveData()

@@ -26,11 +26,11 @@ class MyRepository @Inject constructor() {
         FirebaseAuth.getInstance()
     }
     private val reference by lazy {
-        fireStore.collection("Users").document(udi.currentUser?.uid!!)
+        fireStore.collection(USERS).document(udi.currentUser?.uid!!)
     }
 
     private val update by lazy {
-        fireStore.collection("version").document("check")
+        fireStore.collection(VERSION).document(VERSION_DOC)
     }
 
     @Singleton
@@ -46,13 +46,18 @@ class MyRepository @Inject constructor() {
         emit(data)
     }
 
-    @Singleton
-    fun getProfileInfo() = flow {
+    fun getProfileInfo(single: Boolean = true) = flow {
         emit(MySealed.Loading(null))
         val data = try {
-            val info = reference.get().await()
-            val get = info.toObject(FireBaseUser::class.java)
-            MySealed.Success(get)
+            if (single) {
+                val info = reference.get().await()
+                val get = info.toObject(FireBaseUser::class.java)
+                MySealed.Success(get)
+            } else {
+                val info = fireStore.collection(USERS).get().await()
+                val get = info.documents
+                MySealed.Success(get)
+            }
         } catch (e: Exception) {
             MySealed.Error(null, e)
         }
@@ -168,3 +173,6 @@ data class Update(
     val version: Long? = null
 )
 
+const val USERS = "Users"
+const val VERSION = "version"
+const val VERSION_DOC = "check"
