@@ -63,5 +63,10 @@
     <action
         android:id="@+id/action_global_userInfoUpdateDialog"
         app:destination="@id/userInfoUpdateDialog" />
+    <fragment
+        android:id="@+id/allUserFragment"
+        android:name="com.example.working.adminui.AllUserFragment"
+        android:label="Users"
+        tools:layout="@layout/alluser_fragment"/>
 
 </navigation>

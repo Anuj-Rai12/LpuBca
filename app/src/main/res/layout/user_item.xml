@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:background="@color/light_green">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/left_background">
+
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:id="@+id/userImg"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="4dp"
+            android:background="@color/white"
+            android:scaleType="fitCenter"
+            app:civ_border_color="#3f51b5"
+            app:civ_border_width="4dp"
+            app:civ_shadow="true"
+            app:civ_shadow_color="#3f51b5"
+            app:civ_shadow_radius="10dp"
+            tools:src="@drawable/myimage" />
+
+        <LinearLayout
+            android:id="@+id/userNameLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_toRightOf="@id/userImg"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/nameTile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Name:"
+                android:textColor="@color/teal_200"
+                android:textSize="12sp"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/usernameTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:textSize="12sp"
+                android:ellipsize="end"
+                android:fontFamily="@font/average_sans"
+                android:maxLines="1"
+                android:textColor="#696969"
+                tools:text="dfjdskfjksdfkskldfksjejkjk" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/userMobileLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@id/userImg"
+            android:layout_below="@id/userNameLayout"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/mobileTile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mobile:"
+                android:textColor="@color/teal_200"
+                android:textSize="12sp"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/userMobileTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:textSize="12sp"
+                android:ellipsize="end"
+                android:fontFamily="@font/average_sans"
+                android:maxLines="1"
+                android:textColor="#696969"
+                tools:text="+9177001438393385478488587383875843" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/userEmailLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@id/userImg"
+            android:layout_below="@id/userMobileLayout"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/emailtit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Email:"
+                android:textColor="@color/teal_200"
+                android:textSize="12sp"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/userEmailTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:textSize="12sp"
+                android:ellipsize="end"
+                android:fontFamily="@font/average_sans"
+                android:maxLines="1"
+                android:textColor="#696969"
+                tools:text="fjkdsdjfkkdfjkgdkldffds" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/userSemesterLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@id/userImg"
+            android:layout_below="@id/userEmailLayout"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/semesterTit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Semester"
+                android:textColor="@color/teal_200"
+                android:textSize="12sp"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/userSemesterTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:textSize="12sp"
+                android:ellipsize="end"
+                android:fontFamily="@font/average_sans"
+                android:maxLines="1"
+                android:textColor="#696969"
+                tools:text="dkfdskfsklddfksfdksl" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/userDobLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@id/userImg"
+            android:layout_below="@id/userSemesterLayout"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/dobTit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="D.O.B"
+                android:textColor="@color/teal_200"
+                android:textSize="12sp"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/userDobTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:textSize="12sp"
+                android:ellipsize="end"
+                android:fontFamily="@font/average_sans"
+                android:maxLines="1"
+                android:textColor="#696969"
+                tools:text="dkfdskfsklddfksfdksl" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/userGenderLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@id/userDobLayout"
+            android:layout_alignTop="@id/userDobLayout"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/GenderTit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gender"
+                android:textColor="@color/teal_200"
+                android:textSize="12sp"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/userGenderTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:textSize="12sp"
+                android:ellipsize="end"
+                android:fontFamily="@font/average_sans"
+                android:maxLines="1"
+                android:textColor="#696969"
+                tools:text="dkfdskfsklddfksfdksl" />
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_below="@id/userDobLayout"/>
+    </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
