@@ -37,18 +37,7 @@ class ProfileFragment : Fragment(R.layout.porfile_fragment), UpdateMyInfo {
         savedInstanceState?.let {
             loading = it.getBoolean(ROTATION)
         }
-        loading?.let {
-            if (it) {
-                binding.sipeit.isRefreshing = true
-                getUserInfo()
-            }
-        }
         getUserInfo()
-        binding.sipeit.setOnRefreshListener {
-            Log.i(TAG, "onViewCreated: Refreshing is Started")
-            loading = true
-            getUserInfo()
-        }
         binding.nameLayout.setOnClickListener {
             if (checkUI(binding.userNameText)) {
                 dialog(UPDATE, NAME)
@@ -69,15 +58,11 @@ class ProfileFragment : Fragment(R.layout.porfile_fragment), UpdateMyInfo {
     }
 
 
-    private fun showLoading(string: String = "") {
-        binding.sipeit.isRefreshing = true
-        loading = true
+    private fun showLoading(string: String) {
         customProgress.showLoading(requireActivity(), string)
     }
 
     private fun hideLoading() {
-        binding.sipeit.isRefreshing = false
-        loading = false
         customProgress.hideLoading(requireActivity())
     }
 
@@ -89,7 +74,7 @@ class ProfileFragment : Fragment(R.layout.porfile_fragment), UpdateMyInfo {
                     dialog(message = "${it.exception?.localizedMessage}")
                 }
                 is MySealed.Loading -> {
-                    showLoading()
+                    showLoading("Account Detail is Loading,")
                 }
                 is MySealed.Success -> {
                     hideLoading()
