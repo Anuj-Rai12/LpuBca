@@ -6,18 +6,18 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.example.working.databinding.UserItemBinding
 import com.example.working.utils.userchannel.FireBaseUser
-import javax.inject.Inject
 
-class MyRecycleView @Inject constructor() : ListAdapter<FireBaseUser, UserViewHolder>(DiffUtil) {
+class MyRecycleView constructor(private val function: (String) -> Unit) :
+    ListAdapter<FireBaseUser, UserViewHolder>(DiffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
-        val binding=UserItemBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        val binding = UserItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return UserViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
-        val currentItem=getItem(position)
+        val currentItem = getItem(position)
         currentItem?.let {
-            holder.bind(it)
+            holder.bind(it,function)
         }
     }
 

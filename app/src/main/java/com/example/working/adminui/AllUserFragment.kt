@@ -1,5 +1,8 @@
 package com.example.working.adminui
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -17,9 +20,10 @@ import com.example.working.loginorsignup.TAG
 import com.example.working.recycle.alluser.MyRecycleView
 import com.example.working.utils.MySealed
 import com.example.working.utils.userchannel.FireBaseUser
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.DocumentSnapshot
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
+
 
 private const val LOAD = "LOADING"
 
@@ -29,8 +33,7 @@ class AllUserFragment : Fragment(R.layout.alluser_fragment) {
     private var loading: Boolean? = null
     private var loadOnlyOnce: Boolean = false
 
-    @Inject
-    lateinit var myAdapterView: MyRecycleView
+    private lateinit var myAdapterView: MyRecycleView
     private val myViewModel: MyViewModel by activityViewModels()
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -47,7 +50,7 @@ class AllUserFragment : Fragment(R.layout.alluser_fragment) {
                 setData()
             }
         }
-        if (myViewModel.getAllFireBaseUsers.isNotEmpty()  && !loadOnlyOnce) {
+        if (myViewModel.getAllFireBaseUsers.isNotEmpty() && !loadOnlyOnce) {
             Log.i(TAG, "onViewCreated: NOT Empty")
             myAdapterView.submitList(myViewModel.getAllFireBaseUsers)
         } else if (myViewModel.getAllFireBaseUsers.isEmpty()) {
@@ -126,9 +129,19 @@ class AllUserFragment : Fragment(R.layout.alluser_fragment) {
             myRecycleView.apply {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(requireContext())
+                myAdapterView = MyRecycleView { udi ->
+                    itemClicked(udi)
+                }
                 adapter = myAdapterView
             }
         }
+    }
+
+    private fun itemClicked(udi: String) {
+        val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("Source Udi", udi)
+        clipboard.setPrimaryClip(clip)
+        Snackbar.make(requireView(), "$udi is COPIED", Snackbar.LENGTH_SHORT).show()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

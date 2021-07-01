@@ -8,7 +8,7 @@ import com.example.working.utils.userchannel.FireBaseUser
 
 class UserViewHolder(private val binding: UserItemBinding) : RecyclerView.ViewHolder(binding.root) {
     @SuppressLint("SetTextI18n")
-    fun bind(fireBaseUser: FireBaseUser) {
+    fun bind(fireBaseUser: FireBaseUser, function: (String) -> Unit) {
         binding.apply {
             userImg.setImageBitmap(Convertor.covertByteArray2image(fireBaseUser.icon?.toBytes()!!))
             usernameTxt.text="${fireBaseUser.firstname} ${fireBaseUser.lastname}"
@@ -17,6 +17,9 @@ class UserViewHolder(private val binding: UserItemBinding) : RecyclerView.ViewHo
             userSemesterTxt.text=fireBaseUser.semester
             userDobTxt.text=fireBaseUser.dob
             userGenderTxt.text=fireBaseUser.gender
+            root.setOnClickListener {
+                function(fireBaseUser.id?:"")
+            }
         }
     }
 }
