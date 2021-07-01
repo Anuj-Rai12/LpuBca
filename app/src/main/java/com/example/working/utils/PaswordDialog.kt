@@ -3,6 +3,7 @@ package com.example.working.utils
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -38,7 +39,10 @@ class PasswordDialog : androidx.fragment.app.DialogFragment() {
     //8.At End of Password you may use $ symbol or Any Special Symbol
 }
 
-class UserInfoUpdateDialog @Inject constructor(private val title: String,private val work:String): DialogFragment() {
+class UserInfoUpdateDialog @Inject constructor(
+    private val title: String,
+    private val work: String
+) : DialogFragment() {
     private lateinit var binding: AlertDialogBinding
     private val myViewModel: MyViewModel by activityViewModels()
     var updateMyInfo: UpdateMyInfo? = null
@@ -71,7 +75,7 @@ class UserInfoUpdateDialog @Inject constructor(private val title: String,private
                 val firstName = binding.newUserFirstName.text.toString()
                 val lastName = binding.newLastName.text.toString()
                 if (checkUI(firstName) && checkUI(lastName))
-                    updateMyInfo?.updateName(firstName,lastName)
+                    updateMyInfo?.updateName(firstName, lastName)
                 else
                     msg()
             }
@@ -83,7 +87,7 @@ class UserInfoUpdateDialog @Inject constructor(private val title: String,private
                         newEmail
                     )
                 )
-                    updateMyInfo?.updateEmail(email,password,newEmail)
+                    updateMyInfo?.updateEmail(email, password, newEmail)
                 else
                     msg()
             }
@@ -93,7 +97,7 @@ class UserInfoUpdateDialog @Inject constructor(private val title: String,private
                 val phoneWithCode = binding.newCodePicker.selectedCountryCodeWithPlus +
                         binding.newPhoneText.text.toString()
                 if (myViewModel.isValidPhone(phoneWithCode) && checkUI(email) && checkUI(password))
-                    updateMyInfo?.updatePhoneNo(phoneWithCode,email,password)
+                    updateMyInfo?.updatePhoneNo(phoneWithCode, email, password)
                 else
                     msg()
 
@@ -150,7 +154,7 @@ class UserInfoUpdateDialog @Inject constructor(private val title: String,private
     }
 
     private fun setEmailPassword() {
-        myViewModel.read.observe(requireActivity()) { userStore ->
+        myViewModel.read.observe(this) { userStore ->
             binding.currentEmail.setText(userStore.email)
             binding.currentPassword.setText(userStore.password)
             Log.i(TAG, "setValue: $userStore")
@@ -165,6 +169,7 @@ class UpdateDialog constructor(
 ) : AppCompatDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val alterDialog = AlertDialog.Builder(activity)
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
         if (title != "LogOut!") {
             alterDialog
                 .setTitle(title)
@@ -184,6 +189,7 @@ class UpdateDialog constructor(
                     activity?.finish()
                 }.setNegativeButton("No") { _, _ ->
                     dismiss()
+                    activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
                 }
         }
         return alterDialog.create()

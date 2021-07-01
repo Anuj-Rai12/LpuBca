@@ -50,6 +50,7 @@ class MainActivity4 : AppCompatActivity() {
         share = binding.nagViewAdmin.getHeaderView(0).findViewById(R.id.myshareText)!!
         logout.setOnClickListener {
             val updateDialog = UpdateDialog("Do You Really Want to LogOut?", null, "LogOut!")
+            updateDialog.isCancelable=false
             updateDialog.show(supportFragmentManager, "LogOUt")
         }
         setUpProfile()
