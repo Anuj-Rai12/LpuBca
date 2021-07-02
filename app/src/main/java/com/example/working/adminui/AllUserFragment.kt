@@ -44,7 +44,7 @@ class AllUserFragment : Fragment(R.layout.alluser_fragment) {
         super.onViewCreated(view, savedInstanceState)
         binding = AlluserFragmentBinding.bind(view)
         Log.i(TAG, "onViewCreated: ${myViewModel.loading}")
-        if (myViewModel.loading==null || myViewModel.loading==true)
+        if (myViewModel.loading == null || myViewModel.loading == true)
             binding.myShimmer.isVisible = true
         setRecycleView()
         getAllUsers()
@@ -59,24 +59,34 @@ class AllUserFragment : Fragment(R.layout.alluser_fragment) {
         findNavController().navigate(action)
     }
 
+    private fun putUIItem(flag: Boolean, notLoading: Boolean = false) {
+        binding.root.isRefreshing = flag
+        myViewModel.loading = false
+        if (!notLoading) {
+            binding.myShimmer.isVisible = false
+            binding.myRecycleView.setBackgroundColor(
+                resources.getColor(
+                    R.color.light_grey,
+                    null
+                )
+            )
+        }
+    }
+
     private fun setUpUI() {
         lifecycleScope.launch {
             myAdapterView.loadStateFlow.collectLatest {
                 when (it.append) {
                     is LoadState.NotLoading -> {
-                        binding.root.isRefreshing = false
-                        myViewModel.loading=false
+                        putUIItem(flag = false,true)
                         Log.i(TAG, "setUpUI: Not Loading")
                     }
                     LoadState.Loading -> {
-                        binding.root.isRefreshing = true
-                        binding.myShimmer.isVisible = false
-                        myViewModel.loading=false
+                        putUIItem(flag = true)
                         Log.i(TAG, "setUpUI: User Is Loading")
                     }
                     is LoadState.Error -> {
-                        binding.root.isRefreshing = false
-                        myViewModel.loading=false
+                        putUIItem(false)
                         val error = (it.append as LoadState.Error).error.localizedMessage
                         if (error.equals("List is Empty", true))
                             dilog(message = "$error")
@@ -90,6 +100,7 @@ class AllUserFragment : Fragment(R.layout.alluser_fragment) {
     private fun getAllUsers() {
         lifecycleScope.launch {
             myViewModel.flow.collectLatest {
+                Log.i(TAG, "getAllUsers: Loading Value --- 1")
                 myAdapterView.submitData(it)
             }
         }
@@ -107,6 +118,7 @@ class AllUserFragment : Fragment(R.layout.alluser_fragment) {
             }
         }
     }
+
     private fun itemClicked(udi: String) {
         val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("Source Udi", udi)
