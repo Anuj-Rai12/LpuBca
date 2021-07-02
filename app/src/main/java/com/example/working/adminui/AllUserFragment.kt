@@ -5,13 +5,17 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.os.Message
 import android.util.Log
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.working.MyViewModel
 import com.example.working.R
@@ -23,16 +27,15 @@ import com.example.working.utils.userchannel.FireBaseUser
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.firestore.DocumentSnapshot
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 
-private const val LOAD = "LOADING"
+const val LOAD_SIZE = 3
 
 @AndroidEntryPoint
 class AllUserFragment : Fragment(R.layout.alluser_fragment) {
     private lateinit var binding: AlluserFragmentBinding
-    private var loading: Boolean? = null
-    private var loadOnlyOnce: Boolean = false
-
     private lateinit var myAdapterView: MyRecycleView
     private val myViewModel: MyViewModel by activityViewModels()
 
@@ -40,86 +43,54 @@ class AllUserFragment : Fragment(R.layout.alluser_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = AlluserFragmentBinding.bind(view)
+        Log.i(TAG, "onViewCreated: ${myViewModel.loading}")
+        if (myViewModel.loading==null || myViewModel.loading==true)
+            binding.myShimmer.isVisible = true
         setRecycleView()
-        savedInstanceState?.let {
-            loading = it.getBoolean(LOAD)
-        }
-        loading?.let {
-            if (it) {
-                myViewModel.getAllFireBaseUsers.clear()
-                setData()
-            }
-        }
-        if (myViewModel.getAllFireBaseUsers.isNotEmpty() && !loadOnlyOnce) {
-            Log.i(TAG, "onViewCreated: NOT Empty")
-            myAdapterView.submitList(myViewModel.getAllFireBaseUsers)
-        } else if (myViewModel.getAllFireBaseUsers.isEmpty()) {
-            setData()
-        }
+        getAllUsers()
+        setUpUI()
         binding.root.setOnRefreshListener {
-            loading = true
-            myViewModel.getAllFireBaseUsers.clear()
-            setData()
+            myAdapterView.refresh()
         }
     }
 
-    private fun dialog(title: String = "Error!!", message: String) {
-        val action = AllUserFragmentDirections.actionGlobalPasswordDialog2(title, message)
+    private fun dilog(message: String) {
+        val action = AllUserFragmentDirections.actionGlobalPasswordDialog2("Error", message)
         findNavController().navigate(action)
     }
 
-    private fun hideSwipeOrNot() {
-        if (loading != null && loading == true) {
-            binding.swipeToRefresh.isRefreshing = false
-            loading = false
-        } else
-            binding.myShimmer.isVisible = false
-    }
-
-    private fun showSwipeOrNot() {
-        if (loading != null && loading == true)
-            binding.swipeToRefresh.isRefreshing = true
-        else
-            binding.myShimmer.isVisible = true
-    }
-
-    @RequiresApi(Build.VERSION_CODES.M)
-    private fun setData() {
-        myViewModel.getAllUser().observe(viewLifecycleOwner) {
-            when (it) {
-                is MySealed.Error -> {
-                    hideSwipeOrNot()
-                    dialog(message = "${it.exception?.localizedMessage}")
-                }
-                is MySealed.Loading -> {
-                    showSwipeOrNot()
-                }
-                is MySealed.Success -> {
-                    hideSwipeOrNot()
-                    binding.myRecycleView.setBackgroundColor(
-                        resources.getColor(
-                            R.color.light_grey,
-                            null
-                        )
-                    )
-                    val documentSnapshot = it.data as MutableList<*>
-                    documentSnapshot.forEach { list ->
-                        val doc = list as DocumentSnapshot
-                        if (doc.exists()) {
-                            val fireBaseUser = doc.toObject(FireBaseUser::class.java)
-                            fireBaseUser?.let { User ->
-                                Log.i(TAG, "setData: $User")
-                                User.id = doc.id
-                                myViewModel.getAllFireBaseUsers.add(User)
-                            }
-                        }
+    private fun setUpUI() {
+        lifecycleScope.launch {
+            myAdapterView.loadStateFlow.collectLatest {
+                when (it.append) {
+                    is LoadState.NotLoading -> {
+                        binding.root.isRefreshing = false
+                        myViewModel.loading=false
+                        Log.i(TAG, "setUpUI: Not Loading")
                     }
-                    if (myViewModel.getAllFireBaseUsers.isNotEmpty()) {
-                        Log.i(TAG, "onViewCreated: ${myViewModel.getAllFireBaseUsers}")
-                        loadOnlyOnce = true
-                        myAdapterView.submitList(myViewModel.getAllFireBaseUsers)
+                    LoadState.Loading -> {
+                        binding.root.isRefreshing = true
+                        binding.myShimmer.isVisible = false
+                        myViewModel.loading=false
+                        Log.i(TAG, "setUpUI: User Is Loading")
+                    }
+                    is LoadState.Error -> {
+                        binding.root.isRefreshing = false
+                        myViewModel.loading=false
+                        val error = (it.append as LoadState.Error).error.localizedMessage
+                        if (error.equals("List is Empty", true))
+                            dilog(message = "$error")
+                        Log.i(TAG, "setUpUI: $error")
                     }
                 }
+            }
+        }
+    }
+
+    private fun getAllUsers() {
+        lifecycleScope.launch {
+            myViewModel.flow.collectLatest {
+                myAdapterView.submitData(it)
             }
         }
     }
@@ -136,18 +107,10 @@ class AllUserFragment : Fragment(R.layout.alluser_fragment) {
             }
         }
     }
-
     private fun itemClicked(udi: String) {
         val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("Source Udi", udi)
         clipboard.setPrimaryClip(clip)
         Snackbar.make(requireView(), "$udi is COPIED", Snackbar.LENGTH_SHORT).show()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        loading?.let {
-            outState.putBoolean(LOAD, it)
-        }
     }
 }

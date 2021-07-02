@@ -2,13 +2,13 @@ package com.example.working.recycle.alluser
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import com.example.working.databinding.UserItemBinding
 import com.example.working.utils.userchannel.FireBaseUser
 
 class MyRecycleView constructor(private val function: (String) -> Unit) :
-    ListAdapter<FireBaseUser, UserViewHolder>(DiffUtil) {
+    PagingDataAdapter<FireBaseUser, UserViewHolder>(DiffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserViewHolder {
         val binding = UserItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return UserViewHolder(binding)

@@ -115,7 +115,7 @@
                 android:layout_marginTop="3dp"
                 android:ellipsize="end"
                 android:fontFamily="@font/average_sans"
-                android:maxLines="1"
+                android:maxLines="2"
                 android:textColor="#696969"
                 android:textSize="12sp"
                 tools:text="fjkdsdjfkkdfjkgdkldffds" />

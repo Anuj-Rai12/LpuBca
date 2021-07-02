@@ -3,11 +3,17 @@ package com.example.working
 import android.graphics.Bitmap
 import android.util.Patterns
 import androidx.lifecycle.*
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
+import com.example.working.adminui.LOAD_SIZE
+import com.example.working.recycle.paginguser.FirestorePagingSource
 import com.example.working.repos.ClassPersistence
 import com.example.working.repos.MyRepository
 import com.example.working.utils.Event
 import com.example.working.utils.userchannel.FireBaseUser
 import com.example.working.utils.userchannel.UserInfo1
+import com.google.firebase.firestore.Query
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
@@ -16,11 +22,13 @@ import javax.inject.Inject
 @HiltViewModel
 class MyViewModel @Inject constructor(
     private val myRepository: MyRepository,
-    private val classPersistence: ClassPersistence
+    private val classPersistence: ClassPersistence,
+    private val getAllUserQuery: Query
 ) : ViewModel() {
     var getAllFireBaseUsers: MutableList<FireBaseUser> = mutableListOf()
     var msg: String? = null
     var image: Bitmap? = null
+    var loading: Boolean? = null
     private var _event = MutableLiveData<Event<String>>()
     val event: LiveData<Event<String>>
         get() = _event
@@ -59,10 +67,20 @@ class MyViewModel @Inject constructor(
             _event.value = Event("Information Saved")
         }
 
+     val flow = Pager(
+        PagingConfig(
+            pageSize = LOAD_SIZE
+        )
+    ) {
+        FirestorePagingSource(getAllUserQuery)
+    }.flow.cachedIn(viewModelScope)
+
+
     val getUpdate = myRepository.getUpdate().asLiveData()
     val userData = myRepository.getProfileInfo().asLiveData()
-    fun getAllUser()=myRepository.getProfileInfo(false).asLiveData()
     fun passwordRestEmail(email: String) = myRepository.passwordRestEmail(email).asLiveData()
-    fun updateValue(semesterNo: String, SEMESTER: String) =myRepository.updateValue(semesterNo,SEMESTER).asLiveData()
-    fun updateNewEmail(newEmail: String)=myRepository.updateNewEmail(newEmail).asLiveData()
+    fun updateValue(semesterNo: String, SEMESTER: String) =
+        myRepository.updateValue(semesterNo, SEMESTER).asLiveData()
+
+    fun updateNewEmail(newEmail: String) = myRepository.updateNewEmail(newEmail).asLiveData()
 }
