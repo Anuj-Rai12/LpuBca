@@ -7,8 +7,8 @@
     <fragment
         android:id="@+id/noteFragment"
         android:name="com.example.working.userfagment.NoteFragment"
-        android:label="NoteFragment"
-        tools:layout="@layout/note_framgnet"/>
+        android:label="Resouces"
+        tools:layout="@layout/note_framgnet" />
     <fragment
         android:id="@+id/booksFragment"
         android:name="com.example.working.userfagment.BooksFragment"

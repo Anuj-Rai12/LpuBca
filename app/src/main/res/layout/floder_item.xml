@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:backgroundTint="@color/light_green"
+    app:cardCornerRadius="15dp"
+    app:cardElevation="8dp"
+    app:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/left_background">
+
+        <ImageView
+            android:id="@+id/myNewsImage"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/ic_folder_name"
+            android:backgroundTint="#03AE4A" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_alignBottom="@id/myNewsImage" />
+
+        <TextView
+            android:id="@+id/myName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/myNewsImage"
+            android:layout_alignBottom="@id/myNewsImage"
+            android:layout_margin="6dp"
+            android:drawablePadding="4dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:textColor="@color/black"
+            app:drawableStartCompat="@drawable/ic_person"
+            tools:text="UserName" />
+
+        <TextView
+            android:id="@+id/newsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/myName"
+            android:layout_alignLeft="@id/myName"
+            android:layout_alignRight="@id/myNewsImage"
+            android:layout_margin="6dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/allerta"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="Hello I'm Anuj Rai And, How Are you  Hope use Are Fine So, how's Jamie  it been long time to see him " />
+
+        <TextView
+            android:id="@+id/SourceTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/newsTitle"
+            android:layout_alignParentRight="true"
+            android:layout_margin="6dp"
+            android:drawablePadding="4dp"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:padding="8dp"
+            android:textColor="@color/grey"
+            app:drawableStartCompat="@drawable/ic_time"
+            tools:text="Time How fjfkdl fo" />
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

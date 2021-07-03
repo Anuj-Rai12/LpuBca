@@ -10,12 +10,15 @@ import com.example.working.adminui.LOAD_SIZE
 import com.example.working.recycle.paginguser.FirestorePagingSource
 import com.example.working.recycle.paginguser.GETLodgedUser
 import com.example.working.recycle.paginguser.GetUpdate
+import com.example.working.recycle.resource.ResourcesPaginationSource
 import com.example.working.repos.ClassPersistence
 import com.example.working.repos.MyRepository
+import com.example.working.userfagment.RESOURCES_LOAD_SIZE
 import com.example.working.utils.Event
 import com.example.working.utils.userchannel.UserInfo1
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -32,6 +35,8 @@ class MyViewModel @Inject constructor(
     @GetUpdate
     private val getUpdateTask: Task<DocumentSnapshot>
 ) : ViewModel() {
+    var resourcesLoading: Boolean? = null
+    var getUserSemester: String? = null
     var msg: String? = null
     var image: Bitmap? = null
     var loading: Boolean? = null
@@ -41,6 +46,10 @@ class MyViewModel @Inject constructor(
 
     fun createUser(email: String, password: String) =
         myRepository.createUser(email, password).asLiveData()
+
+    private fun getResourceQuery() =
+        FirebaseFirestore.getInstance().collection(getUserSemester ?: "")
+            .limit(RESOURCES_LOAD_SIZE.toLong())
 
     fun createAccount(icon: Bitmap, userInfo1: UserInfo1) =
         myRepository.createAcc(icon, userInfo1).asLiveData()
@@ -58,6 +67,16 @@ class MyViewModel @Inject constructor(
         val pattern = Pattern.compile(phonetic)
         return pattern.matcher(phone).matches()
     }
+
+    private fun getAllResources() = Pager(
+        PagingConfig(
+            pageSize = RESOURCES_LOAD_SIZE
+        )
+    ) {
+        ResourcesPaginationSource(getResourceQuery())
+    }.flow.cachedIn(viewModelScope)
+
+    val getResources = getAllResources().asLiveData()
 
     fun isValidEmail(target: CharSequence?): Boolean {
         return if (target == null) {
@@ -87,6 +106,9 @@ class MyViewModel @Inject constructor(
     fun passwordRestEmail(email: String) = myRepository.passwordRestEmail(email).asLiveData()
     fun updateValue(semesterNo: String, SEMESTER: String) =
         myRepository.updateValue(semesterNo, SEMESTER).asLiveData()
+
+    fun checkResourcesEmptyOrNot(semesterNo: String) =
+        myRepository.checkResourcesExitsOrNot(semesterNo).asLiveData()
 
     fun updateNewEmail(newEmail: String) = myRepository.updateNewEmail(newEmail).asLiveData()
 }

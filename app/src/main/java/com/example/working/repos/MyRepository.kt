@@ -47,9 +47,9 @@ class MyRepository @Inject constructor() {
     fun getProfileInfo(getLodgedUser: Task<DocumentSnapshot>?) = flow {
         emit(MySealed.Loading(null))
         val data = try {
-                val info = getLodgedUser?.await()
-                val get = info?.toObject(FireBaseUser::class.java)
-                MySealed.Success(get)
+            val info = getLodgedUser?.await()
+            val get = info?.toObject(FireBaseUser::class.java)
+            MySealed.Success(get)
         } catch (e: Exception) {
             MySealed.Error(null, e)
         }
@@ -104,6 +104,17 @@ class MyRepository @Inject constructor() {
             }
         } catch (e: Exception) {
             MySealed.Error(null, null)
+        }
+        emit(data)
+    }.flowOn(IO)
+
+    fun checkResourcesExitsOrNot(semesterNo: String) = flow {
+        emit(MySealed.Loading(null))
+        val data = try {
+            val check = fireStore.collection(semesterNo).get().await()
+            MySealed.Success(check.isEmpty)
+        } catch (e: Exception) {
+            MySealed.Error(null,e)
         }
         emit(data)
     }.flowOn(IO)

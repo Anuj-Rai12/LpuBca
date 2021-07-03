@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/admin_nav"
-    app:startDestination="@id/uploader">
+    app:startDestination="@id/noteFragment">
     <fragment
         android:id="@+id/uploader"
         android:name="com.example.working.adminui.Uploader"
@@ -67,6 +67,11 @@
         android:id="@+id/allUserFragment"
         android:name="com.example.working.adminui.AllUserFragment"
         android:label="Users"
-        tools:layout="@layout/alluser_fragment"/>
+        tools:layout="@layout/alluser_fragment" />
+    <fragment
+        android:id="@+id/noteFragment"
+        android:name="com.example.working.userfagment.NoteFragment"
+        android:label="Resouces"
+        tools:layout="@layout/note_framgnet" />
 
 </navigation>

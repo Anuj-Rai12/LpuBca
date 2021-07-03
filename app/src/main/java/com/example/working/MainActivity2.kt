@@ -20,7 +20,6 @@ import com.example.working.utils.Convertor
 import com.example.working.utils.CustomProgressBar
 import com.example.working.utils.MySealed
 import com.example.working.utils.UpdateDialog
-import com.example.working.utils.userchannel.FireBaseUser
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -95,8 +94,8 @@ class MainActivity2 : AppCompatActivity() {
                 }
                 is MySealed.Success -> {
                     hideLoading()
-                    val user = it.data as FireBaseUser
-                    val theByteArray = Convertor.covertByteArray2image(user.icon?.toBytes()!!)
+                    val user = it.data
+                    val theByteArray = Convertor.covertByteArray2image(user?.icon?.toBytes()!!)
                     img.setImageBitmap(theByteArray)
                     userEmail.text = user.email
                     userName.text = "${user.firstname} ${user.lastname}"
