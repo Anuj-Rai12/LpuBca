@@ -5,9 +5,11 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.working.databinding.SplashScreenBinding
+import com.example.working.loginorsignup.TAG
 import com.example.working.repos.Update
 import com.example.working.utils.CustomProgressBar
 import com.example.working.utils.MySealed
@@ -59,6 +61,7 @@ class MainActivity3 : AppCompatActivity() {
                     showLoading(it.data.toString())
                 }
                 is MySealed.Success -> {
+                    Log.i(TAG, "checkUpdate: Version Success")
                     hideLoading()
                     val update = it.data as Update
                     val flag = update.version?.toInt() == VERSION
@@ -78,14 +81,16 @@ class MainActivity3 : AppCompatActivity() {
                 }
                 is MySealed.Error -> {
                     hideLoading()
+                    Log.i(TAG, "checkUpdate: Version Error")
                     val user = FirebaseAuth.getInstance().currentUser == null
-                    if (user)//User is Not Sign In
-                        dir(1)
-                    else//User is Sign In
-                        if (FirebaseAuth.getInstance().currentUser?.phoneNumber == ADMIN_PHONE)
-                            dir(4)
-                        else
-                            dir()
+                    when {
+                        user -> {
+                            //User is Not Sign In
+                            dir(1)//User is Sign In
+                        }
+                        FirebaseAuth.getInstance().currentUser?.phoneNumber == ADMIN_PHONE -> dir(4)
+                        else -> dir()
+                    }
                 }
             }
         }

@@ -13,7 +13,6 @@ import com.example.working.recycle.paginguser.GetUpdate
 import com.example.working.repos.ClassPersistence
 import com.example.working.repos.MyRepository
 import com.example.working.utils.Event
-import com.example.working.utils.userchannel.FireBaseUser
 import com.example.working.utils.userchannel.UserInfo1
 import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.DocumentSnapshot
@@ -29,11 +28,10 @@ class MyViewModel @Inject constructor(
     private val classPersistence: ClassPersistence,
     private val getAllUserQuery: Query,
     @GETLodgedUser
-    private val getLodgedUser: Task<DocumentSnapshot>,
+    private val getLodgedUser: Task<DocumentSnapshot>?,
     @GetUpdate
     private val getUpdateTask: Task<DocumentSnapshot>
 ) : ViewModel() {
-    var getAllFireBaseUsers: MutableList<FireBaseUser> = mutableListOf()
     var msg: String? = null
     var image: Bitmap? = null
     var loading: Boolean? = null

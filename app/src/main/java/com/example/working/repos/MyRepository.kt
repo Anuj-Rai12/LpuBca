@@ -14,10 +14,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.Blob
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
-import javax.inject.Singleton
 
 
 class MyRepository @Inject constructor() {
@@ -31,7 +32,6 @@ class MyRepository @Inject constructor() {
         fireStore.collection(USERS).document(udi.currentUser?.uid!!)
     }
 
-    @Singleton
     fun createUser(email: String, password: String) = flow {
         emit(MySealed.Loading("User Account is Been Created"))
         val data = try {
@@ -42,21 +42,20 @@ class MyRepository @Inject constructor() {
             MySealed.Error(null, e)
         }
         emit(data)
-    }
+    }.flowOn(IO)
 
-    fun getProfileInfo(getLodgedUser: Task<DocumentSnapshot>) = flow {
+    fun getProfileInfo(getLodgedUser: Task<DocumentSnapshot>?) = flow {
         emit(MySealed.Loading(null))
         val data = try {
-                val info = getLodgedUser.await()
-                val get = info.toObject(FireBaseUser::class.java)
+                val info = getLodgedUser?.await()
+                val get = info?.toObject(FireBaseUser::class.java)
                 MySealed.Success(get)
         } catch (e: Exception) {
             MySealed.Error(null, e)
         }
         emit(data)
-    }
+    }.flowOn(IO)
 
-    @Singleton
     fun createAcc(icon: Bitmap, info1: UserInfo1) = flow {
         val byteArray = Convertor.covertImages2ByteArray(icon)
         val ico = Blob.fromBytes(byteArray!!)
@@ -80,9 +79,8 @@ class MyRepository @Inject constructor() {
             MySealed.Error(null, e)
         }
         emit(data)
-    }
+    }.flowOn(IO)
 
-    @Singleton
     fun signInAccount(email: String, password: String) = flow {
         emit(MySealed.Loading("User is Been Validated"))
         val data = try {
@@ -92,9 +90,8 @@ class MyRepository @Inject constructor() {
             MySealed.Error(null, e)
         }
         emit(data)
-    }
+    }.flowOn(IO)
 
-    @Singleton
     fun getUpdate(getUpdateTask: Task<DocumentSnapshot>) = flow {
         emit(MySealed.Loading("Checking For Update"))
         val data = try {
@@ -109,9 +106,8 @@ class MyRepository @Inject constructor() {
             MySealed.Error(null, null)
         }
         emit(data)
-    }
+    }.flowOn(IO)
 
-    @Singleton
     fun passwordRestEmail(email: String) = flow {
         emit(MySealed.Loading("Checking Email address"))
         val data = try {
@@ -121,7 +117,7 @@ class MyRepository @Inject constructor() {
             MySealed.Error(null, e)
         }
         emit(data)
-    }
+    }.flowOn(IO)
 
     private val msg = "\n\n" +
             "Tip:\n" +
@@ -145,7 +141,7 @@ class MyRepository @Inject constructor() {
             MySealed.Error(null, e)
         }
         emit(data)
-    }
+    }.flowOn(IO)
 
     fun updateNewEmail(newEmail: String) = flow {
         emit(MySealed.Loading("Email is Updating.."))
@@ -157,7 +153,7 @@ class MyRepository @Inject constructor() {
             MySealed.Error(null, e)
         }
         emit(data)
-    }
+    }.flowOn(IO)
 }
 
 data class Update(

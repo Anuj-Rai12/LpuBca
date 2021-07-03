@@ -26,7 +26,7 @@ object AppModule {
         FirebaseAuth.getInstance()
     }
     private val reference by lazy {
-        fireStore.collection(USERS).document(udi.currentUser?.uid!!)
+        udi.currentUser?.uid?.let { fireStore.collection(USERS).document(it) }
     }
 
     private val update by lazy {
@@ -40,10 +40,8 @@ object AppModule {
         .limit(LOAD_SIZE.toLong())
 
     @Provides
-    @Singleton
     @GETLodgedUser
-    fun getLodgedUser() = reference.get()
-
+    fun getLodgedUser() = reference?.get()
     @Provides
     @Singleton
     @GetUpdate

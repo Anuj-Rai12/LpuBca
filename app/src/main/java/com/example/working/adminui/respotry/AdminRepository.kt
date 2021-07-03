@@ -6,13 +6,14 @@ import com.example.working.utils.*
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 
 class AdminRepository @Inject constructor() {
-    //    private var uploadTask: UploadTask? = null
     private val storage: FirebaseStorage by lazy {
         FirebaseStorage.getInstance()
     }
@@ -47,7 +48,7 @@ class AdminRepository @Inject constructor() {
             MySealed.Error(null, e)
         }
         emit(data)
-    }
+    }.flowOn(IO)
 
     private fun getFileSize(fileSize: Long): String {
         return if (fileSize.toInt() / 1024 <= 1000)
@@ -65,7 +66,7 @@ class AdminRepository @Inject constructor() {
             MySealed.Error(null, e)
         }
         emit(data)
-    }
+    }.flowOn(IO)
 
     fun addFirstSet(path: MyFilePath, materials: Materials) = flow {
         emit(MySealed.Loading("1 Set is Being Uploading"))
@@ -76,7 +77,7 @@ class AdminRepository @Inject constructor() {
             MySealed.Error(null, e)
         }
         emit(data)
-    }
+    }.flowOn(IO)
 
     fun addSecondSet(path: List<MyFilePath>, allData: AllData) = flow {
         emit(MySealed.Loading("2 Set is Being Uploading"))
@@ -89,7 +90,7 @@ class AdminRepository @Inject constructor() {
             MySealed.Error(null, e)
         }
         emit(data)
-    }
+    }.flowOn(IO)
 
     fun updateSecondPath(path: List<MyFilePath>, allData: FileInfo) = flow {
         emit(MySealed.Loading("File Is Updating..."))
@@ -102,7 +103,7 @@ class AdminRepository @Inject constructor() {
             MySealed.Error(null, e)
         }
         emit(data)
-    }
+    }.flowOn(IO)
 
     fun addMoreSubject(path: MyFilePath, map: Map<String, SubjectInfo>) = flow {
         emit(MySealed.Loading("Adding More Subject"))
@@ -114,7 +115,7 @@ class AdminRepository @Inject constructor() {
             MySealed.Error(null, e)
         }
         emit(data)
-    }
+    }.flowOn(IO)
 }
 
 data class FileInfo(
