@@ -8,11 +8,15 @@ import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.example.working.adminui.LOAD_SIZE
 import com.example.working.recycle.paginguser.FirestorePagingSource
+import com.example.working.recycle.paginguser.GETLodgedUser
+import com.example.working.recycle.paginguser.GetUpdate
 import com.example.working.repos.ClassPersistence
 import com.example.working.repos.MyRepository
 import com.example.working.utils.Event
 import com.example.working.utils.userchannel.FireBaseUser
 import com.example.working.utils.userchannel.UserInfo1
+import com.google.android.gms.tasks.Task
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -23,7 +27,11 @@ import javax.inject.Inject
 class MyViewModel @Inject constructor(
     private val myRepository: MyRepository,
     private val classPersistence: ClassPersistence,
-    private val getAllUserQuery: Query
+    private val getAllUserQuery: Query,
+    @GETLodgedUser
+    private val getLodgedUser: Task<DocumentSnapshot>,
+    @GetUpdate
+    private val getUpdateTask: Task<DocumentSnapshot>
 ) : ViewModel() {
     var getAllFireBaseUsers: MutableList<FireBaseUser> = mutableListOf()
     var msg: String? = null
@@ -67,7 +75,7 @@ class MyViewModel @Inject constructor(
             _event.value = Event("Information Saved")
         }
 
-     val flow = Pager(
+    val flow = Pager(
         PagingConfig(
             pageSize = LOAD_SIZE
         )
@@ -76,8 +84,8 @@ class MyViewModel @Inject constructor(
     }.flow.cachedIn(viewModelScope)
 
 
-    val getUpdate = myRepository.getUpdate().asLiveData()
-    val userData = myRepository.getProfileInfo().asLiveData()
+    val getUpdate = myRepository.getUpdate(getUpdateTask).asLiveData()
+    val userData = myRepository.getProfileInfo(getLodgedUser).asLiveData()
     fun passwordRestEmail(email: String) = myRepository.passwordRestEmail(email).asLiveData()
     fun updateValue(semesterNo: String, SEMESTER: String) =
         myRepository.updateValue(semesterNo, SEMESTER).asLiveData()

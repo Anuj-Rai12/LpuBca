@@ -9,8 +9,10 @@ import com.example.working.utils.MySealed
 import com.example.working.utils.getPathFile
 import com.example.working.utils.userchannel.FireBaseUser
 import com.example.working.utils.userchannel.UserInfo1
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.Blob
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
@@ -29,10 +31,6 @@ class MyRepository @Inject constructor() {
         fireStore.collection(USERS).document(udi.currentUser?.uid!!)
     }
 
-    private val update by lazy {
-        fireStore.collection(VERSION).document(VERSION_DOC)
-    }
-
     @Singleton
     fun createUser(email: String, password: String) = flow {
         emit(MySealed.Loading("User Account is Been Created"))
@@ -46,18 +44,12 @@ class MyRepository @Inject constructor() {
         emit(data)
     }
 
-    fun getProfileInfo(single: Boolean = true) = flow {
+    fun getProfileInfo(getLodgedUser: Task<DocumentSnapshot>) = flow {
         emit(MySealed.Loading(null))
         val data = try {
-            if (single) {
-                val info = reference.get().await()
+                val info = getLodgedUser.await()
                 val get = info.toObject(FireBaseUser::class.java)
                 MySealed.Success(get)
-            } else {
-                val info = fireStore.collection(USERS).get().await()
-                val get = info.documents
-                MySealed.Success(get)
-            }
         } catch (e: Exception) {
             MySealed.Error(null, e)
         }
@@ -94,7 +86,7 @@ class MyRepository @Inject constructor() {
     fun signInAccount(email: String, password: String) = flow {
         emit(MySealed.Loading("User is Been Validated"))
         val data = try {
-            FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).await()
+            udi.signInWithEmailAndPassword(email, password).await()
             MySealed.Success(null)
         } catch (e: Exception) {
             MySealed.Error(null, e)
@@ -103,10 +95,10 @@ class MyRepository @Inject constructor() {
     }
 
     @Singleton
-    fun getUpdate() = flow {
+    fun getUpdate(getUpdateTask: Task<DocumentSnapshot>) = flow {
         emit(MySealed.Loading("Checking For Update"))
         val data = try {
-            val user = update.get().await()
+            val user = getUpdateTask.await()
             if (user.exists()) {
                 val info = user.toObject(Update::class.java)
                 MySealed.Success(info)
