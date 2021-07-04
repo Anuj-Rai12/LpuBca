@@ -44,10 +44,10 @@ class MyRepository @Inject constructor() {
         emit(data)
     }.flowOn(IO)
 
-    fun getProfileInfo(getLodgedUser: Task<DocumentSnapshot>?) = flow {
+    fun getProfileInfo() = flow {
         emit(MySealed.Loading(null))
         val data = try {
-            val info = getLodgedUser?.await()
+            val info = reference.get().await()
             val get = info?.toObject(FireBaseUser::class.java)
             MySealed.Success(get)
         } catch (e: Exception) {

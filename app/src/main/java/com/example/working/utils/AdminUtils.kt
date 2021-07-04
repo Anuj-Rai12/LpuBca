@@ -22,7 +22,8 @@ fun getDateTime(): String {
 @IgnoreExtraProperties
 @Parcelize
 data class Materials(
-    val udi: String? = null,
+    var id: String? = null,
+    var udi: String? = null,
     val time: String? = null,
     val description: String? = null,
     val subject: Map<String, SubjectInfo>? = null

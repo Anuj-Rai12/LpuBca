@@ -8,7 +8,6 @@ import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.example.working.adminui.LOAD_SIZE
 import com.example.working.recycle.paginguser.FirestorePagingSource
-import com.example.working.recycle.paginguser.GETLodgedUser
 import com.example.working.recycle.paginguser.GetUpdate
 import com.example.working.recycle.resource.ResourcesPaginationSource
 import com.example.working.repos.ClassPersistence
@@ -30,8 +29,6 @@ class MyViewModel @Inject constructor(
     private val myRepository: MyRepository,
     private val classPersistence: ClassPersistence,
     private val getAllUserQuery: Query,
-    @GETLodgedUser
-    private val getLodgedUser: Task<DocumentSnapshot>?,
     @GetUpdate
     private val getUpdateTask: Task<DocumentSnapshot>
 ) : ViewModel() {
@@ -102,7 +99,7 @@ class MyViewModel @Inject constructor(
 
 
     val getUpdate = myRepository.getUpdate(getUpdateTask).asLiveData()
-    val userData = myRepository.getProfileInfo(getLodgedUser).asLiveData()
+    val userData = myRepository.getProfileInfo().asLiveData()
     fun passwordRestEmail(email: String) = myRepository.passwordRestEmail(email).asLiveData()
     fun updateValue(semesterNo: String, SEMESTER: String) =
         myRepository.updateValue(semesterNo, SEMESTER).asLiveData()

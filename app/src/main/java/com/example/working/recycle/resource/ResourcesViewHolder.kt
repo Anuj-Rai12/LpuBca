@@ -12,8 +12,9 @@ class ResourcesViewHolder(private val binding: FloderItemBinding) :
     @SuppressLint("SetTextI18n")
     fun bind(function: (List<SubjectInfo>) -> Unit, materials: Materials) {
         binding.apply {
-            myName.text = "Anuj Rai"
-            newsTitle.text = materials.description ?: "No Description"
+            myName.text = materials.udi
+            newsTitle.text="${materials.id},\n"
+            newsTitle.append(materials.description ?: "No Description")
             SourceTime.text = materials.time ?: "00/00/0000"
             root.setOnClickListener {
                 val subInfo: MutableList<SubjectInfo> = mutableListOf()

@@ -104,7 +104,7 @@ class NoteFragment : Fragment(R.layout.note_framgnet) {
 
     private fun putUIItem(flag: Boolean, notLoading: Boolean = false) {
         binding.root.isRefreshing = flag
-        myViewModel.loading = false
+        myViewModel.resourcesLoading = false
         if (!notLoading) {
             binding.folderShimmer.isVisible = false
             binding.folderRecycleView.setBackgroundColor(
