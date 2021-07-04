@@ -3,6 +3,7 @@ package com.example.working.userfagment
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -42,6 +43,9 @@ class NoteFragment : Fragment(R.layout.note_framgnet) {
         binding.root.setOnRefreshListener {
             resourcesRecycleView.refresh()
         }
+        binding.resourcesRetry.setOnClickListener {
+            resourcesRecycleView.retry()
+        }
     }
 
     private fun checkResourcesIsEmpty(semester: String) {
@@ -51,6 +55,8 @@ class NoteFragment : Fragment(R.layout.note_framgnet) {
                     binding.folderShimmer.isVisible = false
                     binding.folderRecycleView.isVisible = false
                     binding.isEmptyOrNotBoss.isVisible = true
+                    binding.resourceErrorText.isVisible = true
+                    binding.resourceErrorText.text = "${it.exception?.localizedMessage}"
                     dialog(message = "${it.exception?.localizedMessage}")
                 }
                 is MySealed.Loading -> Log.i(
@@ -63,6 +69,11 @@ class NoteFragment : Fragment(R.layout.note_framgnet) {
                         binding.isEmptyOrNotBoss.isVisible = it
                         if (it) {
                             binding.folderRecycleView.isVisible = false
+                            binding.isEmptyOrNotBoss.setBackgroundResource(R.drawable.filenotfound)
+                            binding.resourceErrorText.isVisible = it
+                            binding.resourceErrorText.text =
+                                "Sorry For Inconvenience I'm Try To find Ppt and Other Resouces" +
+                                        " As Soon As will Find it,I will Update the Rescouce Shortly."
                         } else
                             Log.i(TAG, "checkResourcesIsEmpty: Semeter is Present")
                     }
@@ -86,9 +97,13 @@ class NoteFragment : Fragment(R.layout.note_framgnet) {
                     is LoadState.Error -> {
                         putUIItem(false)
                         val error = (it.append as LoadState.Error).error.localizedMessage
-                        if (error.equals("List is Empty", true))
+                        if (error.equals("List is Empty", true)) {
+                            binding.isEmptyOrNotBoss.isVisible = true
+                            binding.resourceErrorText.isVisible = true
+                            binding.resourceErrorText.text = "$error"
+                            binding.resourcesRetry.isVisible = true
                             dialog(message = "$error")
-
+                        }
                         Log.i(TAG, "setUpUI: $error")
                     }
                 }
@@ -132,6 +147,8 @@ class NoteFragment : Fragment(R.layout.note_framgnet) {
                     binding.folderShimmer.isVisible = false
                     binding.folderRecycleView.isVisible = false
                     binding.isEmptyOrNotBoss.isVisible = true
+                    binding.resourceErrorText.isVisible = true
+                    binding.resourceErrorText.text = "${it.exception?.localizedMessage}"
                     dialog(message = "${it.exception?.localizedMessage}")
                 }
                 is MySealed.Loading -> {
@@ -141,7 +158,10 @@ class NoteFragment : Fragment(R.layout.note_framgnet) {
                     hideLoading()
                     it.data?.semester?.let {
                         myViewModel.getUserSemester = it
-                        Log.i(TAG, "getSemester: MySealing Success -> ${myViewModel.getUserSemester}")
+                        Log.i(
+                            TAG,
+                            "getSemester: MySealing Success -> ${myViewModel.getUserSemester}"
+                        )
                         setData()
                         getSetUp()
                         checkResourcesIsEmpty(it)

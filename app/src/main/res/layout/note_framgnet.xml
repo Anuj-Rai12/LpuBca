@@ -43,10 +43,41 @@
         <ImageView
             android:id="@+id/isEmptyOrNotBoss"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="450dp"
+            android:layout_margin="30dp"
             android:background="@drawable/ic_warning"
-            android:backgroundTint="@color/red_color"
             android:visibility="gone"
+            android:scaleType="centerInside"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/resourceErrorText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/allerta"
+            android:gravity="center"
+            android:textColor="@color/red_color"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/isEmptyOrNotBoss"
+            tools:text="Error Messages So, Hello How Are you dfdfksddfksdfjskldf"
+            tools:visibility="visible" />
+
+        <Button
+            android:id="@+id/resourcesRetry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Retry"
+            android:textAllCaps="false"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/resourceErrorText"
             tools:visibility="visible" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
