@@ -69,9 +69,8 @@ class NoteFragment : Fragment(R.layout.note_framgnet) {
                             binding.folderRecycleView.isVisible = false
                             binding.isEmptyOrNotBoss.setBackgroundResource(R.drawable.filenotfound)
                             binding.resourceErrorText.isVisible = it
-                            binding.resourceErrorText.text =
-                                "Sorry For Inconvenience I'm Try To find Ppt and Other Resouces" +
-                                        " As Soon As will Find it,I will Update the Rescouce Shortly."
+                            binding.resourceErrorText.text = APPLOGY
+
                         } else
                             Log.i(TAG, "checkResourcesIsEmpty: Semeter is Present")
                     }
@@ -189,9 +188,18 @@ class NoteFragment : Fragment(R.layout.note_framgnet) {
     }
 
     private fun itemOnClick(it: List<SubjectInfo>, id: String) {
-        if (it.isNotEmpty() && id.isNotBlank()) {
+        if (id.isNotBlank()) {
             val path = "${myViewModel.getUserSemester},$id"
             Log.i(TAG, "itemOnClick: PATH -> $path, list -> $it")
+            val subjectList = SubjectList(subjectInfo = it)
+            val action = NoteFragmentDirections.actionNoteFragmentToBooksFragment(
+                path = path,
+                subject = subjectList,
+                filename = id
+            )
+            findNavController().navigate(action)
         }
     }
 }
+const val APPLOGY="Sorry For Inconvenience I'm Try To find Resouces" +
+        " As Soon As I will Found it,then i will Update Rescouce Shortly."

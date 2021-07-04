@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:backgroundTint="@color/light_green"
+    app:cardCornerRadius="15dp"
+    app:cardElevation="8dp"
+    app:cardUseCompatPadding="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/another_leaf_background"
+        android:padding="8dp">
+
+
+        <ImageView
+            android:id="@+id/folderBox"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:src="@drawable/ic_folder_name"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="15dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/allerta"
+            android:maxLines="4"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/folderBox"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/folderBox"
+            tools:text="MEH-110 - Descriptor Text  for that subject code  and all for it " />
+
+        <TextView
+            android:id="@+id/subjectTeacherName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:drawablePadding="4dp"
+            android:drawableTint="@color/black"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:textColor="@color/grey"
+            android:textSize="13sp"
+            app:drawableStartCompat="@drawable/ic_person"
+            app:layout_constraintRight_toRightOf="@id/textView"
+            app:layout_constraintTop_toBottomOf="@id/textView"
+            tools:text="UserName name is ghuhgh" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

@@ -47,7 +47,7 @@
     <fragment
         android:id="@+id/booksFragment"
         android:name="com.example.working.userfagment.BooksFragment"
-        android:label="BooksFragment"
+        android:label="{filename}"
         tools:layout="@layout/book_fragment">
         <argument
             android:name="path"
@@ -55,6 +55,9 @@
         <argument
             android:name="subject"
             app:argType="com.example.working.utils.SubjectList" />
+        <argument
+            android:name="filename"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
