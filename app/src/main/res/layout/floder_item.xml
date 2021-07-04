@@ -19,23 +19,17 @@
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/ic_folder_name"
-            android:backgroundTint="#03AE4A" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_alignBottom="@id/myNewsImage" />
-
+            android:src="@drawable/ic_folder_name" />
         <TextView
             android:id="@+id/myName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/myNewsImage"
+            android:layout_alignStart="@id/myNewsImage"
             android:layout_alignBottom="@id/myNewsImage"
-            android:layout_margin="6dp"
+            android:layout_margin="4dp"
             android:drawablePadding="4dp"
             android:ellipsize="end"
+            android:drawableTint="@color/black"
             android:gravity="center_vertical"
             android:maxLines="1"
             android:textColor="@color/black"
@@ -47,9 +41,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/myName"
-            android:layout_alignLeft="@id/myName"
-            android:layout_alignRight="@id/myNewsImage"
-            android:layout_margin="6dp"
+            android:layout_alignStart="@id/myName"
+            android:layout_alignEnd="@id/myNewsImage"
+            android:layout_margin="3dp"
             android:ellipsize="end"
             android:fontFamily="@font/allerta"
             android:gravity="center"
@@ -63,13 +57,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/newsTitle"
-            android:layout_alignParentRight="true"
-            android:layout_margin="6dp"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="2dp"
             android:drawablePadding="4dp"
             android:ellipsize="end"
             android:gravity="center_vertical"
             android:maxLines="1"
             android:padding="8dp"
+            android:drawableTint="@color/black"
             android:textColor="@color/grey"
             app:drawableStartCompat="@drawable/ic_time"
             tools:text="Time How fjfkdl fo" />

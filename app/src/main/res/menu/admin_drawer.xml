@@ -3,7 +3,8 @@
     <item
         android:id="@+id/noteFragment"
         android:icon="@drawable/ic_folder_name"
-        android:title="Resources" />
+        android:title="Resources"
+        android:iconTint="@color/black"/>
     <item
         android:id="@+id/uploader"
         android:icon="@drawable/ic_upload"

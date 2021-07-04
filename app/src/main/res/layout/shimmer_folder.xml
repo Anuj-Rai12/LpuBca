@@ -18,15 +18,11 @@
             android:id="@+id/myNewsImage"
             android:layout_width="match_parent"
             android:layout_height="300dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             android:layout_centerHorizontal="true"
             android:background="@drawable/ic_folder_name"
             android:backgroundTint="@color/grey" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_alignBottom="@id/myNewsImage" />
-
         <TextView
             android:id="@+id/myName"
             android:layout_width="100dp"
