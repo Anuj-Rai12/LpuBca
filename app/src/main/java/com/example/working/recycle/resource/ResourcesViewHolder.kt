@@ -10,7 +10,7 @@ import com.example.working.utils.SubjectInfo
 class ResourcesViewHolder(private val binding: FloderItemBinding) :
     RecyclerView.ViewHolder(binding.root) {
     @SuppressLint("SetTextI18n")
-    fun bind(function: (List<SubjectInfo>) -> Unit, materials: Materials) {
+    fun bind(function: (List<SubjectInfo>, String) -> Unit, materials: Materials) {
         binding.apply {
             myName.text = materials.udi
             newsTitle.text="${materials.id},\n"
@@ -21,7 +21,7 @@ class ResourcesViewHolder(private val binding: FloderItemBinding) :
                 materials.subject?.filterValues { sub ->
                     subInfo.add(sub)
                 }
-                function(subInfo)
+                function(subInfo,materials.id?:" ")
             }
         }
     }

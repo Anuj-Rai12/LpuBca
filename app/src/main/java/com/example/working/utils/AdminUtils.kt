@@ -38,6 +38,11 @@ data class SubjectInfo(
 ) : Parcelable
 
 @Parcelize
+data class SubjectList(
+    val subjectInfo: List<SubjectInfo>
+) : Parcelable
+
+@Parcelize
 data class MyFilePath(
     val collection: String? = null,
     val document: String? = null

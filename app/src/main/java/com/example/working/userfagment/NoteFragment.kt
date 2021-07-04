@@ -3,7 +3,6 @@ package com.example.working.userfagment
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -181,15 +180,18 @@ class NoteFragment : Fragment(R.layout.note_framgnet) {
             folderRecycleView.apply {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(requireContext())
-                resourcesRecycleView = ResourcesRecycleView {
-                    itemOnClick(it)
+                resourcesRecycleView = ResourcesRecycleView { list, id ->
+                    itemOnClick(list, id)
                 }
                 adapter = resourcesRecycleView
             }
         }
     }
 
-    private fun itemOnClick(it: List<SubjectInfo>) {
-        Log.i(TAG, "itemOnClick: $it")
+    private fun itemOnClick(it: List<SubjectInfo>, id: String) {
+        if (it.isNotEmpty() && id.isNotBlank()) {
+            val path = "${myViewModel.getUserSemester},$id"
+            Log.i(TAG, "itemOnClick: PATH -> $path, list -> $it")
+        }
     }
 }

@@ -8,7 +8,7 @@ import com.example.working.databinding.FloderItemBinding
 import com.example.working.utils.Materials
 import com.example.working.utils.SubjectInfo
 
-class ResourcesRecycleView constructor(private val function: (List<SubjectInfo>) -> Unit) :
+class ResourcesRecycleView constructor(private val function: (List<SubjectInfo>,String) -> Unit) :
     PagingDataAdapter<Materials, ResourcesViewHolder>(DiffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResourcesViewHolder {
         val binding = FloderItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)

@@ -45,6 +45,18 @@
             app:argType="com.example.working.utils.MyFilePath" />
     </fragment>
     <fragment
+        android:id="@+id/booksFragment"
+        android:name="com.example.working.userfagment.BooksFragment"
+        android:label="BooksFragment"
+        tools:layout="@layout/book_fragment">
+        <argument
+            android:name="path"
+            app:argType="string" />
+        <argument
+            android:name="subject"
+            app:argType="com.example.working.utils.SubjectList" />
+    </fragment>
+    <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.working.adminui.ProfileFragment"
         android:label="Profile"
@@ -72,6 +84,10 @@
         android:id="@+id/noteFragment"
         android:name="com.example.working.userfagment.NoteFragment"
         android:label="Resouces"
-        tools:layout="@layout/note_framgnet" />
+        tools:layout="@layout/note_framgnet" >
+        <action
+            android:id="@+id/action_noteFragment_to_booksFragment"
+            app:destination="@id/booksFragment" />
+    </fragment>
 
 </navigation>
