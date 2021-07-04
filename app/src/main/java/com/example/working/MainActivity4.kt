@@ -1,7 +1,6 @@
 package com.example.working
 
 import android.annotation.SuppressLint
-import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
@@ -15,10 +14,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.working.databinding.ActivityMain4Binding
-import com.example.working.utils.Convertor
-import com.example.working.utils.CustomProgressBar
-import com.example.working.utils.MySealed
-import com.example.working.utils.UpdateDialog
+import com.example.working.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -35,7 +31,7 @@ class MainActivity4 : AppCompatActivity() {
     private val myViewModel: MyViewModel by viewModels()
 
     @Inject
-    lateinit var customProgressBar: CustomProgressBar
+    lateinit var customProgress: CustomProgress
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMain4Binding.inflate(layoutInflater)
@@ -66,14 +62,12 @@ class MainActivity4 : AppCompatActivity() {
     }
 
     private fun hideLoading() {
-        this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
-        customProgressBar.dismiss()
+        customProgress.hideLoading(this)
     }
 
     @SuppressLint("SourceLockedOrientationActivity")
     private fun showLoading(string: String?, boolean: Boolean = false) {
-        this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        customProgressBar.show(this, string, boolean)
+        customProgress.showLoading(this, string, boolean)
     }
 
     @SuppressLint("SetTextI18n")

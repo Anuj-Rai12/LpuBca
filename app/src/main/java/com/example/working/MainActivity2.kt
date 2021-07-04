@@ -1,7 +1,6 @@
 package com.example.working
 
 import android.annotation.SuppressLint
-import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
@@ -10,14 +9,13 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.working.databinding.ActivityMain2Binding
 import com.example.working.utils.Convertor
-import com.example.working.utils.CustomProgressBar
+import com.example.working.utils.CustomProgress
 import com.example.working.utils.MySealed
 import com.example.working.utils.UpdateDialog
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,7 +34,7 @@ class MainActivity2 : AppCompatActivity() {
     private val myViewModel: MyViewModel by viewModels()
 
     @Inject
-    lateinit var customProgressBar: CustomProgressBar
+    lateinit var customProgress: CustomProgress
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMain2Binding.inflate(layoutInflater)
@@ -52,36 +50,26 @@ class MainActivity2 : AppCompatActivity() {
         share = binding?.nagView?.getHeaderView(0)?.findViewById(R.id.myshareText)!!
         logout.setOnClickListener {
             val updateDialog = UpdateDialog("Do You Really Want to LogOut?", null, "LogOut!")
+            updateDialog.isCancelable=false
             updateDialog.show(supportFragmentManager, "LogOUt")
         }
         share.setOnClickListener {
             Toast.makeText(this, "Doing", Toast.LENGTH_SHORT).show()
         }
         setUpProfile()
-        appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.noteFragment,
-                R.id.booksFragment,
-                R.id.profileFragment,
-                R.id.downloadFragment,
-            ), binding?.drawLayout
-        )
-
-        navController = navHostFragment.findNavController()
+        navController = navHostFragment.navController
+        appBarConfiguration = AppBarConfiguration(navController.graph, binding?.drawLayout)
+        binding?.nagView!!.setupWithNavController(navController)
         setupActionBarWithNavController(navController, appBarConfiguration)
-        binding?.mybtnNag?.setupWithNavController(navController)
-        binding?.nagView?.setupWithNavController(navController)
     }
 
     private fun hideLoading() {
-        this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
-        customProgressBar.dismiss()
+        customProgress.hideLoading(this)
     }
 
     @SuppressLint("SourceLockedOrientationActivity")
     private fun showLoading(string: String?, boolean: Boolean = false) {
-        this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        customProgressBar.show(this, string, boolean)
+        customProgress.showLoading(this, string, boolean)
     }
 
     @SuppressLint("SetTextI18n")

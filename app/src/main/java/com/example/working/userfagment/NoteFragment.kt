@@ -35,7 +35,6 @@ class NoteFragment : Fragment(R.layout.note_framgnet) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = NoteFramgnetBinding.bind(view)
-        binding.folderShimmer.isVisible = true
         if (myViewModel.resourcesLoading == null || myViewModel.resourcesLoading == true)
             binding.folderShimmer.isVisible = true
         setUpRecycleView()
