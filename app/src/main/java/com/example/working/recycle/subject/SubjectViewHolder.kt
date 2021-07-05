@@ -4,10 +4,11 @@ import android.annotation.SuppressLint
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.example.working.R
 import com.example.working.adminui.AllData
 import com.example.working.adminui.respotry.FileInfo
 import com.example.working.databinding.SubjectItemBinding
-import com.example.working.utils.SubjectInfo
+import com.example.working.utils.*
 
 class SubjectViewHolder(private val binding: SubjectItemBinding) :
     RecyclerView.ViewHolder(binding.root) {
@@ -37,6 +38,36 @@ class SubjectViewHolder(private val binding: SubjectItemBinding) :
             root.setOnClickListener {
                 val fileInfo=allData.map?.values
                 function(fileInfo?.toList()!!,title)
+            }
+        }
+    }
+
+    @SuppressLint("SetTextI18n", "ResourceAsColor")
+    fun bindFile(function: (FileInfo) -> Unit, fileInfo: FileInfo) {
+        binding.apply {
+            unitCurrentData.apply {
+                isVisible = true
+                text=fileInfo.date
+            }
+            subjectTeacherName.isVisible=false
+            if (isDocFile(fileInfo.fileName!!))
+                folderBox.setImageResource(R.drawable.wordfile)
+            else if (isPdfFile(fileInfo.fileName))
+                folderBox.setImageResource(R.drawable.fileimage)
+            else if (isJpgFile(fileInfo.fileName)|| isPngFile(fileInfo.fileName))
+                folderBox.setImageResource(R.drawable.ic_image)
+            else if (isWebsiteFile(fileInfo.fileName))
+                folderBox.setImageResource(R.drawable.ic_web)
+            root.setOnClickListener {
+                function(fileInfo)
+            }
+            textView.apply {
+                text = fileInfo.fileName
+                if (fileInfo.fileSize!=null)
+                    append(",\nFile Size: ${fileInfo.fileSize}")
+                    append(",\nSource: ${fileInfo.sourceId}")
+                textSize=15.toFloat()
+                textAlignment = View.TEXT_ALIGNMENT_TEXT_START
             }
         }
     }

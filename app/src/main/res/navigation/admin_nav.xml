@@ -62,6 +62,10 @@
         <action
             android:id="@+id/action_booksFragment_to_noteFragment"
             app:destination="@id/noteFragment" />
+        <argument
+            android:name="file"
+            app:argType="com.example.working.utils.FileInfoList"
+            app:nullable="true" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -91,7 +95,7 @@
         android:id="@+id/noteFragment"
         android:name="com.example.working.userfagment.NoteFragment"
         android:label="{title}"
-        tools:layout="@layout/note_framgnet" >
+        tools:layout="@layout/note_framgnet">
         <action
             android:id="@+id/action_noteFragment_to_booksFragment"
             app:destination="@id/booksFragment" />
@@ -101,9 +105,9 @@
             app:argType="string" />
         <argument
             android:name="path"
+            android:defaultValue="@null"
             app:argType="string"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
     </fragment>
 
 </navigation>

@@ -18,6 +18,7 @@
             android:id="@+id/myNewsImage"
             android:layout_width="match_parent"
             android:layout_height="300dp"
+            android:backgroundTint="@color/light_green"
             android:layout_centerHorizontal="true"
             android:src="@drawable/ic_folder_name" />
         <TextView

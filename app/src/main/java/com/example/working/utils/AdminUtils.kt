@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Parcelable
+import com.example.working.adminui.respotry.FileInfo
 import com.google.firebase.firestore.IgnoreExtraProperties
 import kotlinx.parcelize.Parcelize
 import java.text.SimpleDateFormat
@@ -43,6 +44,11 @@ data class SubjectList(
 ) : Parcelable
 
 @Parcelize
+data class FileInfoList(
+    val fileInfo: List<FileInfo>
+) : Parcelable
+
+@Parcelize
 data class MyFilePath(
     val collection: String? = null,
     val document: String? = null
@@ -70,4 +76,29 @@ class CustomProgress @Inject constructor(private val customProgressBar: CustomPr
 fun getPathFile(file: String): List<String> {
     val tagArray = file.split("\\s*,\\s*".toRegex()).toTypedArray()
     return tagArray.toList()
+}
+
+fun isDocFile(input: String): Boolean {
+    val regex = Regex(pattern = "^[a-zA-Z]+\\.doc$", options = setOf(RegexOption.IGNORE_CASE))
+    return regex.matches(input)
+}
+
+fun isPngFile(input: String): Boolean {
+    val regex = Regex(pattern = "^[a-zA-Z]+\\.png$", options = setOf(RegexOption.IGNORE_CASE))
+    return regex.matches(input)
+}
+
+fun isJpgFile(input: String): Boolean {
+    val regex = Regex(pattern = "^[a-zA-Z]+\\.jpg$", options = setOf(RegexOption.IGNORE_CASE))
+    return regex.matches(input)
+}
+
+fun isPdfFile(input: String): Boolean {
+    val regex = Regex(pattern = "^[a-zA-Z]+\\.pdf$", options = setOf(RegexOption.IGNORE_CASE))
+    return regex.matches(input)
+}
+
+fun isWebsiteFile(input: String): Boolean {
+    val regex = Regex(pattern = "^[a-zA-Z]+\\.com$", options = setOf(RegexOption.IGNORE_CASE))
+    return regex.matches(input)
 }

@@ -20,7 +20,6 @@ import com.example.working.recycle.resource.ResourcesRecycleView
 import com.example.working.recycle.unit.UnitRecycleView
 import com.example.working.utils.*
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -120,7 +119,13 @@ class NoteFragment : Fragment(R.layout.note_framgnet) {
     }
 
     private fun itemUnitOnClick(list: List<FileInfo>, id: String) {
-        Log.i(TAG, "itemUnitOnClick: Id -> $id FileInfo -> $list")
+        val action = NoteFragmentDirections.actionNoteFragmentToBooksFragment(
+            path = args.path!!,
+            subject = null,
+            filename = id,
+            file = FileInfoList(fileInfo = list)
+        )
+        findNavController().navigate(action)
     }
 
     private fun loadResources() {
@@ -209,10 +214,10 @@ class NoteFragment : Fragment(R.layout.note_framgnet) {
                 unitRecycleView?.submitData(it)
             }
         }
-        if (myViewModel.loadPath!=myViewModel.oldLoadPath) {
+        if (myViewModel.loadPath != myViewModel.oldLoadPath) {
             Log.i(TAG, "setUnitData: Change in Path Detached so, Refrehing start")
             unitRecycleView?.refresh()
-            myViewModel.oldLoadPath=myViewModel.loadPath
+            myViewModel.oldLoadPath = myViewModel.loadPath
         }
     }
 
@@ -299,7 +304,8 @@ class NoteFragment : Fragment(R.layout.note_framgnet) {
             val action = NoteFragmentDirections.actionNoteFragmentToBooksFragment(
                 path = path,
                 subject = subjectList,
-                filename = id
+                filename = id,
+                file = null
             )
             findNavController().navigate(action)
         }
