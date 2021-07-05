@@ -199,6 +199,9 @@ class NoteFragment : Fragment(R.layout.note_framgnet) {
     }
 
     private fun setUnitData() {
+        if (myViewModel.loadPath == null)
+            myViewModel.oldLoadPath = getPathFile(args.path!!)
+
         myViewModel.loadPath = getPathFile(args.path!!)
         lifecycleScope.launch {
             myViewModel.unitFlow.collectLatest {
@@ -206,7 +209,11 @@ class NoteFragment : Fragment(R.layout.note_framgnet) {
                 unitRecycleView?.submitData(it)
             }
         }
-        unitRecycleView?.refresh()
+        if (myViewModel.loadPath!=myViewModel.oldLoadPath) {
+            Log.i(TAG, "setUnitData: Change in Path Detached so, Refrehing start")
+            unitRecycleView?.refresh()
+            myViewModel.oldLoadPath=myViewModel.loadPath
+        }
     }
 
     private fun putUIItem(flag: Boolean, notLoading: Boolean = false) {

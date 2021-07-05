@@ -41,6 +41,7 @@ class MyViewModel @Inject constructor(
     var image: Bitmap? = null
     var loading: Boolean? = null
     var loadPath: List<String>? = null
+    var oldLoadPath: List<String>? = null
     private var _event = MutableLiveData<Event<String>>()
     val event: LiveData<Event<String>>
         get() = _event
