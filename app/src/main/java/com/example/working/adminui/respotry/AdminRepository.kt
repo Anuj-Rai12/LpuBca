@@ -127,6 +127,6 @@ data class FileInfo(
     val downloadUrl: String? = null,
     val folderPath: String? = null,
     val fileName: String? = null,
-    val sourceId: String? = null,
+    var sourceId: String? = null,
     val date:String?=null
 ) : Parcelable
