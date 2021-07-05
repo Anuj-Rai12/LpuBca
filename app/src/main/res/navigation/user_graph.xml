@@ -7,11 +7,20 @@
     <fragment
         android:id="@+id/noteFragment"
         android:name="com.example.working.userfagment.NoteFragment"
-        android:label="Resouces"
-        tools:layout="@layout/note_framgnet" >
+        android:label="{title}"
+        tools:layout="@layout/note_framgnet">
         <action
             android:id="@+id/action_noteFragment_to_booksFragment"
             app:destination="@id/booksFragment" />
+        <argument
+            android:name="title"
+            android:defaultValue="Resource"
+            app:argType="string" />
+        <argument
+            android:name="path"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
     <fragment
         android:id="@+id/booksFragment"
@@ -23,10 +32,14 @@
             app:argType="string" />
         <argument
             android:name="subject"
-            app:argType="com.example.working.utils.SubjectList" />
+            app:argType="com.example.working.utils.SubjectList"
+            app:nullable="true" />
         <argument
             android:name="filename"
             app:argType="string" />
+        <action
+            android:id="@+id/action_booksFragment_to_noteFragment"
+            app:destination="@id/noteFragment" />
     </fragment>
     <fragment
         android:id="@+id/downloadFragment"
@@ -55,7 +68,7 @@
     <dialog
         android:id="@+id/userInfoUpdateDialog"
         android:name="com.example.working.utils.UserInfoUpdateDialog"
-        android:label="UserInfoUpdateDialog" >
+        android:label="UserInfoUpdateDialog">
         <argument
             android:name="title"
             app:argType="string" />
@@ -63,5 +76,7 @@
             android:name="work"
             app:argType="string" />
     </dialog>
-    <action android:id="@+id/action_global_userInfoUpdateDialog" app:destination="@id/userInfoUpdateDialog" />
+    <action
+        android:id="@+id/action_global_userInfoUpdateDialog"
+        app:destination="@id/userInfoUpdateDialog" />
 </navigation>

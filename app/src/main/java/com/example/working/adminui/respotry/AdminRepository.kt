@@ -1,15 +1,18 @@
 package com.example.working.adminui.respotry
 
 import android.net.Uri
+import android.os.Parcelable
 import com.example.working.adminui.AllData
 import com.example.working.utils.*
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.IgnoreExtraProperties
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.tasks.await
+import kotlinx.parcelize.Parcelize
 import javax.inject.Inject
 
 
@@ -117,7 +120,8 @@ class AdminRepository @Inject constructor() {
         emit(data)
     }.flowOn(IO)
 }
-
+@IgnoreExtraProperties
+@Parcelize
 data class FileInfo(
     val fileSize: String? = null,
     val downloadUrl: String? = null,
@@ -125,4 +129,4 @@ data class FileInfo(
     val fileName: String? = null,
     val sourceId: String? = null,
     val date:String?=null
-)
+) : Parcelable

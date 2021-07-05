@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.working.R
@@ -15,7 +16,7 @@ import com.example.working.recycle.subject.SubjectRecycleView
 class BooksFragment : Fragment(R.layout.book_fragment) {
     private lateinit var binding: BookFragmentBinding
     private val args: BooksFragmentArgs by navArgs()
-    private lateinit var subjectRecycleView: SubjectRecycleView
+    private var subjectRecycleView: SubjectRecycleView? = null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = BookFragmentBinding.bind(view)
@@ -25,18 +26,17 @@ class BooksFragment : Fragment(R.layout.book_fragment) {
     }
 
     private fun checkItEmpty() {
-        if (args.subject.subjectInfo.isEmpty())
-        {
+        if (args.subject?.subjectInfo?.isEmpty() == true) {
             binding.apply {
-                recycleView.isVisible=false
-                subjectErrorText.isVisible=true
-                isEmptySubject.isVisible=true
-                subjectErrorText.text= APPLOGY
+                recycleView.isVisible = false
+                subjectErrorText.isVisible = true
+                isEmptySubject.isVisible = true
+                subjectErrorText.text = APPLOGY
             }
         }
     }
 
-    private fun setData() = subjectRecycleView.submitList(args.subject.subjectInfo)
+    private fun setData() = subjectRecycleView?.submitList(args.subject?.subjectInfo)
 
     private fun setRecycleView() {
         binding.recycleView.apply {
@@ -53,5 +53,8 @@ class BooksFragment : Fragment(R.layout.book_fragment) {
         Log.i(TAG, "itemOnClick: SubjectName -> $s")
         val path = "${args.path},$s"
         Log.i(TAG, "itemOnClick: SubjectName -> $path")
+        val action =
+            BooksFragmentDirections.actionBooksFragmentToNoteFragment(title = s, path = path)
+        findNavController().navigate(action)
     }
 }

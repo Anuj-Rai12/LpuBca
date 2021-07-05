@@ -10,9 +10,11 @@ import com.example.working.adminui.LOAD_SIZE
 import com.example.working.recycle.paginguser.FirestorePagingSource
 import com.example.working.recycle.paginguser.GetUpdate
 import com.example.working.recycle.resource.ResourcesPaginationSource
+import com.example.working.recycle.unit.UnitPaginationSource
 import com.example.working.repos.ClassPersistence
 import com.example.working.repos.MyRepository
 import com.example.working.userfagment.RESOURCES_LOAD_SIZE
+import com.example.working.userfagment.UNIT_LOAD_SIZE
 import com.example.working.utils.Event
 import com.example.working.utils.userchannel.UserInfo1
 import com.google.android.gms.tasks.Task
@@ -32,11 +34,13 @@ class MyViewModel @Inject constructor(
     @GetUpdate
     private val getUpdateTask: Task<DocumentSnapshot>
 ) : ViewModel() {
+    var subjectLoading: Boolean? = null
     var resourcesLoading: Boolean? = null
     var getUserSemester: String? = null
     var msg: String? = null
     var image: Bitmap? = null
     var loading: Boolean? = null
+    var loadPath: List<String>? = null
     private var _event = MutableLiveData<Event<String>>()
     val event: LiveData<Event<String>>
         get() = _event
@@ -47,6 +51,11 @@ class MyViewModel @Inject constructor(
     private fun getResourceQuery() =
         FirebaseFirestore.getInstance().collection(getUserSemester ?: "")
             .limit(RESOURCES_LOAD_SIZE.toLong())
+
+    private fun getUnitQuery() =
+        FirebaseFirestore.getInstance().collection(loadPath?.get(0) ?: "")
+            .document(loadPath?.get(1) ?: " ").collection(loadPath?.get(2) ?: "")
+            .limit(UNIT_LOAD_SIZE.toLong())
 
     fun createAccount(icon: Bitmap, userInfo1: UserInfo1) =
         myRepository.createAcc(icon, userInfo1).asLiveData()
@@ -95,6 +104,14 @@ class MyViewModel @Inject constructor(
         )
     ) {
         FirestorePagingSource(getAllUserQuery)
+    }.flow.cachedIn(viewModelScope)
+
+    val unitFlow = Pager(
+        PagingConfig(
+            pageSize = UNIT_LOAD_SIZE
+        )
+    ) {
+        UnitPaginationSource(getUnitQuery())
     }.flow.cachedIn(viewModelScope)
 
 

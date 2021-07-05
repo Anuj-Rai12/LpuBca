@@ -54,10 +54,14 @@
             app:argType="string" />
         <argument
             android:name="subject"
-            app:argType="com.example.working.utils.SubjectList" />
+            app:argType="com.example.working.utils.SubjectList"
+            app:nullable="true" />
         <argument
             android:name="filename"
             app:argType="string" />
+        <action
+            android:id="@+id/action_booksFragment_to_noteFragment"
+            app:destination="@id/noteFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -86,11 +90,20 @@
     <fragment
         android:id="@+id/noteFragment"
         android:name="com.example.working.userfagment.NoteFragment"
-        android:label="Resouces"
+        android:label="{title}"
         tools:layout="@layout/note_framgnet" >
         <action
             android:id="@+id/action_noteFragment_to_booksFragment"
             app:destination="@id/booksFragment" />
+        <argument
+            android:name="title"
+            android:defaultValue="Resource"
+            app:argType="string" />
+        <argument
+            android:name="path"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
     </fragment>
 
 </navigation>

@@ -32,10 +32,10 @@
             android:layout_marginRight="10dp"
             android:layout_marginBottom="15dp"
             android:ellipsize="end"
-            android:fontFamily="@font/allerta"
+            android:fontFamily="@font/average_sans"
             android:maxLines="4"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/folderBox"
             app:layout_constraintRight_toRightOf="parent"
@@ -58,6 +58,22 @@
             app:layout_constraintRight_toRightOf="@id/textView"
             app:layout_constraintTop_toBottomOf="@id/textView"
             tools:text="UserName name is ghuhgh" />
-
+        <TextView
+            android:id="@+id/unitCurrentData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:drawablePadding="4dp"
+            android:drawableTint="@color/black"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:visibility="gone"
+            android:textColor="@color/grey"
+            android:textSize="13sp"
+            app:drawableStartCompat="@drawable/ic_time"
+            app:layout_constraintRight_toRightOf="@id/textView"
+            app:layout_constraintTop_toBottomOf="@id/textView"
+            tools:text="UserName name is ghuhgh" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

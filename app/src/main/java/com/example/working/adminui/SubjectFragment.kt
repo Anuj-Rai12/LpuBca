@@ -223,6 +223,7 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
 }
 
 data class AllData(
+    var id:String?=null,
     val date: String? = null,
     val map: Map<String, FileInfo>? = null,
     val unit: String? = null
