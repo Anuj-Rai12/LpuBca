@@ -66,6 +66,9 @@
             android:name="file"
             app:argType="com.example.working.utils.FileInfoList"
             app:nullable="true" />
+        <action
+            android:id="@+id/action_booksFragment_to_viewFileFragment"
+            app:destination="@id/viewFileFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -109,5 +112,16 @@
             app:argType="string"
             app:nullable="true" />
     </fragment>
-
+    <fragment
+        android:id="@+id/viewFileFragment"
+        android:name="com.example.working.userfagment.ViewFileFragment"
+        android:label="{title}"
+        tools:layout="@layout/view_file_fragment" >
+        <argument
+            android:name="fileinfo"
+            app:argType="com.example.working.adminui.respotry.FileInfo" />
+        <argument
+            android:name="title"
+            app:argType="string" />
+    </fragment>
 </navigation>

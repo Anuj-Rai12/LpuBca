@@ -54,6 +54,8 @@ class BooksFragment : Fragment(R.layout.book_fragment) {
 
     private fun onClickFileInfo(fileInfo: FileInfo) {
         Log.i(TAG, "onClickFileInfo: FileInfo -> $fileInfo")
+        val action=BooksFragmentDirections.actionBooksFragmentToViewFileFragment(fileInfo,fileInfo.fileName?:"No Name")
+        findNavController().navigate(action)
     }
 
     private fun checkItEmpty() {

@@ -1,6 +1,7 @@
 package com.example.working
 
 import android.graphics.Bitmap
+import android.net.Uri
 import android.util.Patterns
 import androidx.lifecycle.*
 import androidx.paging.Pager
@@ -34,6 +35,7 @@ class MyViewModel @Inject constructor(
     @GetUpdate
     private val getUpdateTask: Task<DocumentSnapshot>
 ) : ViewModel() {
+    var websiteloading: Boolean = true
     var subjectLoading: Boolean? = null
     var resourcesLoading: Boolean? = null
     var getUserSemester: String? = null
@@ -45,6 +47,8 @@ class MyViewModel @Inject constructor(
     private var _event = MutableLiveData<Event<String>>()
     val event: LiveData<Event<String>>
         get() = _event
+
+    var downloadFile: MutableMap<String, Uri> = mutableMapOf()
 
     fun createUser(email: String, password: String) =
         myRepository.createUser(email, password).asLiveData()
