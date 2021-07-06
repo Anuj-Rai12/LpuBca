@@ -102,3 +102,5 @@ fun isWebsiteFile(input: String): Boolean {
     val regex = Regex(pattern = "^[a-zA-Z]+\\.com$", options = setOf(RegexOption.IGNORE_CASE))
     return regex.matches(input)
 }
+const val SHARED_WEBSITE="Hey, Check this Interesting Website,"
+const val SHARE_IMAGE="Hey,Check this Image,"

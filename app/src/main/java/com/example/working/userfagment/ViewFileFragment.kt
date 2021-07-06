@@ -2,6 +2,7 @@ package com.example.working.userfagment
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.ConnectivityManager
@@ -9,6 +10,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
@@ -30,10 +33,7 @@ import com.example.working.MyViewModel
 import com.example.working.R
 import com.example.working.databinding.ViewFileFragmentBinding
 import com.example.working.loginorsignup.TAG
-import com.example.working.utils.CustomProgress
-import com.example.working.utils.isJpgFile
-import com.example.working.utils.isPngFile
-import com.example.working.utils.isWebsiteFile
+import com.example.working.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
@@ -63,26 +63,66 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
         if (isPngFile(args.fileinfo.fileName!!) || isJpgFile(args.fileinfo.fileName!!)) {
             binding.MyZoomImg.isVisible = true
             try {
-                val uri=myViewModel.downloadFile.getValue(args.title)
+                val uri = myViewModel.downloadFile.getValue(args.title)
                 binding.MyZoomImg.setImage(ImageSource.uri(uri.toString().toUri()))
-            }catch (e:NoSuchElementException) {
+            } catch (e: NoSuchElementException) {
                 setImage()
             }
         }
         binding.root.setOnRefreshListener {
             if (isWebsiteFile(args.fileinfo.fileName!!)) {
                 checkConnection()
-            }
-            else
-                binding.root.isRefreshing=false
+            } else
+                binding.root.isRefreshing = false
         }
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.share_menu, menu)
+        val share = menu.findItem(R.id.shareFile)
+        share?.setOnMenuItemClickListener {
+            if (isWebsiteFile(args.title)) {
+                shareText()
+            } else if (isPngFile(args.title) || isJpgFile(args.title)) {
+                shareImage()
+            }
+            return@setOnMenuItemClickListener true
+        }
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    private fun shareText() {
+        val share = Intent(Intent.ACTION_SEND)
+        share.type = "text/plain"
+        share.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
+        share.putExtra(
+            Intent.EXTRA_TEXT,
+            "$SHARED_WEBSITE\n\n${args.fileinfo.downloadUrl}\n\nShared By : ${args.fileinfo.sourceId}"
+        )
+        startActivity(Intent.createChooser(share, "Share File!"))
+    }
+
+    private fun shareImage() {
+        try {
+            val uri = myViewModel.downloadFile.getValue(args.title)
+            val intent = Intent(Intent.ACTION_SEND).apply {
+                type = "image/*"
+                putExtra(Intent.EXTRA_STREAM, uri)
+                putExtra(Intent.EXTRA_TEXT, "$SHARE_IMAGE \n\nShared By :${args.fileinfo.sourceId}")
+            }
+            startActivity(Intent.createChooser(intent, "Share File!"))
+        } catch (e: Exception) {
+            dialog(message = e.localizedMessage?:"")
+        }
+
     }
 
     private fun setImage() {
         showLoading("Image is Loading")
         lifecycleScope.launch {
-            getBitmap()?.let {bitMap->
-                bitUrl(bitMap)?.let { uri->
+            getBitmap()?.let { bitMap ->
+                bitUrl(bitMap)?.let { uri ->
                     hideLoading()
                     binding.MyZoomImg.setImage(ImageSource.uri(uri))
                     myViewModel.downloadFile[args.title] = uri
@@ -90,12 +130,19 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
             }
         }
     }
-    private fun  bitUrl(bitmap: Bitmap): Uri? {
-        val byteArray= ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG,100,byteArray)
-        val path= MediaStore.Images.Media.insertImage(activity?.contentResolver, bitmap,"IMG_" + System.currentTimeMillis(), null)
+
+    private fun bitUrl(bitmap: Bitmap): Uri? {
+        val byteArray = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArray)
+        val path = MediaStore.Images.Media.insertImage(
+            activity?.contentResolver,
+            bitmap,
+            "IMG_" + System.currentTimeMillis(),
+            null
+        )
         return Uri.parse(path)
     }
+
     private suspend fun getBitmap(): Bitmap? {
         val loading = ImageLoader(requireContext())
         val request = ImageRequest.Builder(requireContext())
@@ -111,8 +158,8 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
         }
     }
 
-    private fun dialog(title: String="Error", message:String) {
-        val action=ViewFileFragmentDirections.actionGlobalPasswordDialog2(title,message)
+    private fun dialog(title: String = "Error", message: String) {
+        val action = ViewFileFragmentDirections.actionGlobalPasswordDialog2(title, message)
         findNavController().navigate(action)
     }
 
@@ -122,7 +169,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
                 Log.i(TAG, "onProgressChanged: the Loading is $newProgress")
                 if (newProgress == 100) {
                     Log.i(TAG, "onProgressChanged:Loading Completed")
-                        hideLoading()
+                    hideLoading()
                     myViewModel.websiteloading = false
                     binding.root.isRefreshing = false
                 } else if (newProgress <= 10) {
@@ -157,16 +204,18 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
             return
         }
         Log.i(TAG, "hideLoading: iS NOT return")
-        myViewModel.websiteloading=true
+        myViewModel.websiteloading = true
     }
+
     private fun hideLoading() {
         activity?.let {
             customProgress.hideLoading(it)
             return
         }
         Log.i(TAG, "hideLoading: iS NOT return")
-        myViewModel.websiteloading=true
+        myViewModel.websiteloading = true
     }
+
     @SuppressLint("SetJavaScriptEnabled")
     private fun setData() {
         binding.webView.apply {
