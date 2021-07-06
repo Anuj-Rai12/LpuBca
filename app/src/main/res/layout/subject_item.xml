@@ -70,7 +70,7 @@
             android:gravity="center_vertical"
             android:maxLines="1"
             android:visibility="gone"
-            android:textColor="@color/grey"
+            android:textColor="@color/black"
             android:textSize="13sp"
             app:drawableStartCompat="@drawable/ic_time"
             app:layout_constraintRight_toRightOf="@id/textView"

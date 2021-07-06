@@ -117,7 +117,6 @@ class NoteFragment : Fragment(R.layout.note_framgnet) {
             }
         }
     }
-
     private fun itemUnitOnClick(list: List<FileInfo>, id: String) {
         val action = NoteFragmentDirections.actionNoteFragmentToBooksFragment(
             path = args.path!!,
@@ -216,8 +215,10 @@ class NoteFragment : Fragment(R.layout.note_framgnet) {
         }
         if (myViewModel.loadPath != myViewModel.oldLoadPath) {
             Log.i(TAG, "setUnitData: Change in Path Detached so, Refrehing start")
+            binding.root.isRefreshing=true
             unitRecycleView?.refresh()
             myViewModel.oldLoadPath = myViewModel.loadPath
+            binding.root.isRefreshing=false
         }
     }
 
