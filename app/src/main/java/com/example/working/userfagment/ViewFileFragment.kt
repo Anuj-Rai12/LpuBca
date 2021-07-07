@@ -96,10 +96,13 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
         val receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-                binding.root.isRefreshing=false
+                hideLoading()
                 if (id == TrueId) {
+                    binding.root.isRefreshing=true
                     val uri = getFileUrl(getFileDir(fileName = args.title, requireContext()))
-                    Toast.makeText(activity, "Downloaded Path \n $uri", Toast.LENGTH_SHORT).show()
+                    activity?.let {
+                        Toast.makeText(it, "Downloaded Path \n $uri", Toast.LENGTH_LONG).show()
+                    }
                     //Show PDf
                     if (showPdf(uri))
                         myViewModel.downloadFile[args.title] = uri!!
@@ -111,6 +114,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
 
     private fun showPdf(Uri: Uri?): Boolean {
         Uri?.let { uri ->
+            binding.root.isRefreshing=false
             binding.showPDf.isVisible = true
             binding.showPDf.fromUri(uri).enableDoubletap(true)
                 .enableSwipe(true)
@@ -128,7 +132,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
             .setAllowedOverMetered(true)
             .setDestinationUri(Uri.fromFile(uri))
-        binding.root.isRefreshing=true
+        showLoading("PDF is Downloading,\nDon't close the App.")
         val downloadManger: DownloadManager =
             activity?.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         return downloadManger.enqueue(request)
