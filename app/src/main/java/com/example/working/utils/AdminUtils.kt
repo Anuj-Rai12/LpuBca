@@ -4,10 +4,14 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.pm.ActivityInfo
+import android.os.Build
+import android.os.Environment
 import android.os.Parcelable
 import com.example.working.adminui.respotry.FileInfo
 import com.google.firebase.firestore.IgnoreExtraProperties
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.parcelize.Parcelize
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -102,5 +106,14 @@ fun isWebsiteFile(input: String): Boolean {
     val regex = Regex(pattern = "^[a-zA-Z]+\\.com$", options = setOf(RegexOption.IGNORE_CASE))
     return regex.matches(input)
 }
+fun getFileDir(fileName:String,context: Context): File {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+        File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),fileName)
+    else
+        File(
+            Environment.getExternalStoragePublicDirectory
+            (Environment.DIRECTORY_DOWNLOADS),fileName)
+}
 const val SHARED_WEBSITE="Hey, Check this Interesting Website,"
 const val SHARE_IMAGE="Hey,Check this Image,"
+const val SHARE_PDF="Hey Check this PDF,"

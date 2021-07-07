@@ -28,7 +28,9 @@ class UnitPaginationSource(private val query: Query) : PagingSource<QuerySnapsho
                         .get().await()
                     val firstname =data.getField<String?>("firstname")
                     val lastname =data.getField<String?>("lastname")
-                    info.sourceId="$firstname $lastname"
+                    firstname?.let { string->
+                    info.sourceId="$string $lastname"
+                    }
                     return@filterValues true
                 }
                 op.id = it.id

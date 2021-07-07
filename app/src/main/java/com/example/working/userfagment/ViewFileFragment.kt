@@ -1,8 +1,11 @@
 package com.example.working.userfagment
 
 import android.annotation.SuppressLint
+import android.app.DownloadManager
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.ConnectivityManager
@@ -17,7 +20,9 @@ import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -37,6 +42,7 @@ import com.example.working.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
+import java.io.File
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -59,14 +65,22 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
             checkConnection()
             webViewLoading()
             onBackPressed()
-        }
-        if (isPngFile(args.fileinfo.fileName!!) || isJpgFile(args.fileinfo.fileName!!)) {
+        } else if (isPngFile(args.fileinfo.fileName!!) || isJpgFile(args.fileinfo.fileName!!)) {
             binding.MyZoomImg.isVisible = true
             try {
                 val uri = myViewModel.downloadFile.getValue(args.title)
                 binding.MyZoomImg.setImage(ImageSource.uri(uri.toString().toUri()))
             } catch (e: NoSuchElementException) {
                 setImage()
+            }
+        } else if (isPdfFile(args.title)) {
+            try {
+                binding.showPDf.isVisible=true
+                val uri=myViewModel.downloadFile.getValue(args.title)
+                showPdf(uri)
+            } catch (e: NoSuchElementException) {
+                val id = setFileDownload()
+                setBroadcastReceiver(id)
             }
         }
         binding.root.setOnRefreshListener {
@@ -78,27 +92,81 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
         setHasOptionsMenu(true)
     }
 
+    private fun setBroadcastReceiver(TrueId: Long) {
+        val receiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                binding.root.isRefreshing=false
+                if (id == TrueId) {
+                    val uri = getFileUrl(getFileDir(fileName = args.title, requireContext()))
+                    Toast.makeText(activity, "Downloaded Path \n $uri", Toast.LENGTH_SHORT).show()
+                    //Show PDf
+                    if (showPdf(uri))
+                        myViewModel.downloadFile[args.title] = uri!!
+                }
+            }
+        }
+        activity?.registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+    }
+
+    private fun showPdf(Uri: Uri?): Boolean {
+        Uri?.let { uri ->
+            binding.showPDf.isVisible = true
+            binding.showPDf.fromUri(uri).enableDoubletap(true)
+                .enableSwipe(true)
+                .load()
+            return true
+        }
+        return false
+    }
+
+    private fun setFileDownload(): Long {
+        val uri =getFileDir(args.title, requireContext())
+        val request = DownloadManager.Request(Uri.parse(args.fileinfo.downloadUrl))
+            .setTitle(args.title)
+            .setDescription("${args.title} file Size:${args.fileinfo.fileSize} Downloading..")
+            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+            .setAllowedOverMetered(true)
+            .setDestinationUri(Uri.fromFile(uri))
+        binding.root.isRefreshing=true
+        val downloadManger: DownloadManager =
+            activity?.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        return downloadManger.enqueue(request)
+    }
+
+    private fun getFileUrl(file: File): Uri? {
+        return FileProvider.getUriForFile(
+            requireContext(),
+            requireContext().applicationContext.packageName.toString() + ".provider",
+            file
+        )
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.share_menu, menu)
         val share = menu.findItem(R.id.shareFile)
         share?.setOnMenuItemClickListener {
             if (isWebsiteFile(args.title)) {
-                shareText()
+                shareText(SHARED_WEBSITE)
             } else if (isPngFile(args.title) || isJpgFile(args.title)) {
                 shareImage()
+            }
+            else if(isPdfFile(args.title))
+            {
+                shareText(SHARE_PDF)
             }
             return@setOnMenuItemClickListener true
         }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    private fun shareText() {
+    private fun shareText(SHARED: String) {
         val share = Intent(Intent.ACTION_SEND)
         share.type = "text/plain"
         share.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
         share.putExtra(
             Intent.EXTRA_TEXT,
-            "$SHARED_WEBSITE\n\n${args.fileinfo.downloadUrl}\n\nShared By : ${args.fileinfo.sourceId}"
+            "$SHARED\n\n${args.fileinfo.downloadUrl}\n\nShared By : ${args.fileinfo.sourceId}"
         )
         startActivity(Intent.createChooser(share, "Share File!"))
     }
@@ -113,7 +181,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
             }
             startActivity(Intent.createChooser(intent, "Share File!"))
         } catch (e: Exception) {
-            dialog(message = e.localizedMessage?:"")
+            dialog(message = e.localizedMessage ?: "")
         }
 
     }
