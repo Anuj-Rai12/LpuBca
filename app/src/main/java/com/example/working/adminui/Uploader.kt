@@ -1,13 +1,11 @@
 package com.example.working.adminui
 
 import android.annotation.SuppressLint
-import android.content.ContentResolver
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.webkit.MimeTypeMap
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -166,7 +164,7 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
                 Snackbar.make(requireView(), "Please enter the value", Snackbar.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            if ( folderName.isNotBlank() && folderName.isNotEmpty())
+            if (folderName.isNotBlank() && folderName.isNotEmpty())
                 generatePath(folderName, fileName)
             Log.i(TAG, "onViewCreated: ${adminViewModel.folderName}")
             downloadLink(downloadLink, fileName)
@@ -242,7 +240,7 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
     }
 
     private fun generatePath(folderName: String, fileName: String): String {
-        val tags= getPathFile(folderName)
+        val tags = getPathFile(folderName)
         var str = "$semesterNo/$material/"
         if (tags.size >= 2) {
             adminViewModel.folderName = tags[1]
@@ -330,19 +328,7 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
         customProgressBar.show(requireActivity(), string, boolean)
     }
 
-    private fun getMimeType(uri: Uri): String? {
-        return if (ContentResolver.SCHEME_CONTENT == uri.scheme) {
-            val cr: ContentResolver? = context?.contentResolver
-            cr?.getType(uri)
-        } else {
-            val fileExtension = MimeTypeMap.getFileExtensionFromUrl(
-                uri.toString()
-            )
-            MimeTypeMap.getSingleton().getMimeTypeFromExtension(
-                fileExtension.lowercase(Locale.getDefault())
-            )
-        }
-    }
+    private fun getMimeType(uri: Uri) = com.example.working.utils.getMimeType(uri, requireContext())
 
     override fun onResume() {
         super.onResume()

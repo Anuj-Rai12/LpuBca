@@ -107,6 +107,8 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
                     if (showPdf(uri))
                         myViewModel.downloadFile[args.title] = uri!!
                 }
+                else
+                    dialog(message = "File is Not Downloaded :(")
             }
         }
         activity?.registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
@@ -126,12 +128,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
 
     private fun setFileDownload(): Long {
         val uri =getFileDir(args.title, requireContext())
-        val request = DownloadManager.Request(Uri.parse(args.fileinfo.downloadUrl))
-            .setTitle(args.title)
-            .setDescription("${args.title} file Size:${args.fileinfo.fileSize} Downloading..")
-            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-            .setAllowedOverMetered(true)
-            .setDestinationUri(Uri.fromFile(uri))
+        val request= getDownloadRequest(args.fileinfo,uri)
         showLoading("PDF is Downloading,\nDon't close the App.")
         val downloadManger: DownloadManager =
             activity?.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager

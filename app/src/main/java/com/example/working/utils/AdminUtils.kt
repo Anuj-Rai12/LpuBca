@@ -2,14 +2,17 @@ package com.example.working.utils
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.DownloadManager
+import android.content.ContentResolver
 import android.content.Context
 import android.content.pm.ActivityInfo
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.os.Parcelable
+import android.webkit.MimeTypeMap
 import com.example.working.adminui.respotry.FileInfo
 import com.google.firebase.firestore.IgnoreExtraProperties
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.parcelize.Parcelize
 import java.io.File
 import java.text.SimpleDateFormat
@@ -87,6 +90,11 @@ fun isDocFile(input: String): Boolean {
     return regex.matches(input)
 }
 
+fun isDocxFile(input: String): Boolean {
+    val regex = Regex(pattern = "^[a-zA-Z]+\\.docx$", options = setOf(RegexOption.IGNORE_CASE))
+    return regex.matches(input)
+}
+
 fun isPngFile(input: String): Boolean {
     val regex = Regex(pattern = "^[a-zA-Z]+\\.png$", options = setOf(RegexOption.IGNORE_CASE))
     return regex.matches(input)
@@ -106,14 +114,40 @@ fun isWebsiteFile(input: String): Boolean {
     val regex = Regex(pattern = "^[a-zA-Z]+\\.com$", options = setOf(RegexOption.IGNORE_CASE))
     return regex.matches(input)
 }
-fun getFileDir(fileName:String,context: Context): File {
+
+fun getFileDir(fileName: String, context: Context): File {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-        File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),fileName)
+        File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), fileName)
     else
         File(
             Environment.getExternalStoragePublicDirectory
-            (Environment.DIRECTORY_DOWNLOADS),fileName)
+                (Environment.DIRECTORY_DOWNLOADS), fileName
+        )
 }
-const val SHARED_WEBSITE="Hey, Check this Interesting Website,"
-const val SHARE_IMAGE="Hey,Check this Image,"
-const val SHARE_PDF="Hey Check this PDF,"
+
+fun getMimeType(uri: Uri, context: Context): String? {
+    return if (ContentResolver.SCHEME_CONTENT == uri.scheme) {
+        val cr: ContentResolver? = context.contentResolver
+        cr?.getType(uri)
+    } else {
+        val fileExtension = MimeTypeMap.getFileExtensionFromUrl(
+            uri.toString()
+        )
+        MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+            fileExtension.lowercase(Locale.getDefault())
+        )
+    }
+}
+
+fun getDownloadRequest(fileInfo: FileInfo, uri: File): DownloadManager.Request? {
+    return DownloadManager.Request(Uri.parse(fileInfo.downloadUrl))
+        .setTitle(fileInfo.fileName)
+        .setDescription("file Size:${fileInfo.fileSize}")
+        .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
+        .setAllowedOverMetered(true)
+        .setDestinationUri(Uri.fromFile(uri))
+}
+
+const val SHARED_WEBSITE = "Hey, Check this Interesting Website,"
+const val SHARE_IMAGE = "Hey,Check this Image,"
+const val SHARE_PDF = "Hey Check this PDF,"

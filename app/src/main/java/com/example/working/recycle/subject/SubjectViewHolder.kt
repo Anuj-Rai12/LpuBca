@@ -50,7 +50,7 @@ class SubjectViewHolder(private val binding: SubjectItemBinding) :
                 text=fileInfo.date
             }
             subjectTeacherName.isVisible=false
-            if (isDocFile(fileInfo.fileName!!))
+            if (isDocFile(fileInfo.fileName!!)|| isDocxFile(fileInfo.fileName))
                 folderBox.setImageResource(R.drawable.wordfile)
             else if (isPdfFile(fileInfo.fileName))
                 folderBox.setImageResource(R.drawable.fileimage)
