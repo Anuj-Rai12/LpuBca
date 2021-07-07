@@ -20,6 +20,7 @@ class SubjectViewHolder(private val binding: SubjectItemBinding) :
             binding.root.setOnClickListener {
                 function(subjectInfo.subject ?: " ")
             }
+            folderBox.setImageResource(R.drawable.ic_folder_name)
             textView.text="${subjectInfo.subject},\n"
             textView.append(subjectInfo.description ?: "No Description")
             subjectTeacherName.text = subjectInfo.teacher ?: "No Teacher"
@@ -34,6 +35,7 @@ class SubjectViewHolder(private val binding: SubjectItemBinding) :
             subjectTeacherName.isVisible=false
             textView.textAlignment=View.TEXT_ALIGNMENT_TEXT_START
             textView.textSize=18.toFloat()
+            folderBox.setImageResource(R.drawable.ic_folder_name)
             unitCurrentData.text=allData.date?:"00/00/0000"
             root.setOnClickListener {
                 val fileInfo=allData.map?.values
@@ -51,13 +53,13 @@ class SubjectViewHolder(private val binding: SubjectItemBinding) :
             }
             subjectTeacherName.isVisible=false
             if (isDocFile(fileInfo.fileName!!)|| isDocxFile(fileInfo.fileName))
-                folderBox.setImageResource(R.drawable.wordfile)
+                folderBox.setBackgroundResource(R.drawable.myword)
             else if (isPdfFile(fileInfo.fileName))
-                folderBox.setImageResource(R.drawable.fileimage)
+                folderBox.setBackgroundResource(R.drawable.mypdf)
             else if (isJpgFile(fileInfo.fileName)|| isPngFile(fileInfo.fileName))
-                folderBox.setImageResource(R.drawable.ic_image)
+                folderBox.setBackgroundResource(R.drawable.ic_image)
             else if (isWebsiteFile(fileInfo.fileName))
-                folderBox.setImageResource(R.drawable.ic_web)
+                folderBox.setBackgroundResource(R.drawable.ic_web)
             root.setOnClickListener {
                 function(fileInfo)
             }
@@ -65,7 +67,7 @@ class SubjectViewHolder(private val binding: SubjectItemBinding) :
                 text = fileInfo.fileName
                 if (fileInfo.fileSize!=null)
                     append(",\nFile Size: ${fileInfo.fileSize}")
-                    append(",\nSource: ${fileInfo.sourceId}")
+                    append(",\nShared By: ${fileInfo.sourceId}")
                 textSize=15.toFloat()
                 textAlignment = View.TEXT_ALIGNMENT_TEXT_START
             }

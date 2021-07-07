@@ -10,6 +10,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.ConnectivityManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -22,6 +23,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
@@ -53,6 +55,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
 
     @Inject
     lateinit var customProgress: CustomProgress
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = ViewFileFragmentBinding.bind(view)
@@ -94,6 +97,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
 
     private fun setBroadcastReceiver(TrueId: Long) {
         val receiver = object : BroadcastReceiver() {
+            @RequiresApi(Build.VERSION_CODES.M)
             override fun onReceive(context: Context?, intent: Intent?) {
                 val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
                 hideLoading()
@@ -114,6 +118,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
         activity?.registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun showPdf(Uri: Uri?): Boolean {
         Uri?.let { uri ->
             binding.root.isRefreshing=false
@@ -121,6 +126,15 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
             binding.showPDf.fromUri(uri).enableDoubletap(true)
                 .enableSwipe(true)
                 .load()
+            Log.i(TAG, "showPdf: ${binding.showPDf.currentPage}")
+            binding.showPDf.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
+                Log.i(TAG, "showPdf: ${binding.showPDf.currentPage}")
+                Log.i(TAG, "showPdf: Scroll X=> $scrollX")
+                Log.i(TAG, "showPdf: Scroll y=> $scrollY")
+                Log.i(TAG, "showPdf: OldScroll X=> $oldScrollX")
+                Log.i(TAG, "showPdf: OldScroll Y=> $oldScrollY")
+                Log.i(TAG, "showPdf: V => $v")
+            }
             return true
         }
         return false

@@ -175,8 +175,10 @@ class BooksFragment : Fragment(R.layout.book_fragment) {
     }
 
     private fun dialog(title: String = "Error!", message: String) {
+        activity?.let {
         val action = BooksFragmentDirections.actionGlobalPasswordDialog2(title, message)
         findNavController().navigate(action)
+        }
     }
 
     private fun checkItEmpty() {
