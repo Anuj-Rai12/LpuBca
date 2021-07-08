@@ -41,11 +41,13 @@ import com.example.working.R
 import com.example.working.databinding.ViewFileFragmentBinding
 import com.example.working.loginorsignup.TAG
 import com.example.working.utils.*
+import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.io.File
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
@@ -80,8 +82,10 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
         } else if (isPdfFile(args.title)) {
             try {
                 binding.showPDf.isVisible = true
-                val uri = myViewModel.downloadFile.getValue(args.title)
-                showPdf(uri)
+//                val str="content://com.example.working.provider/external_files/Download/ProfileAndLoss.Pdf"
+                val str = myViewModel.downloadFile.getValue(args.title)
+               Log.i(TAG, "onViewCreated: Uri->$str")
+                showPdf(str)
             } catch (e: NoSuchElementException) {
                 val id = setFileDownload()
                 setBroadcastReceiver(id)
@@ -118,13 +122,21 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
         activity?.registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
 
+    @SuppressLint("SetTextI18n")
     @RequiresApi(Build.VERSION_CODES.M)
     private fun showPdf(Uri: Uri?): Boolean {
         Uri?.let { uri ->
             binding.root.isRefreshing = false
             binding.showPDf.isVisible = true
-            binding.showPDf.fromUri(uri).enableDoubletap(true)
+            binding.showPDf.fromUri(uri).defaultPage(0)
                 .enableSwipe(true)
+                .enableDoubletap(true)
+                .scrollHandle(object : DefaultScrollHandle(activity){})
+                .onRender { _, _, _ ->
+                    binding.showPDf.fitToWidth()
+                }
+                .spacing(2)
+                .enableAnnotationRendering(true)
                 .load()
             Log.i(TAG, "showPdf: ${binding.showPDf.currentPage}")
             return true
