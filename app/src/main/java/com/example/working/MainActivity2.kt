@@ -56,7 +56,7 @@ class MainActivity2 : AppCompatActivity() {
             shareLink?.let { url ->
                 shareText(
                     SHARED = SHARED_APP,
-                    context = applicationContext,
+                    context = this,
                     downloadUri = url,
                     sharedBy = userName.text.toString(),
                     title = "Share App!"
