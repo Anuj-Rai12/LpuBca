@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.DownloadManager
 import android.content.ContentResolver
 import android.content.Context
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Build
@@ -148,6 +149,19 @@ fun getDownloadRequest(fileInfo: FileInfo, uri: File): DownloadManager.Request? 
         .setDestinationUri(Uri.fromFile(uri))
 }
 
+fun shareText(SHARED: String, context: Context, downloadUri: String, sharedBy: String,title:String="Share File!") {
+    val share = Intent(Intent.ACTION_SEND)
+    share.type = "text/plain"
+    share.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
+    share.putExtra(
+        Intent.EXTRA_TEXT,
+        "$SHARED\n\n$downloadUri\n\nShared By : $sharedBy"
+    )
+    context.startActivity(Intent.createChooser(share, title))
+}
+
 const val SHARED_WEBSITE = "Hey, Check this Interesting Website,"
 const val SHARE_IMAGE = "Hey,Check this Image,"
 const val SHARE_PDF = "Hey Check this PDF,"
+const val SHARED_APP =
+    "Check This App,\nThis App contains All the PPT,Other Resources Which is helpful for you studies"

@@ -22,7 +22,7 @@ import javax.inject.Inject
 
 private const val VERSION = 1
 const val ADMIN_PHONE = "+917777755555"
-
+const val SHARE_Key="ShareIt"
 @AndroidEntryPoint
 class MainActivity3 : AppCompatActivity() {
     private lateinit var binding: SplashScreenBinding
@@ -31,7 +31,7 @@ class MainActivity3 : AppCompatActivity() {
     lateinit var customProgressBar: CustomProgressBar
 
     private lateinit var updateDialog: UpdateDialog
-
+    private var shareLink: String? = null
     private val myViewModel: MyViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,10 +74,14 @@ class MainActivity3 : AppCompatActivity() {
                     } else if (flag && user)//User is Not Sign In
                         dir(1)
                     else //User is Sign In
-                        if (FirebaseAuth.getInstance().currentUser?.phoneNumber == ADMIN_PHONE)
+                        if (FirebaseAuth.getInstance().currentUser?.phoneNumber == ADMIN_PHONE) {
+                            shareLink=update.download
                             dir(4)
-                        else
+                        }
+                        else {
+                            shareLink=update.download
                             dir()
+                        }
                 }
                 is MySealed.Error -> {
                     hideLoading()
@@ -111,11 +115,13 @@ class MainActivity3 : AppCompatActivity() {
             }
             4 -> {
                 val intent = Intent(this, MainActivity4::class.java)
+                intent.putExtra(SHARE_Key,shareLink)
                 startActivity(intent)
                 finish()
             }
             else -> {
                 val intent = Intent(this, MainActivity2::class.java)
+                intent.putExtra(SHARE_Key,shareLink)
                 startActivity(intent)
                 finish()
             }

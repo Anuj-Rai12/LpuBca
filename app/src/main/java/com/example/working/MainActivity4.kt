@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -29,6 +28,9 @@ class MainActivity4 : AppCompatActivity() {
     private lateinit var logout: TextView
     private lateinit var share: TextView
     private val myViewModel: MyViewModel by viewModels()
+    private val shareLink by lazy {
+        intent.getStringExtra(SHARE_Key)
+    }
 
     @Inject
     lateinit var customProgress: CustomProgress
@@ -45,12 +47,20 @@ class MainActivity4 : AppCompatActivity() {
         share = binding.nagViewAdmin.getHeaderView(0).findViewById(R.id.myshareText)!!
         logout.setOnClickListener {
             val updateDialog = UpdateDialog("Do You Really Want to LogOut?", null, "LogOut!")
-            updateDialog.isCancelable=false
+            updateDialog.isCancelable = false
             updateDialog.show(supportFragmentManager, "LogOUt")
         }
         setUpProfile()
         share.setOnClickListener {
-            Toast.makeText(this, "Doing", Toast.LENGTH_SHORT).show()
+            shareLink?.let { url ->
+                shareText(
+                    SHARED = SHARED_APP,
+                    context = applicationContext,
+                    downloadUri = url,
+                    sharedBy = userName.text.toString(),
+                    title = "Share App!"
+                )
+            }
         }
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView3) as NavHostFragment

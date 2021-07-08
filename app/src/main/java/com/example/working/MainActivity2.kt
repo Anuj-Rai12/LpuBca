@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -14,10 +13,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.working.databinding.ActivityMain2Binding
-import com.example.working.utils.Convertor
-import com.example.working.utils.CustomProgress
-import com.example.working.utils.MySealed
-import com.example.working.utils.UpdateDialog
+import com.example.working.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -32,6 +28,9 @@ class MainActivity2 : AppCompatActivity() {
     private lateinit var logout: TextView
     private lateinit var share: TextView
     private val myViewModel: MyViewModel by viewModels()
+    private val shareLink by lazy {
+        intent.getStringExtra(SHARE_Key)
+    }
 
     @Inject
     lateinit var customProgress: CustomProgress
@@ -50,11 +49,19 @@ class MainActivity2 : AppCompatActivity() {
         share = binding?.nagView?.getHeaderView(0)?.findViewById(R.id.myshareText)!!
         logout.setOnClickListener {
             val updateDialog = UpdateDialog("Do You Really Want to LogOut?", null, "LogOut!")
-            updateDialog.isCancelable=false
+            updateDialog.isCancelable = false
             updateDialog.show(supportFragmentManager, "LogOUt")
         }
         share.setOnClickListener {
-            Toast.makeText(this, "Doing", Toast.LENGTH_SHORT).show()
+            shareLink?.let { url ->
+                shareText(
+                    SHARED = SHARED_APP,
+                    context = applicationContext,
+                    downloadUri = url,
+                    sharedBy = userName.text.toString(),
+                    title = "Share App!"
+                )
+            }
         }
         setUpProfile()
         navController = navHostFragment.navController

@@ -55,6 +55,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
 
     @Inject
     lateinit var customProgress: CustomProgress
+
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -78,8 +79,8 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
             }
         } else if (isPdfFile(args.title)) {
             try {
-                binding.showPDf.isVisible=true
-                val uri=myViewModel.downloadFile.getValue(args.title)
+                binding.showPDf.isVisible = true
+                val uri = myViewModel.downloadFile.getValue(args.title)
                 showPdf(uri)
             } catch (e: NoSuchElementException) {
                 val id = setFileDownload()
@@ -102,7 +103,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
                 val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
                 hideLoading()
                 if (id == TrueId) {
-                    binding.root.isRefreshing=true
+                    binding.root.isRefreshing = true
                     val uri = getFileUrl(getFileDir(fileName = args.title, requireContext()))
                     activity?.let {
                         Toast.makeText(it, "Downloaded Path \n $uri", Toast.LENGTH_LONG).show()
@@ -110,8 +111,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
                     //Show PDf
                     if (showPdf(uri))
                         myViewModel.downloadFile[args.title] = uri!!
-                }
-                else
+                } else
                     dialog(message = "File is Not Downloaded :(")
             }
         }
@@ -121,28 +121,20 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
     @RequiresApi(Build.VERSION_CODES.M)
     private fun showPdf(Uri: Uri?): Boolean {
         Uri?.let { uri ->
-            binding.root.isRefreshing=false
+            binding.root.isRefreshing = false
             binding.showPDf.isVisible = true
             binding.showPDf.fromUri(uri).enableDoubletap(true)
                 .enableSwipe(true)
                 .load()
             Log.i(TAG, "showPdf: ${binding.showPDf.currentPage}")
-            binding.showPDf.setOnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
-                Log.i(TAG, "showPdf: ${binding.showPDf.currentPage}")
-                Log.i(TAG, "showPdf: Scroll X=> $scrollX")
-                Log.i(TAG, "showPdf: Scroll y=> $scrollY")
-                Log.i(TAG, "showPdf: OldScroll X=> $oldScrollX")
-                Log.i(TAG, "showPdf: OldScroll Y=> $oldScrollY")
-                Log.i(TAG, "showPdf: V => $v")
-            }
             return true
         }
         return false
     }
 
     private fun setFileDownload(): Long {
-        val uri =getFileDir(args.title, requireContext())
-        val request= getDownloadRequest(args.fileinfo,uri)
+        val uri = getFileDir(args.title, requireContext())
+        val request = getDownloadRequest(args.fileinfo, uri)
         showLoading("PDF is Downloading,\nDon't close the App.")
         val downloadManger: DownloadManager =
             activity?.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
@@ -165,9 +157,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
                 shareText(SHARED_WEBSITE)
             } else if (isPngFile(args.title) || isJpgFile(args.title)) {
                 shareImage()
-            }
-            else if(isPdfFile(args.title))
-            {
+            } else if (isPdfFile(args.title)) {
                 shareText(SHARE_PDF)
             }
             return@setOnMenuItemClickListener true
@@ -176,14 +166,14 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
     }
 
     private fun shareText(SHARED: String) {
-        val share = Intent(Intent.ACTION_SEND)
-        share.type = "text/plain"
-        share.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
-        share.putExtra(
-            Intent.EXTRA_TEXT,
-            "$SHARED\n\n${args.fileinfo.downloadUrl}\n\nShared By : ${args.fileinfo.sourceId}"
-        )
-        startActivity(Intent.createChooser(share, "Share File!"))
+        activity?.let {
+            shareText(
+                SHARED = SHARED,
+                context = it,
+                downloadUri = args.fileinfo.downloadUrl!!,
+                sharedBy = args.fileinfo.sourceId!!
+            )
+        }
     }
 
     private fun shareImage() {
