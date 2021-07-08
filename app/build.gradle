@@ -106,4 +106,9 @@ dependencies {
     implementation 'com.github.MikeOrtiz:TouchImageView:1.4.1'
     //PDF Viewer
     implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
+    //Room
+    implementation("androidx.room:room-runtime:$room_version")
+    kapt("androidx.room:room-compiler:$room_version")
+    // MultiDex
+    implementation "androidx.multidex:multidex:$multidex_version"
 }
