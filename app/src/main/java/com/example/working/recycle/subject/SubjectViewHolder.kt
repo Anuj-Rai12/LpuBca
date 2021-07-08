@@ -44,33 +44,4 @@ class SubjectViewHolder(private val binding: SubjectItemBinding) :
         }
     }
 
-    @SuppressLint("SetTextI18n", "ResourceAsColor")
-    fun bindFile(function: (FileInfo) -> Unit, fileInfo: FileInfo) {
-        binding.apply {
-            unitCurrentData.apply {
-                isVisible = true
-                text=fileInfo.date
-            }
-            subjectTeacherName.isVisible=false
-            if (isDocFile(fileInfo.fileName!!)|| isDocxFile(fileInfo.fileName))
-                folderBox.setBackgroundResource(R.drawable.myword)
-            else if (isPdfFile(fileInfo.fileName))
-                folderBox.setBackgroundResource(R.drawable.mypdf)
-            else if (isJpgFile(fileInfo.fileName)|| isPngFile(fileInfo.fileName))
-                folderBox.setBackgroundResource(R.drawable.ic_image)
-            else if (isWebsiteFile(fileInfo.fileName))
-                folderBox.setBackgroundResource(R.drawable.ic_web)
-            root.setOnClickListener {
-                function(fileInfo)
-            }
-            textView.apply {
-                text = fileInfo.fileName
-                if (fileInfo.fileSize!=null)
-                    append(",\nFile Size: ${fileInfo.fileSize}")
-                    append(",\nShared By: ${fileInfo.sourceId}")
-                textSize=15.toFloat()
-                textAlignment = View.TEXT_ALIGNMENT_TEXT_START
-            }
-        }
-    }
 }

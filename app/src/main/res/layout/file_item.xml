@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:backgroundTint="@color/light_green"
+    app:cardCornerRadius="15dp"
+    app:cardElevation="8dp"
+    app:cardUseCompatPadding="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/another_leaf_background"
+        android:orientation="vertical">
+
+        <ImageButton
+            android:id="@+id/ShareSubject"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@color/white"
+            android:src="@drawable/ic_share" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/ClickLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/subject_img"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:backgroundTint="@color/light_green"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@drawable/ic_web" />
+
+            <TextView
+                android:id="@+id/fileNameTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:fontFamily="@font/allerta"
+                android:paddingBottom="3dp"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintLeft_toLeftOf="@id/subject_img"
+                app:layout_constraintRight_toRightOf="@id/subject_img"
+                app:layout_constraintTop_toBottomOf="@id/subject_img"
+                tools:text="File-Name" />
+
+            <TextView
+                android:id="@+id/fileSizeTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:fontFamily="@font/average_sans"
+                android:paddingBottom="3dp"
+                android:textColor="@color/grey"
+                android:textSize="15sp"
+                app:layout_constraintRight_toRightOf="@id/fileNameTxt"
+                app:layout_constraintLeft_toLeftOf="@id/fileNameTxt"
+                app:layout_constraintTop_toBottomOf="@id/fileNameTxt"
+                tools:text="File Size: 23kb" />
+
+            <TextView
+                android:id="@+id/sharedUserName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:drawablePadding="3dp"
+                android:drawableTint="@color/black"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                app:layout_constraintRight_toRightOf="@id/fileSizeTxt"
+                app:drawableStartCompat="@drawable/ic_person"
+                app:layout_constraintLeft_toLeftOf="@id/fileSizeTxt"
+                app:layout_constraintTop_toBottomOf="@id/fileSizeTxt"
+                tools:text="Share by: Anuj Rai" />
+
+            <TextView
+                android:id="@+id/fileUpdateTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:paddingBottom="4dp"
+                android:drawablePadding="4dp"
+                android:drawableTint="@color/black"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                app:drawableStartCompat="@drawable/ic_time"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sharedUserName"
+                tools:text="78/59/2005,12:23:43" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

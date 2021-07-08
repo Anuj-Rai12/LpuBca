@@ -61,8 +61,8 @@ class BooksFragment : Fragment(R.layout.book_fragment) {
             recycleView.apply {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(requireContext())
-                fileRecycleView = FileRecycleView {
-                    onClickFileInfo(it)
+                fileRecycleView = FileRecycleView(requireActivity()) {file->
+                    onClickFileInfo(file)
                 }
                 adapter = fileRecycleView
             }
