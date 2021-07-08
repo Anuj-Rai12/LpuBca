@@ -25,7 +25,6 @@ import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
-import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -35,7 +34,6 @@ import androidx.navigation.fragment.navArgs
 import coil.ImageLoader
 import coil.request.ImageRequest
 import coil.request.SuccessResult
-import com.davemorrissey.labs.subscaleview.ImageSource
 import com.example.working.MyViewModel
 import com.example.working.R
 import com.example.working.databinding.ViewFileFragmentBinding
@@ -67,7 +65,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
             webViewLoading()
             onBackPressed()
         } else if (savedInstanceState == null && isWebsiteFile(args.fileinfo.fileName!!)) {
-            binding.webView.isVisible = true
+            binding.myRoot.isVisible = true
             checkConnection()
             webViewLoading()
             onBackPressed()
@@ -75,7 +73,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
             binding.MyZoomImg.isVisible = true
             try {
                 val uri = myViewModel.downloadFile.getValue(args.title)
-                binding.MyZoomImg.setImage(ImageSource.uri(uri.toString().toUri()))
+                binding.MyZoomImg.setImageURI(uri)
             } catch (e: NoSuchElementException) {
                 setImage()
             }
@@ -91,11 +89,11 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
                 setBroadcastReceiver(id)
             }
         }
-        binding.root.setOnRefreshListener {
+        binding.myRoot.setOnRefreshListener {
             if (isWebsiteFile(args.fileinfo.fileName!!)) {
                 checkConnection()
             } else
-                binding.root.isRefreshing = false
+                binding.myRoot.isRefreshing = false
         }
         setHasOptionsMenu(true)
     }
@@ -107,7 +105,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
                 val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
                 hideLoading()
                 if (id == TrueId) {
-                    binding.root.isRefreshing = true
+                    binding.myRoot.isRefreshing = true
                     val uri = getFileUrl(getFileDir(fileName = args.title, requireContext()))
                     activity?.let {
                         Toast.makeText(it, "Downloaded Path \n $uri", Toast.LENGTH_LONG).show()
@@ -126,7 +124,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
     @RequiresApi(Build.VERSION_CODES.M)
     private fun showPdf(Uri: Uri?): Boolean {
         Uri?.let { uri ->
-            binding.root.isRefreshing = false
+            binding.myRoot.isRefreshing = false
             binding.showPDf.isVisible = true
             binding.showPDf.fromUri(uri).defaultPage(0)
                 .enableSwipe(true)
@@ -209,7 +207,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
             getBitmap()?.let { bitMap ->
                 bitUrl(bitMap)?.let { uri ->
                     hideLoading()
-                    binding.MyZoomImg.setImage(ImageSource.uri(uri))
+                    binding.MyZoomImg.setImageURI(uri)
                     myViewModel.downloadFile[args.title] = uri
                 }
             }
@@ -244,8 +242,10 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
     }
 
     private fun dialog(title: String = "Error", message: String) {
-        val action = ViewFileFragmentDirections.actionGlobalPasswordDialog2(title, message)
-        findNavController().navigate(action)
+        activity?.let{
+            val action = ViewFileFragmentDirections.actionGlobalPasswordDialog2(title, message)
+            findNavController().navigate(action)
+        }
     }
 
     private fun webViewLoading() {
@@ -256,11 +256,11 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
                     Log.i(TAG, "onProgressChanged:Loading Completed")
                     hideLoading()
                     myViewModel.websiteloading = false
-                    binding.root.isRefreshing = false
+                    binding.myRoot.isRefreshing = false
                 } else if (newProgress <= 10) {
                     if (myViewModel.websiteloading)
                         showLoading()
-                    binding.root.isRefreshing = true
+                    binding.myRoot.isRefreshing = true
                 }
                 super.onProgressChanged(view, newProgress)
             }
