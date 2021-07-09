@@ -29,7 +29,7 @@ class MainActivity2 : AppCompatActivity() {
     private lateinit var share: TextView
     private val myViewModel: MyViewModel by viewModels()
     private val shareLink by lazy {
-        intent.getStringExtra(SHARE_Key)
+        MainActivity3.mySharedUrl
     }
 
     @Inject

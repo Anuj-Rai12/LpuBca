@@ -1,8 +1,6 @@
 package com.example.working
 
-import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
@@ -11,7 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.working.databinding.SplashScreenBinding
 import com.example.working.loginorsignup.TAG
 import com.example.working.repos.Update
-import com.example.working.utils.CustomProgressBar
+import com.example.working.utils.CustomProgress
 import com.example.working.utils.MySealed
 import com.example.working.utils.UpdateDialog
 import com.google.firebase.auth.FirebaseAuth
@@ -22,16 +20,14 @@ import javax.inject.Inject
 
 private const val VERSION = 1
 const val ADMIN_PHONE = "+917777755555"
-const val SHARE_Key="ShareIt"
 @AndroidEntryPoint
 class MainActivity3 : AppCompatActivity() {
     private lateinit var binding: SplashScreenBinding
 
     @Inject
-    lateinit var customProgressBar: CustomProgressBar
+    lateinit var customProgressBar: CustomProgress
 
     private lateinit var updateDialog: UpdateDialog
-    private var shareLink: String? = null
     private val myViewModel: MyViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,16 +39,11 @@ class MainActivity3 : AppCompatActivity() {
         }
     }
 
-    private fun hideLoading() {
-        this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
-        customProgressBar.dismiss()
+    private fun hideLoading() = customProgressBar.hideLoading(this)
+    companion object {
+        var mySharedUrl: String? = null
     }
-
-    @SuppressLint("SourceLockedOrientationActivity")
-    private fun showLoading(string: String?, boolean: Boolean = false) {
-        this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        customProgressBar.show(this, string, boolean)
-    }
+    private fun showLoading(string: String?)=customProgressBar.showLoading(this, string)
 
     private fun checkUpdate() {
         myViewModel.getUpdate.observe(this) {
@@ -75,11 +66,10 @@ class MainActivity3 : AppCompatActivity() {
                         dir(1)
                     else //User is Sign In
                         if (FirebaseAuth.getInstance().currentUser?.phoneNumber == ADMIN_PHONE) {
-                            shareLink=update.download
+                            mySharedUrl=update.download
                             dir(4)
-                        }
-                        else {
-                            shareLink=update.download
+                        } else {
+                            mySharedUrl=update.download
                             dir()
                         }
                 }
@@ -115,13 +105,11 @@ class MainActivity3 : AppCompatActivity() {
             }
             4 -> {
                 val intent = Intent(this, MainActivity4::class.java)
-                intent.putExtra(SHARE_Key,shareLink)
                 startActivity(intent)
                 finish()
             }
             else -> {
                 val intent = Intent(this, MainActivity2::class.java)
-                intent.putExtra(SHARE_Key,shareLink)
                 startActivity(intent)
                 finish()
             }
