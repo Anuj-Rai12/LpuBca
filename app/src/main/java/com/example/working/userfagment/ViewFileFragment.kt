@@ -218,7 +218,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
 
     private fun shareImage() {
         try {
-            val uri = myViewModel.downloadFile.getValue(args.title)
+            val uri =args.fileinfo.localDownloadUrl?.toUri()?:myViewModel.downloadFile.getValue(args.title)
             val intent = Intent(Intent.ACTION_SEND).apply {
                 type = "image/*"
                 putExtra(Intent.EXTRA_STREAM, uri)

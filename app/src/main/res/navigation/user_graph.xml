@@ -102,4 +102,9 @@
             android:name="title"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/shareUserData"
+        android:name="com.example.working.userfagment.ShareUserData"
+        android:label="Contribution"
+        tools:layout="@layout/share_framgent" />
 </navigation>

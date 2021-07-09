@@ -16,5 +16,10 @@
         android:icon="@drawable/ic_dowload"
         android:iconTint="@color/black"
         android:title="My Downloads" />
+    <item
+        android:id="@+id/shareUserData"
+        android:icon="@drawable/ic_shared_by"
+        android:iconTint="@color/black"
+        android:title="Contribution" />
 
 </menu>

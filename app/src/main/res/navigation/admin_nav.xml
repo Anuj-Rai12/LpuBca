@@ -92,7 +92,7 @@
     <fragment
         android:id="@+id/allUserFragment"
         android:name="com.example.working.adminui.AllUserFragment"
-        android:label="Users"
+        android:label="Friends"
         tools:layout="@layout/alluser_fragment" />
     <fragment
         android:id="@+id/noteFragment"
