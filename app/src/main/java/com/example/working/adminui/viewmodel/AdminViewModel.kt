@@ -6,6 +6,7 @@ import androidx.lifecycle.asLiveData
 import com.example.working.adminui.AllData
 import com.example.working.adminui.respotry.AdminRepository
 import com.example.working.adminui.respotry.FileInfo
+import com.example.working.room.UserData
 import com.example.working.utils.Materials
 import com.example.working.utils.MyFilePath
 import com.example.working.utils.SubjectInfo
@@ -36,6 +37,8 @@ class AdminViewModel @Inject constructor(
 
     fun updateSecondPath(filePath: List<MyFilePath>, map: FileInfo) =
         adminRepository.updateSecondPath(filePath, map).asLiveData()
+
+    fun saveDownload(userData: UserData) = adminRepository.saveDownloadFile(userData).asLiveData()
 
     fun addMoreSubject(path: MyFilePath, map: Map<String, SubjectInfo>) =
         adminRepository.addMoreSubject(path, map).asLiveData()

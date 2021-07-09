@@ -3,8 +3,8 @@
     <item
         android:id="@+id/noteFragment"
         android:icon="@drawable/ic_folder_name"
-        android:title="Resources"
-        android:iconTint="@color/black"/>
+        android:iconTint="@color/black"
+        android:title="Resources" />
     <item
         android:id="@+id/uploader"
         android:icon="@drawable/ic_upload"
@@ -14,6 +14,11 @@
         android:id="@+id/modifier"
         android:icon="@drawable/ic_upload"
         android:title="Upload File Cloud" />
+    <item
+        android:id="@+id/downloadFragment"
+        android:icon="@drawable/ic_dowload"
+        android:iconTint="@color/black"
+        android:title="My Downloads" />
     <item
         android:id="@+id/profileFragment"
         android:icon="@drawable/ic_person"

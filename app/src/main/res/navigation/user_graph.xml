@@ -51,8 +51,12 @@
     <fragment
         android:id="@+id/downloadFragment"
         android:name="com.example.working.userfagment.DownloadFragment"
-        android:label="download_framgnet"
-        tools:layout="@layout/download_framgnet" />
+        android:label="My Downloads"
+        tools:layout="@layout/download_framgnet" >
+        <action
+            android:id="@+id/action_downloadFragment_to_viewFileFragment"
+            app:destination="@id/viewFileFragment" />
+    </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.working.adminui.ProfileFragment"

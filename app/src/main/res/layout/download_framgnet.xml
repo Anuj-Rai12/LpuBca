@@ -6,11 +6,12 @@
     android:layout_height="match_parent"
     tools:context="com.example.working.userfagment.DownloadFragment">
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Download"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/DownloadRecycle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/file_item"
+        android:layoutAnimation="@anim/recycle_left_to_right"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

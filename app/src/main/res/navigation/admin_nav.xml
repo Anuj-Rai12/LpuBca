@@ -116,12 +116,21 @@
         android:id="@+id/viewFileFragment"
         android:name="com.example.working.userfagment.ViewFileFragment"
         android:label="{title}"
-        tools:layout="@layout/view_file_fragment" >
+        tools:layout="@layout/view_file_fragment">
         <argument
             android:name="fileinfo"
             app:argType="com.example.working.adminui.respotry.FileInfo" />
         <argument
             android:name="title"
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/downloadFragment"
+        android:name="com.example.working.userfagment.DownloadFragment"
+        android:label="My Downloads"
+        tools:layout="@layout/download_framgnet">
+        <action
+            android:id="@+id/action_downloadFragment_to_viewFileFragment"
+            app:destination="@id/viewFileFragment" />
     </fragment>
 </navigation>

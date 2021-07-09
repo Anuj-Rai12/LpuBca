@@ -17,10 +17,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.working.MyViewModel
 import com.example.working.R
 import com.example.working.adminui.respotry.FileInfo
+import com.example.working.adminui.viewmodel.AdminViewModel
 import com.example.working.databinding.BookFragmentBinding
 import com.example.working.loginorsignup.TAG
 import com.example.working.recycle.file.FileRecycleView
 import com.example.working.recycle.subject.SubjectRecycleView
+import com.example.working.room.UserData
 import com.example.working.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
@@ -31,6 +33,7 @@ class BooksFragment : Fragment(R.layout.book_fragment) {
     private lateinit var binding: BookFragmentBinding
     private val args: BooksFragmentArgs by navArgs()
     private val myViewModel: MyViewModel by activityViewModels()
+    private val adminViewModel: AdminViewModel by activityViewModels()
     private var subjectRecycleView: SubjectRecycleView? = null
     private var fileRecycleView: FileRecycleView? = null
 
@@ -61,7 +64,7 @@ class BooksFragment : Fragment(R.layout.book_fragment) {
             recycleView.apply {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(requireContext())
-                fileRecycleView = FileRecycleView(requireActivity()) {file->
+                fileRecycleView = FileRecycleView(requireActivity()) { file ->
                     onClickFileInfo(file)
                 }
                 adapter = fileRecycleView
@@ -122,15 +125,26 @@ class BooksFragment : Fragment(R.layout.book_fragment) {
                             Toast.LENGTH_LONG
                         ).show()
                     }
+                    fileInfo.localDownloadUrl=getFileUrl(uri)!!.toString()
+                    adminViewModel.saveDownload(
+                        UserData(
+                            fileInfo = fileInfo,
+                            date = fileInfo.date!!,
+                        )
+                    ).observe(viewLifecycleOwner) {
+                        if (it is MySealed.Success) {
+                            dialog(title = "Success!",message = it.data!!)
+                        }
+                    }
                     //Show Document file
                     viewDocumentFile(uri, fileInfo)
                     return
 
                 } else
                     Log.i(TAG, "onReceive: File is Not Downloaded")
-                    activity?.let {
-                        dialog(message = "File is Not Downloaded :(")
-                    }
+                activity?.let {
+                    dialog(message = "File is Not Downloaded :(")
+                }
             }
         }
         activity?.registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
@@ -145,24 +159,24 @@ class BooksFragment : Fragment(R.layout.book_fragment) {
     }
 
     private fun viewDocumentFile(uri: Any, fileInfo: FileInfo) {
-        val trueUri= when (uri) {
+        val trueUri = when (uri) {
             is File -> getFileUrl(uri)
             is Uri -> uri
             else -> null
         }
-        trueUri?.let {viewUri->
+        trueUri?.let { viewUri ->
             try {
-                    getMimeType(viewUri, requireContext())?.let { mime ->
-                        val objIntent = Intent(Intent.ACTION_VIEW)
-                        objIntent.setDataAndType(viewUri, mime)
-                        objIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
-                        objIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        objIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                        context?.startActivity(Intent.createChooser(objIntent, "Hello"))
-                        myViewModel.downloadFile[fileInfo.fileName!!] = viewUri
-                        return
-                    }
-                    Log.i(TAG, "viewDocumentFile: MIME IS null")
+                getMimeType(viewUri, requireContext())?.let { mime ->
+                    val objIntent = Intent(Intent.ACTION_VIEW)
+                    objIntent.setDataAndType(viewUri, mime)
+                    objIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    objIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    objIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    context?.startActivity(Intent.createChooser(objIntent, "Hello"))
+                    myViewModel.downloadFile[fileInfo.fileName!!] = viewUri
+                    return
+                }
+                Log.i(TAG, "viewDocumentFile: MIME IS null")
             } catch (e: ActivityNotFoundException) {
                 dialog(message = "No Document Viewer Found\n\nTip: Download The Document Viewer to View this File,")
             } catch (e: Exception) {
@@ -170,14 +184,14 @@ class BooksFragment : Fragment(R.layout.book_fragment) {
                 Log.i(TAG, "viewDocumentFile: ${e.message}")
             }
         }
-        if(trueUri==null)
-        dialog(message = "Uri Not Found")
+        if (trueUri == null)
+            dialog(message = "Uri Not Found")
     }
 
     private fun dialog(title: String = "Error!", message: String) {
         activity?.let {
-        val action = BooksFragmentDirections.actionGlobalPasswordDialog2(title, message)
-        findNavController().navigate(action)
+            val action = BooksFragmentDirections.actionGlobalPasswordDialog2(title, message)
+            findNavController().navigate(action)
         }
     }
 

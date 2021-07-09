@@ -25,6 +25,7 @@ import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.annotation.RequiresApi
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -36,8 +37,10 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.example.working.MyViewModel
 import com.example.working.R
+import com.example.working.adminui.viewmodel.AdminViewModel
 import com.example.working.databinding.ViewFileFragmentBinding
 import com.example.working.loginorsignup.TAG
+import com.example.working.room.UserData
 import com.example.working.utils.*
 import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle
 import dagger.hilt.android.AndroidEntryPoint
@@ -52,6 +55,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
     private lateinit var binding: ViewFileFragmentBinding
     private val args: ViewFileFragmentArgs by navArgs()
     private val myViewModel: MyViewModel by activityViewModels()
+    private val adminViewModel: AdminViewModel by activityViewModels()
 
     @Inject
     lateinit var customProgress: CustomProgress
@@ -60,6 +64,21 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = ViewFileFragmentBinding.bind(view)
+        if(args.fileinfo.localDownloadUrl!=null)
+        offlineSee()
+        else
+        onlineSee(savedInstanceState)
+        binding.myRoot.setOnRefreshListener {
+            if (isWebsiteFile(args.fileinfo.fileName!!)) {
+                checkConnection()
+            } else
+                binding.myRoot.isRefreshing = false
+        }
+        setHasOptionsMenu(true)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun onlineSee(savedInstanceState: Bundle?) {
         if (savedInstanceState != null && isWebsiteFile(args.fileinfo.fileName!!)) {
             binding.webView.restoreState(savedInstanceState)
             webViewLoading()
@@ -80,22 +99,26 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
         } else if (isPdfFile(args.title)) {
             try {
                 binding.showPDf.isVisible = true
-//                val str="content://com.example.working.provider/external_files/Download/ProfileAndLoss.Pdf"
                 val str = myViewModel.downloadFile.getValue(args.title)
-               Log.i(TAG, "onViewCreated: Uri->$str")
+                Log.i(TAG, "onViewCreated: Uri->$str")
                 showPdf(str)
             } catch (e: NoSuchElementException) {
                 val id = setFileDownload()
                 setBroadcastReceiver(id)
             }
         }
-        binding.myRoot.setOnRefreshListener {
-            if (isWebsiteFile(args.fileinfo.fileName!!)) {
-                checkConnection()
-            } else
-                binding.myRoot.isRefreshing = false
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun offlineSee() {
+        if (isPdfFile(args.title)){
+            binding.showPDf.isVisible = true
+            showPdf(args.fileinfo.localDownloadUrl?.toUri())
         }
-        setHasOptionsMenu(true)
+        else if (isPngFile(args.title)|| isJpgFile(args.title)){
+            binding.MyZoomImg.isVisible = true
+            binding.MyZoomImg.setImageURI(args.fileinfo.localDownloadUrl?.toUri())
+        }
     }
 
     private fun setBroadcastReceiver(TrueId: Long) {
@@ -111,8 +134,10 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
                         Toast.makeText(it, "Downloaded Path \n $uri", Toast.LENGTH_LONG).show()
                     }
                     //Show PDf
-                    if (showPdf(uri))
+                    if (showPdf(uri)) {
+                        saveDownload(uri)
                         myViewModel.downloadFile[args.title] = uri!!
+                    }
                 } else
                     dialog(message = "File is Not Downloaded :(")
             }
@@ -129,7 +154,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
             binding.showPDf.fromUri(uri).defaultPage(0)
                 .enableSwipe(true)
                 .enableDoubletap(true)
-                .scrollHandle(object : DefaultScrollHandle(activity){})
+                .scrollHandle(object : DefaultScrollHandle(activity) {})
                 .onRender { _, _, _ ->
                     binding.showPDf.fitToWidth()
                 }
@@ -207,11 +232,23 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
             getBitmap()?.let { bitMap ->
                 bitUrl(bitMap)?.let { uri ->
                     hideLoading()
+                    saveDownload(uri)
                     binding.MyZoomImg.setImageURI(uri)
                     myViewModel.downloadFile[args.title] = uri
                 }
             }
         }
+    }
+
+    private fun saveDownload(uri: Uri?) {
+        val fileInfo = args.fileinfo
+        fileInfo.localDownloadUrl = uri.toString()
+        adminViewModel.saveDownload(UserData(fileInfo = fileInfo, date = fileInfo.date!!))
+            .observe(viewLifecycleOwner) {
+                if (it is MySealed.Success) {
+                    dialog(title = "Success!", message = it.data!!)
+                }
+            }
     }
 
     private fun bitUrl(bitmap: Bitmap): Uri? {
@@ -242,7 +279,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
     }
 
     private fun dialog(title: String = "Error", message: String) {
-        activity?.let{
+        activity?.let {
             val action = ViewFileFragmentDirections.actionGlobalPasswordDialog2(title, message)
             findNavController().navigate(action)
         }

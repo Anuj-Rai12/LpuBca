@@ -3,6 +3,8 @@ package com.example.working.adminui.respotry
 import android.net.Uri
 import android.os.Parcelable
 import com.example.working.adminui.AllData
+import com.example.working.room.RoomDataBaseInstance
+import com.example.working.room.UserData
 import com.example.working.utils.*
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.IgnoreExtraProperties
@@ -16,7 +18,11 @@ import kotlinx.parcelize.Parcelize
 import javax.inject.Inject
 
 
-class AdminRepository @Inject constructor() {
+class AdminRepository @Inject constructor(
+    private val db: RoomDataBaseInstance
+) {
+    private val getUserDao = db.getDao()
+
     private val storage: FirebaseStorage by lazy {
         FirebaseStorage.getInstance()
     }
@@ -51,6 +57,11 @@ class AdminRepository @Inject constructor() {
             MySealed.Error(null, e)
         }
         emit(data)
+    }.flowOn(IO)
+
+    fun saveDownloadFile(userData: UserData) = flow{
+            getUserDao.insert(userData)
+        emit(MySealed.Success("File Is Saved"))
     }.flowOn(IO)
 
     private fun getFileSize(fileSize: Long): String {
@@ -120,6 +131,7 @@ class AdminRepository @Inject constructor() {
         emit(data)
     }.flowOn(IO)
 }
+
 @IgnoreExtraProperties
 @Parcelize
 data class FileInfo(
@@ -128,5 +140,6 @@ data class FileInfo(
     val folderPath: String? = null,
     val fileName: String? = null,
     var sourceId: String? = null,
-    val date:String?=null
+    val date: String? = null,
+    var localDownloadUrl:String?=null
 ) : Parcelable

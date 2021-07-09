@@ -14,6 +14,7 @@ import com.example.working.recycle.resource.ResourcesPaginationSource
 import com.example.working.recycle.unit.UnitPaginationSource
 import com.example.working.repos.ClassPersistence
 import com.example.working.repos.MyRepository
+import com.example.working.room.RoomDataBaseInstance
 import com.example.working.userfagment.RESOURCES_LOAD_SIZE
 import com.example.working.userfagment.UNIT_LOAD_SIZE
 import com.example.working.utils.Event
@@ -33,8 +34,10 @@ class MyViewModel @Inject constructor(
     private val classPersistence: ClassPersistence,
     private val getAllUserQuery: Query,
     @GetUpdate
-    private val getUpdateTask: Task<DocumentSnapshot>
+    private val getUpdateTask: Task<DocumentSnapshot>,
+    private val db: RoomDataBaseInstance
 ) : ViewModel() {
+    val downloadUpdateFile = db.getDao().showAll().asLiveData()
     var websiteloading: Boolean = true
     var subjectLoading: Boolean? = null
     var resourcesLoading: Boolean? = null
