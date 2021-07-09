@@ -10,7 +10,6 @@ import android.widget.Toast
 import com.example.working.REQUEST_CAM
 import com.example.working.REQUEST_GAL
 import com.example.working.databinding.MybottomsheetBinding
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
@@ -30,7 +29,7 @@ class BottomSheet @Inject constructor() : BottomSheetDialogFragment(),
     ): View {
         binding = MybottomsheetBinding.inflate(inflater)
         binding.opencamera.setOnClickListener {
-            if (checkCameraPermission()) {
+            if (checkCameraPermission(requireActivity())) {
                 sendData?.sendData()
                 dismiss()
             } else {
@@ -39,7 +38,7 @@ class BottomSheet @Inject constructor() : BottomSheetDialogFragment(),
             }
         }
         binding.opengallery.setOnClickListener {
-            if (checkGalleryPermission()) {
+            if (checkGalleryPermission(requireActivity())) {
                 sendData?.sendGalImage()
                 dismiss()
             } else {
@@ -55,10 +54,10 @@ class BottomSheet @Inject constructor() : BottomSheetDialogFragment(),
     }
 
     private fun grantPermission(int: Int) {
-        if (!checkCameraPermission() && int == 1) {
+        if (!checkCameraPermission(requireActivity()) && int == 1) {
             request(Manifest.permission.CAMERA, REQUEST_CAM, "Camera")
         }
-        if (!checkGalleryPermission() && int == 2) {
+        if (!checkGalleryPermission(requireActivity()) && int == 2) {
             request(Manifest.permission.READ_EXTERNAL_STORAGE, REQUEST_GAL, "Gallery")
         }
     }
@@ -69,13 +68,6 @@ class BottomSheet @Inject constructor() : BottomSheetDialogFragment(),
         code,
         camera
     )
-
-    private fun checkCameraPermission() =
-        EasyPermissions.hasPermissions(activity, Manifest.permission.CAMERA)
-
-    private fun checkGalleryPermission() =
-        EasyPermissions.hasPermissions(activity, Manifest.permission.READ_EXTERNAL_STORAGE)
-
 
     override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
         perms.forEach {

@@ -1,5 +1,6 @@
 package com.example.working.utils
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DownloadManager
@@ -15,6 +16,7 @@ import android.webkit.MimeTypeMap
 import androidx.core.content.FileProvider
 import com.example.working.adminui.respotry.FileInfo
 import com.google.firebase.firestore.IgnoreExtraProperties
+import com.vmadalin.easypermissions.EasyPermissions
 import kotlinx.parcelize.Parcelize
 import java.io.File
 import java.text.SimpleDateFormat
@@ -170,6 +172,16 @@ fun getFileUrl(file: File, context: Context): Uri? {
         file
     )
 }
+
+fun checkCameraPermission(context: Context) =
+    EasyPermissions.hasPermissions(context, Manifest.permission.CAMERA)
+
+fun checkGalleryPermission(context: Context) =
+    EasyPermissions.hasPermissions(context, Manifest.permission.READ_EXTERNAL_STORAGE)
+
+fun checkWritePermission(context: Context) =
+    EasyPermissions.hasPermissions(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
 
 const val SHARED_WEBSITE = "Hey, Check this Interesting Website,"
 const val SHARE_IMAGE = "Hey,Check this Image,"

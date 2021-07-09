@@ -1,7 +1,9 @@
 package com.example.working
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
@@ -13,12 +15,15 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.working.databinding.ActivityMain4Binding
+import com.example.working.loginorsignup.TAG
 import com.example.working.utils.*
+import com.vmadalin.easypermissions.EasyPermissions
+import com.vmadalin.easypermissions.dialogs.SettingsDialog
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity4 : AppCompatActivity() {
+class MainActivity4 : AppCompatActivity() ,EasyPermissions.PermissionCallbacks{
     private lateinit var binding: ActivityMain4Binding
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -38,6 +43,7 @@ class MainActivity4 : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMain4Binding.inflate(layoutInflater)
         setContentView(binding.root)
+        grantPermission()
         img = binding.nagViewAdmin.getHeaderView(0).findViewById(R.id.userProfileImage)!!
         userName = binding.nagViewAdmin.getHeaderView(0).findViewById(R.id.userNametext)!!
         userEmail =
@@ -106,7 +112,37 @@ class MainActivity4 : AppCompatActivity() {
             }
         }
     }
+    private fun request(camera: String, code: Int, s: String) = EasyPermissions.requestPermissions(
+        this,
+        "Kindly Give us $s permission,otherwise application may not work Properly.",
+        code,
+        camera
+    )
+    override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
+        perms.forEach {
+            if (EasyPermissions.permissionPermanentlyDenied(this, it)) {
+                SettingsDialog.Builder(this).build().show()
+            } else {
+                grantPermission()
+            }
+        }
+    }
 
+    override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
+        Log.i(TAG, "onPermissionsGranted: Permission Granted $perms")
+    }
+
+    private fun grantPermission() {
+        if (!checkCameraPermission(this)) {
+            request(Manifest.permission.CAMERA, REQUEST_CAM, "Camera")
+        }
+        if (!checkGalleryPermission(this)) {
+            request(Manifest.permission.READ_EXTERNAL_STORAGE, REQUEST_GAL, "Gallery")
+        }
+        if (!checkWritePermission(this)) {
+            request(Manifest.permission.WRITE_EXTERNAL_STORAGE, REQUEST_WRIT, "Access to Storage")
+        }
+    }
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration) || super.onNavigateUp()
     }

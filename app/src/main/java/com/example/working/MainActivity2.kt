@@ -1,7 +1,9 @@
 package com.example.working
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
@@ -13,12 +15,16 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.working.databinding.ActivityMain2Binding
+import com.example.working.databinding.LoginFragmentBinding
+import com.example.working.loginorsignup.TAG
 import com.example.working.utils.*
+import com.vmadalin.easypermissions.EasyPermissions
+import com.vmadalin.easypermissions.dialogs.SettingsDialog
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity2 : AppCompatActivity() {
+class MainActivity2 : AppCompatActivity() ,EasyPermissions.PermissionCallbacks{
     private var binding: ActivityMain2Binding? = null
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -38,6 +44,7 @@ class MainActivity2 : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMain2Binding.inflate(layoutInflater)
         setContentView(binding?.root)
+        grantPermission()
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         img = binding?.nagView?.getHeaderView(0)?.findViewById(R.id.userProfileImage)!!
@@ -114,5 +121,36 @@ class MainActivity2 : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         binding = null
+    }
+
+    override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
+        perms.forEach {
+            if (EasyPermissions.permissionPermanentlyDenied(this, it)) {
+                SettingsDialog.Builder(this).build().show()
+            } else {
+                grantPermission()
+            }
+        }
+    }
+    private fun request(camera: String, code: Int, s: String) = EasyPermissions.requestPermissions(
+        this,
+        "Kindly Give us $s permission,otherwise application may not work Properly.",
+        code,
+        camera
+    )
+    private fun grantPermission() {
+        if (!checkCameraPermission(this)) {
+            request(Manifest.permission.CAMERA, REQUEST_CAM, "Camera")
+        }
+        if (!checkGalleryPermission(this)) {
+            request(Manifest.permission.READ_EXTERNAL_STORAGE, REQUEST_GAL, "Gallery")
+        }
+        if (!checkWritePermission(this)) {
+            request(Manifest.permission.WRITE_EXTERNAL_STORAGE, REQUEST_WRIT, "Access to Storage")
+        }
+    }
+
+    override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
+        Log.i(TAG, "onPermissionsGranted: Permstion granted ->$perms")
     }
 }

@@ -10,6 +10,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.working.databinding.ActivityMainBinding
 import com.example.working.utils.CustomProgressBar
+import com.example.working.utils.checkCameraPermission
+import com.example.working.utils.checkGalleryPermission
+import com.example.working.utils.checkWritePermission
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,23 +39,14 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         setupActionBarWithNavController(navController)
     }
 
-    private fun checkCameraPermission() =
-        EasyPermissions.hasPermissions(this, Manifest.permission.CAMERA)
-
-    private fun checkGalleryPermission() =
-        EasyPermissions.hasPermissions(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-
-    private fun checkWritePermission() =
-        EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-
     private fun grantPermission() {
-        if (!checkCameraPermission()) {
+        if (!checkCameraPermission(this)) {
             request(Manifest.permission.CAMERA, REQUEST_CAM, "Camera")
         }
-        if (!checkGalleryPermission()) {
+        if (!checkGalleryPermission(this)) {
             request(Manifest.permission.READ_EXTERNAL_STORAGE, REQUEST_GAL, "Gallery")
         }
-        if (!checkWritePermission()) {
+        if (!checkWritePermission(this)) {
             request(Manifest.permission.WRITE_EXTERNAL_STORAGE, REQUEST_WRIT, "Access to Storage")
         }
     }

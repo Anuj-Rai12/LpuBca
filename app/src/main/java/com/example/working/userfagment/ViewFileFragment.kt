@@ -1,5 +1,6 @@
 package com.example.working.userfagment
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
@@ -36,12 +37,15 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.example.working.MyViewModel
 import com.example.working.R
+import com.example.working.REQUEST_GAL
 import com.example.working.adminui.viewmodel.AdminViewModel
 import com.example.working.databinding.ViewFileFragmentBinding
 import com.example.working.loginorsignup.TAG
 import com.example.working.room.UserData
 import com.example.working.utils.*
 import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle
+import com.vmadalin.easypermissions.EasyPermissions
+import com.vmadalin.easypermissions.dialogs.SettingsDialog
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
@@ -50,7 +54,8 @@ import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
+class ViewFileFragment : Fragment(R.layout.view_file_fragment),
+    EasyPermissions.PermissionCallbacks {
     private lateinit var binding: ViewFileFragmentBinding
     private val args: ViewFileFragmentArgs by navArgs()
     private val myViewModel: MyViewModel by activityViewModels()
@@ -63,10 +68,10 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = ViewFileFragmentBinding.bind(view)
-        if(args.fileinfo.localDownloadUrl!=null)
-        offlineSee()
+        if (args.fileinfo.localDownloadUrl != null)
+            offlineSee()
         else
-        onlineSee(savedInstanceState)
+            onlineSee(savedInstanceState)
         binding.myRoot.setOnRefreshListener {
             if (isWebsiteFile(args.fileinfo.fileName!!)) {
                 checkConnection()
@@ -96,28 +101,33 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
                 setImage()
             }
         } else if (isPdfFile(args.title)) {
-            try {
-                binding.showPDf.isVisible = true
-                val str = myViewModel.downloadFile.getValue(args.title)
-                Log.i(TAG, "onViewCreated: Uri->$str")
-                showPdf(str)
-            } catch (e: NoSuchElementException) {
-                val id = setFileDownload()
-                setBroadcastReceiver(id)
+            if (checkGalleryPermission(requireActivity())) {
+                try {
+                    binding.showPDf.isVisible = true
+                    val str = myViewModel.downloadFile.getValue(args.title)
+                    Log.i(TAG, "onViewCreated: Uri->$str")
+                    showPdf(str)
+                } catch (e: NoSuchElementException) {
+                    val id = setFileDownload()
+                    setBroadcastReceiver(id)
+                }
+            }else
+            {
+                grantPermission()
+                Toast.makeText(activity, "Permission Not Granted", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun offlineSee() {
-        if (isPdfFile(args.title)){
+        if (isPdfFile(args.title)) {
             binding.showPDf.isVisible = true
             showPdf(args.fileinfo.localDownloadUrl?.toUri())
-        }
-        else if (isPngFile(args.title)|| isJpgFile(args.title)){
+        } else if (isPngFile(args.title) || isJpgFile(args.title)) {
             binding.MyZoomImg.isVisible = true
             binding.MyZoomImg.setImageURI(args.fileinfo.localDownloadUrl?.toUri())
-            if (binding.MyZoomImg.drawable==null)
+            if (binding.MyZoomImg.drawable == null)
                 setImage()
         }
     }
@@ -177,7 +187,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
         return downloadManger.enqueue(request)
     }
 
-    private fun getFileUrl(file: File)= getFileUrl(file,requireContext())
+    private fun getFileUrl(file: File) = getFileUrl(file, requireContext())
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.share_menu, menu)
@@ -371,5 +381,34 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         binding.webView.saveState(outState)
+    }
+
+    private fun request(
+        camera: String = Manifest.permission.READ_EXTERNAL_STORAGE,
+        code: Int = REQUEST_GAL,
+        s: String = "Gallery"
+    ) = EasyPermissions.requestPermissions(
+        this,
+        "Kindly Give us $s permission,otherwise application may not work Properly.",
+        code,
+        camera
+    )
+
+    private fun grantPermission() {
+        if (!checkGalleryPermission(requireActivity())) {
+            request()
+        }
+    }
+
+    override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
+        perms.forEach {
+            if (EasyPermissions.permissionPermanentlyDenied(this, it)) {
+                SettingsDialog.Builder(requireContext()).build().show()
+            }
+        }
+    }
+
+    override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
+        Log.i(TAG, "onPermissionsGranted: Permission Granted -> $perms")
     }
 }
