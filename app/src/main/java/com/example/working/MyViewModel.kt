@@ -35,10 +35,10 @@ class MyViewModel @Inject constructor(
     private val getAllUserQuery: Query,
     @GetUpdate
     private val getUpdateTask: Task<DocumentSnapshot>,
-    private val db: RoomDataBaseInstance
+    db: RoomDataBaseInstance
 ) : ViewModel() {
     val downloadUpdateFile = db.getDao().showAll().asLiveData()
-    var websiteloading: Boolean = true
+    var websiteLoading: Boolean = true
     var subjectLoading: Boolean? = null
     var resourcesLoading: Boolean? = null
     var getUserSemester: String? = null

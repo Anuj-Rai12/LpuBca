@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -150,13 +149,8 @@ class BooksFragment : Fragment(R.layout.book_fragment) {
         activity?.registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
 
-    private fun getFileUrl(file: File): Uri? {
-        return FileProvider.getUriForFile(
-            requireContext(),
-            requireContext().applicationContext.packageName.toString() + ".provider",
-            file
-        )
-    }
+    private fun getFileUrl(file: File)= getFileUrl(context = requireContext(),file = file)
+
 
     private fun viewDocumentFile(uri: Any, fileInfo: FileInfo) {
         val trueUri = when (uri) {

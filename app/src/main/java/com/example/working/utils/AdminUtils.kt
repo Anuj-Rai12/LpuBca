@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.Environment
 import android.os.Parcelable
 import android.webkit.MimeTypeMap
+import androidx.core.content.FileProvider
 import com.example.working.adminui.respotry.FileInfo
 import com.google.firebase.firestore.IgnoreExtraProperties
 import kotlinx.parcelize.Parcelize
@@ -149,11 +150,25 @@ fun getDownloadRequest(fileInfo: FileInfo, uri: File): DownloadManager.Request? 
         .setDestinationUri(Uri.fromFile(uri))
 }
 
-fun shareText(SHARED: String, context: Context, downloadUri: String, sharedBy: String,title:String="Share File!") {
+fun shareText(
+    SHARED: String,
+    context: Context,
+    downloadUri: String,
+    sharedBy: String,
+    title: String = "Share File!"
+) {
     val share = Intent(Intent.ACTION_SEND)
     share.type = "text/plain"
     share.putExtra(Intent.EXTRA_TEXT, ("$SHARED\n\n$downloadUri\n\nShared By : $sharedBy"))
     context.startActivity(Intent.createChooser(share, title))
+}
+
+fun getFileUrl(file: File, context: Context): Uri? {
+    return FileProvider.getUriForFile(
+        context,
+        context.applicationContext.packageName.toString() + ".provider",
+        file
+    )
 }
 
 const val SHARED_WEBSITE = "Hey, Check this Interesting Website,"
@@ -161,4 +176,4 @@ const val SHARE_IMAGE = "Hey,Check this Image,"
 const val SHARE_PDF = "Hey Check this PDF,"
 const val SHARED_APP =
     "Check This App,\nThis App contains All the PPT,Other Resources Which is helpful for you studies"
-const val SHARED_DOC="Hey Check this Documents,"
+const val SHARED_DOC = "Hey Check this Documents,"

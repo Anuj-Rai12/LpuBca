@@ -17,10 +17,13 @@
 
         <ImageButton
             android:id="@+id/ShareSubject"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@color/white"
-            android:src="@drawable/ic_share" />
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginStart="3dp"
+            android:backgroundTint="@color/black"
+            android:background="@drawable/ic_share"
+            />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/ClickLayout"

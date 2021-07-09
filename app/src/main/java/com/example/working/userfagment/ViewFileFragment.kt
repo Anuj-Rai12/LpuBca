@@ -24,7 +24,6 @@ import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.annotation.RequiresApi
-import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -176,13 +175,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
         return downloadManger.enqueue(request)
     }
 
-    private fun getFileUrl(file: File): Uri? {
-        return FileProvider.getUriForFile(
-            requireContext(),
-            requireContext().applicationContext.packageName.toString() + ".provider",
-            file
-        )
-    }
+    private fun getFileUrl(file: File)= com.example.working.utils.getFileUrl(file,requireContext())
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.share_menu, menu)
@@ -292,10 +285,10 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
                 if (newProgress == 100) {
                     Log.i(TAG, "onProgressChanged:Loading Completed")
                     hideLoading()
-                    myViewModel.websiteloading = false
+                    myViewModel.websiteLoading = false
                     binding.myRoot.isRefreshing = false
                 } else if (newProgress <= 10) {
-                    if (myViewModel.websiteloading)
+                    if (myViewModel.websiteLoading)
                         showLoading()
                     binding.myRoot.isRefreshing = true
                 }
@@ -312,8 +305,8 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
                 binding.webView.goBack()
             } else {
                 Log.i(TAG, "onbackPressed: website cannot  go back")
-                if (!myViewModel.websiteloading) {
-                    myViewModel.websiteloading = true
+                if (!myViewModel.websiteLoading) {
+                    myViewModel.websiteLoading = true
                     findNavController().popBackStack()
                 }
             }
@@ -326,7 +319,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
             return
         }
         Log.i(TAG, "hideLoading: iS NOT return")
-        myViewModel.websiteloading = true
+        myViewModel.websiteLoading = true
     }
 
     private fun hideLoading() {
@@ -335,7 +328,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
             return
         }
         Log.i(TAG, "hideLoading: iS NOT return")
-        myViewModel.websiteloading = true
+        myViewModel.websiteLoading = true
     }
 
     @SuppressLint("SetJavaScriptEnabled")
