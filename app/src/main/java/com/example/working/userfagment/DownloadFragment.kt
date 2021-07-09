@@ -17,10 +17,7 @@ import com.example.working.adminui.respotry.FileInfo
 import com.example.working.databinding.DownloadFramgnetBinding
 import com.example.working.loginorsignup.TAG
 import com.example.working.recycle.DownloadRecycleView
-import com.example.working.utils.getFileUrl
-import com.example.working.utils.getMimeType
-import com.example.working.utils.isDocFile
-import com.example.working.utils.isDocxFile
+import com.example.working.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 
@@ -52,7 +49,7 @@ class DownloadFragment : Fragment(R.layout.download_framgnet) {
     }
     private fun viewDocumentFile(uri: Any, fileInfo: FileInfo) {
         val trueUri = when (uri) {
-            is File -> getFileUrl(uri,requireContext())
+            is File -> getFileUrl(uri, requireContext())
             is Uri -> uri
             else -> null
         }
@@ -85,16 +82,31 @@ class DownloadFragment : Fragment(R.layout.download_framgnet) {
         findNavController().navigate(action)
     }
 
+    private fun dir(title: String, fileInfo: FileInfo) {
+        val action = DownloadFragmentDirections.actionDownloadFragmentToViewFileFragment(
+            fileinfo = fileInfo,
+            title
+        )
+        findNavController().navigate(action)
+    }
+
     private fun itemOnClick(fileInfo: FileInfo) {
         Log.i(TAG, "itemOnClick: $fileInfo")
-        if (isDocxFile(fileInfo.fileName!!) || isDocFile(fileInfo.fileName))
-            viewDocumentFile(fileInfo.localDownloadUrl?.toUri()!!, fileInfo)
-        else {
-            val action = DownloadFragmentDirections.actionDownloadFragmentToViewFileFragment(
-                fileinfo = fileInfo,
-                fileInfo.fileName
-            )
-            findNavController().navigate(action)
+        if (getFileDir(fileInfo.fileName!!, requireContext()).exists()
+            || isPngFile(fileInfo.fileName) || isJpgFile(fileInfo.fileName)
+        ) {
+            if (isDocxFile(fileInfo.fileName) || isDocFile(fileInfo.fileName))
+                viewDocumentFile(fileInfo.localDownloadUrl?.toUri()!!, fileInfo)
+            else {
+                dir(fileInfo.fileName, fileInfo)
+            }
+        } else {
+            if (isDocxFile(fileInfo.fileName) || isDocFile(fileInfo.fileName))
+                dialog(message = "File Not Found,\nSo Download it Again!!")
+            else {
+                fileInfo.localDownloadUrl = null
+                dir(fileInfo.fileName, fileInfo)
+            }
         }
     }
 }

@@ -117,6 +117,8 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
         else if (isPngFile(args.title)|| isJpgFile(args.title)){
             binding.MyZoomImg.isVisible = true
             binding.MyZoomImg.setImageURI(args.fileinfo.localDownloadUrl?.toUri())
+            if (binding.MyZoomImg.drawable==null)
+                setImage()
         }
     }
 
@@ -175,7 +177,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
         return downloadManger.enqueue(request)
     }
 
-    private fun getFileUrl(file: File)= com.example.working.utils.getFileUrl(file,requireContext())
+    private fun getFileUrl(file: File)= getFileUrl(file,requireContext())
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.share_menu, menu)
@@ -266,7 +268,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment) {
             (result as BitmapDrawable).bitmap
         } catch (e: Exception) {
             hideLoading()
-            dialog(message = "Internet Connection Is Lost")
+            dialog(message = e.localizedMessage!!)
             null
         }
     }
