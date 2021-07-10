@@ -6,15 +6,28 @@
     android:layout_height="match_parent"
     tools:context="com.example.working.userfagment.DownloadFragment">
 
+    <ImageView
+        android:id="@+id/EmptyImage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/DownloadRecycle"
+        app:layout_constraintEnd_toStartOf="@+id/DownloadRecycle"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/DownloadRecycle"
+        app:layout_constraintTop_toBottomOf="@+id/DownloadRecycle"
+        app:srcCompat="@drawable/ic_dowload" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/DownloadRecycle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/file_item"
         android:layoutAnimation="@anim/recycle_left_to_right"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/file_item" />
 </androidx.constraintlayout.widget.ConstraintLayout>

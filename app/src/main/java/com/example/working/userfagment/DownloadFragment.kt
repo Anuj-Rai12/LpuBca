@@ -3,10 +3,13 @@ package com.example.working.userfagment
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.core.net.toUri
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -34,15 +37,24 @@ class DownloadFragment : Fragment(R.layout.download_framgnet) {
     private val myViewModel: MyViewModel by activityViewModels()
     private val adminViewModel: AdminViewModel by activityViewModels()
     private var downloadRecycleView: DownloadRecycleView? = null
+
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = DownloadFramgnetBinding.bind(view)
         setUpRecycleView()
-        myViewModel.downloadUpdateFile.observe(viewLifecycleOwner) {
-            downloadRecycleView?.submitList(it)
+        myViewModel.downloadUpdateFile.observe(viewLifecycleOwner) { userList ->
+            setUiEmpty(userList.isEmpty())
+            downloadRecycleView?.submitList(userList)
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun setUiEmpty(flag: Boolean) {
+        binding.EmptyImage.isVisible = flag
+        val color = if (!flag) R.color.light_grey else R.color.back_lastIcon
+        binding.root.setBackgroundColor(resources.getColor(color, null))
+    }
     private fun setUpRecycleView() {
         binding.apply {
             DownloadRecycle.apply {
@@ -76,12 +88,13 @@ class DownloadFragment : Fragment(R.layout.download_framgnet) {
                     is MySealedChannel.DeleteAndChannel -> {
                         Snackbar.make(
                             requireView(),
-                            "${mySealedChannel.userData.fileInfo.fileName} is Deleted"
-                        ,Snackbar.LENGTH_LONG
-                        ).setAction("UNDO"){
-                            adminViewModel.saveDownload(userData = mySealedChannel.userData).observe(viewLifecycleOwner){mySealed->
-                                    if(mySealed is MySealed.Success){
-                                        dialog("Success!",mySealed.data!!)
+                            "${mySealedChannel.userData.fileInfo.fileName} is Deleted",
+                            Snackbar.LENGTH_LONG
+                        ).setAction("UNDO") {
+                            adminViewModel.saveDownload(userData = mySealedChannel.userData)
+                                .observe(viewLifecycleOwner) { mySealed ->
+                                    if (mySealed is MySealed.Success) {
+                                        dialog("Success!", mySealed.data!!)
                                     }
                                 }
                         }.show()
