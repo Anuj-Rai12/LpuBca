@@ -19,7 +19,7 @@ import javax.inject.Inject
 
 
 class AdminRepository @Inject constructor(
-    private val db: RoomDataBaseInstance
+    db: RoomDataBaseInstance
 ) {
     private val getUserDao = db.getDao()
 
@@ -61,9 +61,12 @@ class AdminRepository @Inject constructor(
 
     fun saveDownloadFile(userData: UserData) = flow{
             getUserDao.insert(userData)
-        emit(MySealed.Success("File Is Saved"))
+        emit(MySealed.Success("${userData.fileInfo.fileName} Is Saved"))
     }.flowOn(IO)
 
+    suspend fun deleteDownloadDB(userData: UserData) {
+        getUserDao.delete(userData)
+    }
     private fun getFileSize(fileSize: Long): String {
         return if (fileSize.toInt() / 1024 <= 1000)
             "${(fileSize / 1024).toDouble()} Kb"

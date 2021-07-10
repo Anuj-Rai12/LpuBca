@@ -9,22 +9,30 @@ import android.view.View
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.working.MyViewModel
 import com.example.working.R
 import com.example.working.adminui.respotry.FileInfo
+import com.example.working.adminui.viewmodel.AdminViewModel
 import com.example.working.databinding.DownloadFramgnetBinding
 import com.example.working.loginorsignup.TAG
 import com.example.working.recycle.DownloadRecycleView
 import com.example.working.utils.*
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import java.io.File
 
 @AndroidEntryPoint
 class DownloadFragment : Fragment(R.layout.download_framgnet) {
     private lateinit var binding: DownloadFramgnetBinding
     private val myViewModel: MyViewModel by activityViewModels()
+    private val adminViewModel: AdminViewModel by activityViewModels()
     private var downloadRecycleView: DownloadRecycleView? = null
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -45,8 +53,44 @@ class DownloadFragment : Fragment(R.layout.download_framgnet) {
                 }
                 adapter = downloadRecycleView
             }
+            ItemTouchHelper(object :
+                ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ) = false
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    val getSelectedItem =
+                        downloadRecycleView?.currentList?.get(viewHolder.absoluteAdapterPosition)
+                    getSelectedItem?.let {
+                        adminViewModel.deleteDownload(it)
+                    }
+                }
+            }).attachToRecyclerView(DownloadRecycle)
+        }
+        lifecycleScope.launch {
+            adminViewModel.taskEvent.collect { mySealedChannel ->
+                when (mySealedChannel) {
+                    is MySealedChannel.DeleteAndChannel -> {
+                        Snackbar.make(
+                            requireView(),
+                            "${mySealedChannel.userData.fileInfo.fileName} is Deleted"
+                        ,Snackbar.LENGTH_LONG
+                        ).setAction("UNDO"){
+                            adminViewModel.saveDownload(userData = mySealedChannel.userData).observe(viewLifecycleOwner){mySealed->
+                                    if(mySealed is MySealed.Success){
+                                        dialog("Success!",mySealed.data!!)
+                                    }
+                                }
+                        }.show()
+                    }
+                }
+            }
         }
     }
+
     private fun viewDocumentFile(uri: Any, fileInfo: FileInfo) {
         val trueUri = when (uri) {
             is File -> getFileUrl(uri, requireContext())
@@ -56,6 +100,7 @@ class DownloadFragment : Fragment(R.layout.download_framgnet) {
         trueUri?.let { viewUri ->
             try {
                 getMimeType(viewUri, requireContext())?.let { mime ->
+                    Log.i(TAG, "viewDocumentFile: Type ->$mime")
                     val objIntent = Intent(Intent.ACTION_VIEW)
                     objIntent.setDataAndType(viewUri, mime)
                     objIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP

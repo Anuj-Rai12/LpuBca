@@ -10,11 +10,9 @@ interface DownloadDao {
     fun insert(userData: UserData)
 
     @Delete
-    fun delete(userData: UserData)
+    suspend fun delete(userData: UserData)
 
     @Query("Select * from Download_File_Info")
     fun showAll(): Flow<List<UserData>>
 
-    @Query(value = "delete from Download_File_Info")
-    fun deleteAll()
 }
