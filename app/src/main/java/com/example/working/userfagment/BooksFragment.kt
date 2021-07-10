@@ -92,7 +92,7 @@ class BooksFragment : Fragment(R.layout.book_fragment) {
         }
     }
 
-    private fun showLoading(message: String = "Document is Downloading,\nDon't close the App.") =
+    private fun showLoading(message: String)=
         customProgress.showLoading(requireActivity(), message)
 
     private fun hideLoading() = customProgress.hideLoading(requireActivity())
@@ -101,7 +101,7 @@ class BooksFragment : Fragment(R.layout.book_fragment) {
         val uri = getFileDir(fileInfo.fileName!!, requireContext())
         val request = getDownloadRequest(fileInfo, uri)
         activity?.let {
-            showLoading()
+            showLoading("${fileInfo.fileName} is Downloading,\nDon't close the App.")
         }
         val downloadManger: DownloadManager =
             activity?.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
@@ -166,7 +166,7 @@ class BooksFragment : Fragment(R.layout.book_fragment) {
                     objIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                     objIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     objIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                    context?.startActivity(Intent.createChooser(objIntent, "Hello"))
+                    context?.startActivity(Intent.createChooser(objIntent, "Open Document"))
                     myViewModel.downloadFile[fileInfo.fileName!!] = viewUri
                     return
                 }

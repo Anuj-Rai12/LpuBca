@@ -191,7 +191,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
     private fun setFileDownload(): Long {
         val uri = getFileDir(args.title, requireContext())
         val request = getDownloadRequest(args.fileinfo, uri)
-        showLoading("PDF is Downloading,\nDon't close the App.")
+        showLoading("${args.title} is Downloading,\nDon't close the App.")
         val downloadManger: DownloadManager =
             activity?.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         return downloadManger.enqueue(request)
@@ -244,7 +244,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
     }
 
     private fun setImage() {
-        showLoading("Image is Loading")
+        showLoading("${args.title} is Loading")
         lifecycleScope.launch {
             getBitmap()?.let { bitMap ->
                 bitUrl(bitMap)?.let { uri ->
@@ -337,7 +337,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
         }.handleOnBackPressed()
     }
 
-    private fun showLoading(title: String = "Website is Loading") {
+    private fun showLoading(title: String = "${args.title} is Loading") {
         activity?.let {
             customProgress.showLoading(it, title)
             return

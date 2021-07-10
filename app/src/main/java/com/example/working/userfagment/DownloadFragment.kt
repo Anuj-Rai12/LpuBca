@@ -61,7 +61,7 @@ class DownloadFragment : Fragment(R.layout.download_framgnet) {
                     objIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
                     objIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     objIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                    context?.startActivity(Intent.createChooser(objIntent, "Hello_Ji"))
+                    context?.startActivity(Intent.createChooser(objIntent, "Open Document!"))
                     myViewModel.downloadFile[fileInfo.fileName!!] = viewUri
                     return
                 }
