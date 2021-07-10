@@ -15,7 +15,7 @@
         android:background="@drawable/another_leaf_background"
         android:orientation="vertical">
 
-        <ImageButton
+        <ImageView
             android:id="@+id/ShareSubject"
             android:layout_width="30dp"
             android:layout_height="30dp"

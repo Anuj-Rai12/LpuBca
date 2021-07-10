@@ -8,6 +8,7 @@ import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -182,6 +183,10 @@ fun checkGalleryPermission(context: Context) =
 fun checkWritePermission(context: Context) =
     EasyPermissions.hasPermissions(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
+fun getNightMode(context: Context): Boolean {
+    val mode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+    return mode == Configuration.UI_MODE_NIGHT_YES
+}
 
 const val SHARED_WEBSITE = "Hey, Check this Interesting Website,"
 const val SHARE_IMAGE = "Hey,Check this Image,"

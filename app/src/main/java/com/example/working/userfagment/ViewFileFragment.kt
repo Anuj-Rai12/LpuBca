@@ -52,6 +52,7 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import javax.inject.Inject
 
+private const val PageNo = "PageNo"
 
 @AndroidEntryPoint
 class ViewFileFragment : Fragment(R.layout.view_file_fragment),
@@ -60,6 +61,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
     private val args: ViewFileFragmentArgs by navArgs()
     private val myViewModel: MyViewModel by activityViewModels()
     private val adminViewModel: AdminViewModel by activityViewModels()
+    private var getDefaultPage: Int? = null
 
     @Inject
     lateinit var customProgress: CustomProgress
@@ -68,6 +70,9 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = ViewFileFragmentBinding.bind(view)
+        savedInstanceState?.let {
+            getDefaultPage = it.getInt(PageNo)
+        }
         if (args.fileinfo.localDownloadUrl != null)
             offlineSee()
         else
@@ -102,20 +107,24 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
             }
         } else if (isPdfFile(args.title)) {
             if (checkGalleryPermission(requireActivity())) {
-                try {
-                    binding.showPDf.isVisible = true
-                    val str = myViewModel.downloadFile.getValue(args.title)
-                    Log.i(TAG, "onViewCreated: Uri->$str")
-                    showPdf(str)
-                } catch (e: NoSuchElementException) {
-                    val id = setFileDownload()
-                    setBroadcastReceiver(id)
-                }
-            }else
-            {
+                getOnlinePdf()
+            } else {
                 grantPermission()
                 Toast.makeText(activity, "Permission Not Granted", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun getOnlinePdf() {
+        try {
+            binding.showPDf.isVisible = true
+            val str = myViewModel.downloadFile.getValue(args.title)
+            Log.i(TAG, "onViewCreated: Uri->$str")
+            showPdf(str)
+        } catch (e: NoSuchElementException) {
+            val id = setFileDownload()
+            setBroadcastReceiver(id)
         }
     }
 
@@ -162,14 +171,15 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
         Uri?.let { uri ->
             binding.myRoot.isRefreshing = false
             binding.showPDf.isVisible = true
-            binding.showPDf.fromUri(uri).defaultPage(0)
+            binding.showPDf.fromUri(uri).defaultPage(getDefaultPage ?: 0)
                 .enableSwipe(true)
                 .enableDoubletap(true)
                 .scrollHandle(object : DefaultScrollHandle(activity) {})
-                .onRender { _, _, _ ->
-                    binding.showPDf.fitToWidth()
+                .onPageChange { page, _ ->
+                    getDefaultPage = page
                 }
                 .spacing(2)
+                .nightMode(getNightMode(requireActivity()))
                 .enableAnnotationRendering(true)
                 .load()
             Log.i(TAG, "showPdf: ${binding.showPDf.currentPage}")
@@ -218,7 +228,9 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
 
     private fun shareImage() {
         try {
-            val uri =args.fileinfo.localDownloadUrl?.toUri()?:myViewModel.downloadFile.getValue(args.title)
+            val uri = args.fileinfo.localDownloadUrl?.toUri() ?: myViewModel.downloadFile.getValue(
+                args.title
+            )
             val intent = Intent(Intent.ACTION_SEND).apply {
                 type = "image/*"
                 putExtra(Intent.EXTRA_STREAM, uri)
@@ -380,6 +392,9 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        getDefaultPage?.let {
+            outState.putInt(PageNo, it)
+        }
         binding.webView.saveState(outState)
     }
 
@@ -408,7 +423,9 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
         Log.i(TAG, "onPermissionsGranted: Permission Granted -> $perms")
+        getOnlinePdf()
     }
 }
