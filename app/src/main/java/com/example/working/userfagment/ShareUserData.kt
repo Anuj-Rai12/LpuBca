@@ -1,6 +1,7 @@
 package com.example.working.userfagment
 
 import android.Manifest
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -10,10 +11,8 @@ import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.asFlow
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,14 +27,14 @@ import com.example.working.utils.MySealed
 import com.example.working.utils.MySealedChannel
 import com.example.working.utils.checkGalleryPermission
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class ShareUserData : Fragment(R.layout.share_framgent), EasyPermissions.PermissionCallbacks {
@@ -109,12 +108,31 @@ class ShareUserData : Fragment(R.layout.share_framgent), EasyPermissions.Permiss
                 Snackbar.make(requireView(), "Please Fill The Info", Snackbar.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            Toast.makeText(activity, "Website Is Completed", Toast.LENGTH_SHORT).show()
+            shareWebsiteFile(websiteLink, subject)
         }
         getDropDownId()
         getAdminEmail()
         setUpRecyclerview()
         setUpdateFile()
+    }
+
+    private fun shareWebsiteFile(websiteLink: String, subject: String) {
+        adminViewModel.adminEmail?.let { adminEmail ->
+            val email = Intent(Intent.ACTION_SEND)
+            email.putExtra(Intent.EXTRA_EMAIL, arrayOf<String>(adminEmail))
+            email.putExtra(Intent.EXTRA_SUBJECT, "Check this Resouces for $subject")
+            email.putExtra(
+                Intent.EXTRA_TEXT,
+                "This Resource is for :- \n $getSemester -> $getMaterial -> $subject ->$getUnit " +
+                        "\nWebsite is -> $websiteLink" +
+                        "\n Share UDI -> ${FirebaseAuth.getInstance().currentUser?.uid}"
+            )
+
+            email.type = "message/rfc822"
+            startActivity(Intent.createChooser(email, "Choose an Email client :"))
+            return
+        }
+        Toast.makeText(activity, "Cannot send Email", Toast.LENGTH_SHORT).show()
     }
 
     private fun setUpdateFile() {
@@ -137,7 +155,7 @@ class ShareUserData : Fragment(R.layout.share_framgent), EasyPermissions.Permiss
                     recyclerView: RecyclerView,
                     viewHolder: RecyclerView.ViewHolder,
                     target: RecyclerView.ViewHolder
-                )=false
+                ) = false
 
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                     val getSelectedItem =
@@ -150,10 +168,13 @@ class ShareUserData : Fragment(R.layout.share_framgent), EasyPermissions.Permiss
         }
         lifecycleScope.launch {
             adminViewModel.taskEvent.collect {
-                if (it is MySealedChannel.DeleteAndChannel<*>){
-                    val obj=it.userdata as LocalFileInfo
-                    Snackbar.make(requireView(),"${obj.fileUrl.lastPathSegment} is Deleted"
-                    ,Snackbar.LENGTH_LONG).setAction("UNDO"){
+                if (it is MySealedChannel.DeleteAndChannel<*>) {
+                    val obj = it.userdata as LocalFileInfo
+                    Snackbar.make(
+                        requireView(),
+                        "${obj.fileUrl.lastPathSegment} is Deleted",
+                        Snackbar.LENGTH_LONG
+                    ).setAction("UNDO") {
                         adminViewModel.getGalleryFile(obj.fileUrl)
                     }.show()
                 }
@@ -202,13 +223,25 @@ class ShareUserData : Fragment(R.layout.share_framgent), EasyPermissions.Permiss
         subject: String,
         fileName: String,
     ) {
-        Log.i(TAG, "onViewCreated: Subject-> $subject")
-        Log.i(TAG, "onViewCreated: FileName-> $fileName")
-        Log.i(TAG, "onViewCreated: Material-> $getMaterial")
-        Log.i(TAG, "onViewCreated: Semester-> $getSemester")
-        Log.i(TAG, "onViewCreated: Unit-> $getUnit")
-        Log.i(TAG, "shareItem: AdminEmail ->${adminViewModel.adminEmail}")
-        Log.i(TAG, "shareItem: All the Data->${adminViewModel.localData.value}")
+        adminViewModel.adminEmail?.let { adminEmail ->
+            val ei = Intent(Intent.ACTION_SEND_MULTIPLE)
+            ei.setType("plain/text");
+            ei.putExtra(Intent.EXTRA_EMAIL, arrayOf<String>(adminEmail))
+            ei.putExtra(Intent.EXTRA_SUBJECT, "The Resouces for $subject")
+            ei.putExtra(
+                Intent.EXTRA_TEXT,
+                "This Resource is for :- \n $getSemester -> $getMaterial -> $subject ->$getUnit " +
+                        "\n Share UDI -> ${FirebaseAuth.getInstance().currentUser?.uid}"
+            )
+            val uris = ArrayList<Uri>()
+            adminViewModel.localData.value?.forEach {
+                uris.add(it.fileUrl)
+            }
+            ei.putParcelableArrayListExtra(Intent.EXTRA_STREAM,uris)
+            startActivity(Intent.createChooser(ei, "Sending multiple attachment"))
+            return
+        }
+        Toast.makeText(activity, "Cannot send this Mail", Toast.LENGTH_SHORT).show()
     }
 
     private fun checkUI(view: String): Boolean {
