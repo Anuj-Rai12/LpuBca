@@ -8,6 +8,7 @@ import com.example.working.repos.VERSION
 import com.example.working.repos.VERSION_DOC
 import com.example.working.room.RoomDataBaseInstance
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.auth.User
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,6 +26,7 @@ object AppModule {
     private val update by lazy {
         fireStore.collection(VERSION).document(VERSION_DOC)
     }
+    private val adminId = "drZyYp5mMyMwjoK3mSYB4toYdhQ2"
 
     @Provides
     @Singleton
@@ -42,6 +44,11 @@ object AppModule {
 
     @Provides
     @Singleton
+    @AdminQuery
+    fun getAdminUserId() = fireStore.collection(USERS).document(adminId)
+
+    @Provides
+    @Singleton
     @GetUpdate
     fun getAllUpdate() = update.get()
 }
@@ -49,4 +56,8 @@ object AppModule {
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class GetUpdate
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class AdminQuery
 

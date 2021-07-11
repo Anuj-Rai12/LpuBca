@@ -6,6 +6,7 @@ import com.example.working.adminui.AllData
 import com.example.working.room.RoomDataBaseInstance
 import com.example.working.room.UserData
 import com.example.working.utils.*
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.IgnoreExtraProperties
 import com.google.firebase.storage.FirebaseStorage
@@ -130,6 +131,18 @@ class AdminRepository @Inject constructor(
             MySealed.Success("File Is Added")
         } catch (e: Exception) {
             MySealed.Error(null, e)
+        }
+        emit(data)
+    }.flowOn(IO)
+
+    fun getAdminEmailId(adminQuery: DocumentReference)=flow {
+        emit(MySealed.Loading(null))
+        val data=try {
+            val info=adminQuery.get().await()
+            val email=info.get("email") as String?
+            MySealed.Success(email)
+        }catch (e:Exception){
+            MySealed.Error(null,e)
         }
         emit(data)
     }.flowOn(IO)

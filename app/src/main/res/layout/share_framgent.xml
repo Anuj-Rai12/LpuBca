@@ -51,29 +51,6 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/ShareSourceIDLayout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Shared By"
-            android:textColorHint="@color/black"
-            app:boxStrokeColor="@color/black"
-            app:boxStrokeWidthFocused="2dp"
-            app:endIconMode="clear_text"
-            app:endIconTint="@color/black"
-            app:hintTextColor="@color/black"
-            app:layout_constraintLeft_toLeftOf="@id/ShareMaterialLayout"
-            app:layout_constraintTop_toBottomOf="@id/ShareMaterialLayout"
-            app:startIconDrawable="@drawable/ic_person">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/ShareSourceName"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:inputType="text" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/ShareSubjectName"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
@@ -85,8 +62,8 @@
             app:endIconMode="clear_text"
             app:endIconTint="@color/black"
             app:hintTextColor="@color/black"
-            app:layout_constraintLeft_toLeftOf="@id/ShareSourceIDLayout"
-            app:layout_constraintTop_toBottomOf="@id/ShareSourceIDLayout"
+            app:layout_constraintLeft_toLeftOf="@id/ShareMaterialLayout"
+            app:layout_constraintTop_toBottomOf="@id/ShareMaterialLayout"
             app:startIconDrawable="@drawable/ic_user">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -102,7 +79,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:hint="Unit No?"
+            android:hint="Unit No"
             app:boxStrokeColor="@color/purple_700"
             app:layout_constraintLeft_toLeftOf="@id/ShareSubjectName"
             app:layout_constraintTop_toBottomOf="@id/ShareSubjectName">
@@ -115,44 +92,6 @@
                 android:inputType="none"
                 android:text="Unit No" />
         </com.google.android.material.textfield.TextInputLayout>
-
-        <Button
-            android:id="@+id/ShareFileExplore"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
-            android:layout_marginTop="10dp"
-            android:text="Open File Explore"
-            android:textAllCaps="false"
-            app:layout_constraintLeft_toLeftOf="@id/ShareUnitLayout"
-            app:layout_constraintRight_toRightOf="@id/barrier2"
-            app:layout_constraintTop_toBottomOf="@id/ShareUnitLayout"
-            app:layout_constraintWidth_min="100dp" />
-
-        <ImageView
-            android:id="@+id/ShareFileImage"
-            android:layout_width="0dp"
-            android:layout_height="200dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
-            android:background="#F5F4F4"
-            android:scaleType="fitXY"
-            app:layout_constraintLeft_toRightOf="@id/barrier2"
-            app:layout_constraintRight_toRightOf="@id/ShareUnitLayout"
-            app:layout_constraintTop_toBottomOf="@id/ShareUnitLayout" />
-
-        <TextView
-            android:id="@+id/uploadSize"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:textColor="@color/red_color"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            app:layout_constraintLeft_toLeftOf="@id/ShareFileExplore"
-            app:layout_constraintRight_toLeftOf="@id/barrier2"
-            app:layout_constraintTop_toBottomOf="@id/ShareFileExplore"
-            tools:text="Size: 20MB" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/ShareFileNameLayout"
@@ -168,7 +107,7 @@
             app:endIconTint="@color/black"
             app:hintTextColor="@color/black"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ShareFileImage"
+            app:layout_constraintTop_toBottomOf="@id/ShareUnitLayout"
             app:startIconDrawable="@drawable/ic_user">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -203,54 +142,53 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/ShareUploadFile"
+            android:id="@+id/OpenGalShare"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="Send FIle"
+            android:layout_margin="10dp"
+            android:text="Open FIle"
             android:textAllCaps="false"
-            app:layout_constraintBaseline_toBaselineOf="@id/ShareUpdateFile"
-            app:layout_constraintEnd_toStartOf="@+id/ShareDeleteBtn"
+            android:visibility="gone"
+            app:layout_constraintBaseline_toBaselineOf="@id/shareWebsite"
+            app:layout_constraintEnd_toStartOf="@+id/shareFileEmail"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/ShareUpdateFile" />
+            app:layout_constraintStart_toEndOf="@+id/shareWebsite" />
 
         <Button
-            android:id="@+id/ShareDeleteBtn"
+            android:id="@+id/shareFileEmail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="Delete File"
-            android:visibility="invisible"
+            android:text="Share Files"
             android:textAllCaps="false"
-            app:layout_constraintBaseline_toBaselineOf="@id/ShareUploadFile"
+            app:layout_constraintBaseline_toBaselineOf="@id/OpenGalShare"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/ShareUploadFile" />
+            app:layout_constraintStart_toEndOf="@+id/OpenGalShare" />
 
         <Button
-            android:id="@+id/ShareUpdateFile"
+            android:id="@+id/shareWebsite"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="8dp"
-            android:text="Get Link"
+            android:layout_margin="8dp"
+            android:text="Share Website"
             android:textAllCaps="false"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toStartOf="@+id/ShareUploadFile"
+            app:layout_constraintEnd_toStartOf="@+id/OpenGalShare"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ShareWebsiteLinkLayout" />
 
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrier2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="right"
-            app:constraint_referenced_ids="ShareFileExplore"
-            tools:layout_editor_absoluteX="402dp"
-            tools:layout_editor_absoluteY="10dp" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/fileRecycleView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="4dp"
+            tools:listitem="@layout/share_file_item"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/shareWebsite" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>
