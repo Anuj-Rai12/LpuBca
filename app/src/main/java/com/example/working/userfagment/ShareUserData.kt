@@ -77,16 +77,13 @@ class ShareUserData : Fragment(R.layout.share_framgent), EasyPermissions.Permiss
         setSemester()
         binding.shareFileEmail.setOnClickListener {
             val subject = binding.ShareNameTxT.text.toString()
-            val fileName = binding.ShareFileName.text.toString()
             if (checkUI(subject)
                 || getSemester == null
                 || getMaterial == null || getUnit == null
-                || checkUI(fileName)
                 || adminViewModel.localData.value?.isEmpty() == true
                 || adminViewModel.localData.value == null
             ) {
                 Log.i(TAG, "onViewCreated: Subject-> $subject")
-                Log.i(TAG, "onViewCreated: FileName-> $fileName")
                 Log.i(TAG, "onViewCreated: Material-> $getMaterial")
                 Log.i(TAG, "onViewCreated: Semester-> $getSemester")
                 Log.i(TAG, "onViewCreated: Unit-> $getUnit")
@@ -94,7 +91,7 @@ class ShareUserData : Fragment(R.layout.share_framgent), EasyPermissions.Permiss
                 return@setOnClickListener
             } else {
                 //ShareFile-Multiple
-                shareItem(subject, fileName)
+                shareItem(subject)
             }
         }
         binding.shareWebsite.setOnClickListener {
@@ -129,7 +126,7 @@ class ShareUserData : Fragment(R.layout.share_framgent), EasyPermissions.Permiss
             )
 
             email.type = "message/rfc822"
-            startActivity(Intent.createChooser(email, "Choose an Email client :"))
+            context?.startActivity(Intent.createChooser(email, "Send Via Email."))
             return
         }
         Toast.makeText(activity, "Cannot send Email", Toast.LENGTH_SHORT).show()
@@ -219,26 +216,22 @@ class ShareUserData : Fragment(R.layout.share_framgent), EasyPermissions.Permiss
         camera
     )
 
-    private fun shareItem(
-        subject: String,
-        fileName: String,
-    ) {
+    private fun shareItem(subject: String) {
         adminViewModel.adminEmail?.let { adminEmail ->
             val ei = Intent(Intent.ACTION_SEND_MULTIPLE)
             ei.setType("plain/text");
-            ei.putExtra(Intent.EXTRA_EMAIL, arrayOf<String>(adminEmail))
+            ei.putExtra(Intent.EXTRA_EMAIL, arrayOf(adminEmail))
             ei.putExtra(Intent.EXTRA_SUBJECT, "The Resouces for $subject")
             ei.putExtra(
                 Intent.EXTRA_TEXT,
                 "This Resource is for :- \n $getSemester -> $getMaterial -> $subject ->$getUnit " +
-                        "\n Share UDI -> ${FirebaseAuth.getInstance().currentUser?.uid}"
-            )
+                        "\n Share UDI -> ${FirebaseAuth.getInstance().currentUser?.uid}")
             val uris = ArrayList<Uri>()
             adminViewModel.localData.value?.forEach {
                 uris.add(it.fileUrl)
             }
-            ei.putParcelableArrayListExtra(Intent.EXTRA_STREAM,uris)
-            startActivity(Intent.createChooser(ei, "Sending multiple attachment"))
+            ei.putExtra(Intent.EXTRA_STREAM,uris)
+            context?.startActivity(Intent.createChooser(ei, "Sending Via Email..."))
             return
         }
         Toast.makeText(activity, "Cannot send this Mail", Toast.LENGTH_SHORT).show()

@@ -94,30 +94,6 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/ShareFileNameLayout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:hint="File Name"
-            android:textColorHint="@color/black"
-            app:boxStrokeColor="@color/black"
-            app:boxStrokeWidthFocused="2dp"
-            app:endIconMode="clear_text"
-            app:endIconTint="@color/black"
-            app:hintTextColor="@color/black"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ShareUnitLayout"
-            app:startIconDrawable="@drawable/ic_user">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/ShareFileName"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:inputType="text" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/ShareWebsiteLinkLayout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
@@ -131,7 +107,7 @@
             app:endIconTint="@color/black"
             app:hintTextColor="@color/black"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ShareFileNameLayout"
+            app:layout_constraintTop_toBottomOf="@id/ShareUnitLayout"
             app:startIconDrawable="@drawable/ic_user">
 
             <com.google.android.material.textfield.TextInputEditText

@@ -105,6 +105,6 @@
     <fragment
         android:id="@+id/shareUserData"
         android:name="com.example.working.userfagment.ShareUserData"
-        android:label="Contribution"
+        android:label="Contribution Email"
         tools:layout="@layout/share_framgent" />
 </navigation>
