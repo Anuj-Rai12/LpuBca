@@ -15,7 +15,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.working.R
 import com.example.working.REQUEST_GAL
 import com.example.working.adminui.viewmodel.AdminViewModel
@@ -23,6 +25,7 @@ import com.example.working.databinding.ShareFramgentBinding
 import com.example.working.loginorsignup.TAG
 import com.example.working.recycle.share.ShareRecycleView
 import com.example.working.utils.MySealed
+import com.example.working.utils.MySealedChannel
 import com.example.working.utils.checkGalleryPermission
 import com.google.android.material.snackbar.Snackbar
 import com.vmadalin.easypermissions.EasyPermissions
@@ -127,6 +130,33 @@ class ShareUserData : Fragment(R.layout.share_framgent), EasyPermissions.Permiss
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(requireContext())
                 adapter = shareRecycleView
+            }
+            ItemTouchHelper(object :
+                ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                )=false
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    val getSelectedItem =
+                        shareRecycleView.currentList.get(viewHolder.absoluteAdapterPosition)
+                    getSelectedItem?.let {
+                        adminViewModel.deleteLocalItem(it)
+                    }
+                }
+            }).attachToRecyclerView(fileRecycleView)
+        }
+        lifecycleScope.launch {
+            adminViewModel.taskEvent.collect {
+                if (it is MySealedChannel.DeleteAndChannel<*>){
+                    val obj=it.userdata as LocalFileInfo
+                    Snackbar.make(requireView(),"${obj.fileUrl.lastPathSegment} is Deleted"
+                    ,Snackbar.LENGTH_LONG).setAction("UNDO"){
+                        adminViewModel.getGalleryFile(obj.fileUrl)
+                    }.show()
+                }
             }
         }
     }

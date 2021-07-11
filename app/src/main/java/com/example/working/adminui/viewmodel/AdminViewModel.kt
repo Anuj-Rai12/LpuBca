@@ -32,7 +32,7 @@ class AdminViewModel @Inject constructor(
     var fileName: MutableMap<String, FileInfo> = mutableMapOf()
     private val _taskEvent = Channel<MySealedChannel>()
     val taskEvent = _taskEvent.receiveAsFlow()
-    var getAllLocalFile = mutableListOf<LocalFileInfo>()
+    private var getAllLocalFile = mutableListOf<LocalFileInfo>()
     private var _localData=MutableLiveData<MutableList<LocalFileInfo>>()
     val localData:LiveData<MutableList<LocalFileInfo>>
     get() = _localData
@@ -75,4 +75,11 @@ class AdminViewModel @Inject constructor(
     fun addMoreSubject(path: MyFilePath, map: Map<String, SubjectInfo>) =
         adminRepository.addMoreSubject(path, map).asLiveData()
 
+    fun deleteLocalItem(localFileInfo: LocalFileInfo){
+        viewModelScope.launch {
+            getAllLocalFile.remove(localFileInfo)
+            _localData.value=getAllLocalFile
+            _taskEvent.send(MySealedChannel.DeleteAndChannel(localFileInfo))
+        }
+    }
 }

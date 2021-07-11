@@ -24,6 +24,7 @@ import com.example.working.adminui.viewmodel.AdminViewModel
 import com.example.working.databinding.DownloadFramgnetBinding
 import com.example.working.loginorsignup.TAG
 import com.example.working.recycle.DownloadRecycleView
+import com.example.working.room.UserData
 import com.example.working.utils.*
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
@@ -85,13 +86,14 @@ class DownloadFragment : Fragment(R.layout.download_framgnet) {
         lifecycleScope.launch {
             adminViewModel.taskEvent.collect { mySealedChannel ->
                 when (mySealedChannel) {
-                    is MySealedChannel.DeleteAndChannel -> {
+                    is MySealedChannel.DeleteAndChannel<*> -> {
+                        val obj=mySealedChannel.userdata as UserData
                         Snackbar.make(
                             requireView(),
-                            "${mySealedChannel.userData.fileInfo.fileName} is Deleted",
+                            "${obj.fileInfo.fileName} is Deleted",
                             Snackbar.LENGTH_LONG
                         ).setAction("UNDO") {
-                            adminViewModel.saveDownload(userData = mySealedChannel.userData)
+                            adminViewModel.saveDownload(userData = obj)
                                 .observe(viewLifecycleOwner) { mySealed ->
                                     if (mySealed is MySealed.Success) {
                                         dialog("Success!", mySealed.data!!)

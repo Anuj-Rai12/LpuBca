@@ -1,6 +1,6 @@
 package com.example.working.utils
 
-import com.example.working.room.UserData
+
 import java.lang.Exception
 
 sealed class MySealed<T>(
@@ -13,5 +13,5 @@ sealed class MySealed<T>(
 }
 
 sealed class MySealedChannel {
-    data class DeleteAndChannel(val userData: UserData) : MySealedChannel()
+    data class DeleteAndChannel<T>(val userdata: T) : MySealedChannel()
 }
