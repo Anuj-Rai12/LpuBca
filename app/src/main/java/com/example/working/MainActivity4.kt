@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -23,7 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainActivity4 : AppCompatActivity() ,EasyPermissions.PermissionCallbacks{
+class MainActivity4 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     private lateinit var binding: ActivityMain4Binding
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -32,6 +33,7 @@ class MainActivity4 : AppCompatActivity() ,EasyPermissions.PermissionCallbacks{
     private lateinit var userEmail: TextView
     private lateinit var logout: TextView
     private lateinit var share: TextView
+    private lateinit var bugs: TextView
     private val myViewModel: MyViewModel by viewModels()
     private val shareLink by lazy {
         MainActivity3.mySharedUrl
@@ -45,9 +47,10 @@ class MainActivity4 : AppCompatActivity() ,EasyPermissions.PermissionCallbacks{
         setContentView(binding.root)
         grantPermission()
         img = binding.nagViewAdmin.getHeaderView(0).findViewById(R.id.userProfileImage)!!
+        bugs=binding.nagViewAdmin.getHeaderView(0).findViewById(R.id.myBugReport)!!
+        bugs.isVisible=false
         userName = binding.nagViewAdmin.getHeaderView(0).findViewById(R.id.userNametext)!!
-        userEmail =
-            binding.nagViewAdmin.getHeaderView(0).findViewById(R.id.userEmailtext)!!
+        userEmail = binding.nagViewAdmin.getHeaderView(0).findViewById(R.id.userEmailtext)!!
         logout =
             binding.nagViewAdmin.getHeaderView(0).findViewById(R.id.mylogoutText)!!
         share = binding.nagViewAdmin.getHeaderView(0).findViewById(R.id.myshareText)!!
@@ -112,12 +115,14 @@ class MainActivity4 : AppCompatActivity() ,EasyPermissions.PermissionCallbacks{
             }
         }
     }
+
     private fun request(camera: String, code: Int, s: String) = EasyPermissions.requestPermissions(
         this,
         "Kindly Give us $s permission,otherwise application may not work Properly.",
         code,
         camera
     )
+
     override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
         perms.forEach {
             if (EasyPermissions.permissionPermanentlyDenied(this, it)) {
