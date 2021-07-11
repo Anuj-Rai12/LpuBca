@@ -221,7 +221,8 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
                 SHARED = SHARED,
                 context = it,
                 downloadUri = args.fileinfo.downloadUrl!!,
-                sharedBy = args.fileinfo.sourceId!!
+                sharedBy = args.fileinfo.sourceId!!,
+                fileInfo = "${args.fileinfo.folderPath},${args.fileinfo.fileName}"
             )
         }
     }
@@ -231,10 +232,12 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
             val uri = args.fileinfo.localDownloadUrl?.toUri() ?: myViewModel.downloadFile.getValue(
                 args.title
             )
+            val fileInfo="${args.fileinfo.folderPath},${args.fileinfo.fileName}"
             val intent = Intent(Intent.ACTION_SEND).apply {
                 type = "image/*"
                 putExtra(Intent.EXTRA_STREAM, uri)
-                putExtra(Intent.EXTRA_TEXT, "$SHARE_IMAGE \n\nShared By :${args.fileinfo.sourceId}")
+                putExtra(Intent.EXTRA_TEXT, ("$SHARE_IMAGE\n"+"\n\nFile Info\n$fileInfo\n"+
+                        "\nShared By : ${args.fileinfo.sourceId}"))
             }
             startActivity(Intent.createChooser(intent, "Share File!"))
         } catch (e: Exception) {

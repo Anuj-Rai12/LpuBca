@@ -118,6 +118,7 @@ class NoteFragment : Fragment(R.layout.note_framgnet) {
         }
     }
     private fun itemUnitOnClick(list: List<FileInfo>, id: String) {
+        list.forEach { it.folderPath="${getPathFile(args.path!!).last()},$id" }
         val action = NoteFragmentDirections.actionNoteFragmentToBooksFragment(
             path = args.path!!,
             subject = null,

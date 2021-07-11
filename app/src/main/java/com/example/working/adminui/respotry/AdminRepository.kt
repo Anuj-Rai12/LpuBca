@@ -153,7 +153,7 @@ class AdminRepository @Inject constructor(
 data class FileInfo(
     val fileSize: String? = null,
     val downloadUrl: String? = null,
-    val folderPath: String? = null,
+    var folderPath: String? = null,
     val fileName: String? = null,
     var sourceId: String? = null,
     val date: String? = null,

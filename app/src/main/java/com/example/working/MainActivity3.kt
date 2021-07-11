@@ -3,6 +3,7 @@ package com.example.working
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -33,6 +34,10 @@ class MainActivity3 : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = SplashScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
         lifecycleScope.launch {
             delay(3000)
             checkUpdate()

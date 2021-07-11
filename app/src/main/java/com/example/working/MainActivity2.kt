@@ -51,9 +51,7 @@ class MainActivity2 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         binding = ActivityMain2Binding.inflate(layoutInflater)
         setContentView(binding?.root)
         savedInstanceState?.let { bundle ->
-            bundle.getString("MY_MAIL")?.let {
-                adminEmail=it
-            }
+            adminEmail=bundle.getString(MAIL)
         }
         grantPermission()
         getAdminEmail()
@@ -183,19 +181,14 @@ class MainActivity2 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         }
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        savedInstanceState.let {
-            adminEmail=it.getString("MY_MAIL")
-        }
-    }
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         adminEmail?.let {
-            outState.getString("MY_MAIL",it)
+            outState.getString(MAIL,it)
         }
     }
     override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
         Log.i(TAG, "onPermissionsGranted: Permstion granted ->$perms")
     }
 }
+const val MAIL="MY_MAIL"

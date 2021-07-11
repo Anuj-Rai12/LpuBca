@@ -118,7 +118,7 @@
                 android:id="@+id/layoutdrop"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:boxStrokeColor="@color/purple_700"
+                app:boxStrokeColor="@color/black"
                 android:hint="Semester">
 
                 <AutoCompleteTextView

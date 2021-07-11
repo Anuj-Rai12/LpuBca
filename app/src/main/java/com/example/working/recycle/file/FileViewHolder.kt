@@ -34,7 +34,8 @@ class FileViewHolder(private val binding: FileItemBinding) : RecyclerView.ViewHo
                 fileSizeTxt.isVisible = false
             ShareSubject.setOnClickListener {
                 val shareIt = shareOperation(fileInfo)
-                shareText(shareIt!!,context,fileInfo.downloadUrl!!,fileInfo.sourceId!!)
+                shareText(shareIt!!,context,fileInfo.downloadUrl!!,fileInfo.sourceId!!,
+                    fileInfo = "${fileInfo.folderPath},${fileInfo.fileName}")
             }
         }
     }

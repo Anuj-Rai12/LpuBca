@@ -158,11 +158,17 @@ fun shareText(
     context: Context,
     downloadUri: String,
     sharedBy: String,
-    title: String = "Share File!"
+    title: String = "Share File!",
+    fileInfo:String?=null,
 ) {
+    val msg=if (fileInfo!=null)"$SHARED\n\n$downloadUri " +"\n\nFile Info\n$fileInfo\n"+
+            "\nShared By : $sharedBy"
+    else
+        "$SHARED\n\n$downloadUri\n\nShared By : $sharedBy"
+
     val share = Intent(Intent.ACTION_SEND)
     share.type = "text/plain"
-    share.putExtra(Intent.EXTRA_TEXT, ("$SHARED\n\n$downloadUri\n\nShared By : $sharedBy"))
+    share.putExtra(Intent.EXTRA_TEXT, (msg))
     context.startActivity(Intent.createChooser(share, title))
 }
 
