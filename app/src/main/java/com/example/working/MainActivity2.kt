@@ -191,4 +191,4 @@ class MainActivity2 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         Log.i(TAG, "onPermissionsGranted: Permstion granted ->$perms")
     }
 }
-const val MAIL="MY_MAIL"
+private const val MAIL="MY_MAIL"

@@ -37,7 +37,7 @@ import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.example.working.MyViewModel
 import com.example.working.R
-import com.example.working.REQUEST_GAL
+import com.example.working.REQUEST_WRIT
 import com.example.working.adminui.viewmodel.AdminViewModel
 import com.example.working.databinding.ViewFileFragmentBinding
 import com.example.working.loginorsignup.TAG
@@ -106,10 +106,10 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
                 setImage()
             }
         } else if (isPdfFile(args.title)) {
-            if (checkGalleryPermission(requireActivity())) {
+            if (checkWritePermission(requireActivity())) {
                 getOnlinePdf()
             } else {
-                grantPermission()
+                request()
                 Toast.makeText(activity, "Permission Not Granted", Toast.LENGTH_SHORT).show()
             }
         }
@@ -402,9 +402,9 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
     }
 
     private fun request(
-        camera: String = Manifest.permission.READ_EXTERNAL_STORAGE,
-        code: Int = REQUEST_GAL,
-        s: String = "Gallery"
+        camera: String = Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        code: Int = REQUEST_WRIT,
+        s: String = "Access to Storage"
     ) = EasyPermissions.requestPermissions(
         this,
         "Kindly Give us $s permission,otherwise application may not work Properly.",
@@ -412,11 +412,6 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
         camera
     )
 
-    private fun grantPermission() {
-        if (!checkGalleryPermission(requireActivity())) {
-            request()
-        }
-    }
 
     override fun onPermissionsDenied(requestCode: Int, perms: List<String>) {
         perms.forEach {

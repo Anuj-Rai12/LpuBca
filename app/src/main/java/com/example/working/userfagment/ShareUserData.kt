@@ -126,7 +126,7 @@ class ShareUserData : Fragment(R.layout.share_framgent), EasyPermissions.Permiss
             )
 
             email.type = "message/rfc822"
-            context?.startActivity(Intent.createChooser(email, "Send Via Email."))
+            context?.startActivity(Intent.createChooser(email, "Send via Email ONLY"))
             return
         }
         Toast.makeText(activity, "Cannot send Email", Toast.LENGTH_SHORT).show()
@@ -231,7 +231,7 @@ class ShareUserData : Fragment(R.layout.share_framgent), EasyPermissions.Permiss
                 uris.add(it.fileUrl)
             }
             ei.putExtra(Intent.EXTRA_STREAM,uris)
-            context?.startActivity(Intent.createChooser(ei, "Sending Via Email..."))
+            context?.startActivity(Intent.createChooser(ei, "Send via Email ONLY"))
             return
         }
         Toast.makeText(activity, "Cannot send this Mail", Toast.LENGTH_SHORT).show()
