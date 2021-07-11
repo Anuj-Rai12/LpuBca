@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -28,6 +29,7 @@ class MainActivity4 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     private lateinit var binding: ActivityMain4Binding
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var checkInternet: CheckInternet
     private lateinit var img: ImageView
     private lateinit var userName: TextView
     private lateinit var userEmail: TextView
@@ -43,6 +45,7 @@ class MainActivity4 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     lateinit var customProgress: CustomProgress
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        checkInternet= CheckInternet(this)
         binding = ActivityMain4Binding.inflate(layoutInflater)
         setContentView(binding.root)
         grantPermission()
@@ -60,6 +63,7 @@ class MainActivity4 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
             updateDialog.show(supportFragmentManager, "LogOUt")
         }
         setUpProfile()
+        checkInternet()
         share.setOnClickListener {
             shareLink?.let { url ->
                 shareText(
@@ -88,7 +92,20 @@ class MainActivity4 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     private fun showLoading(string: String?, boolean: Boolean = false) {
         customProgress.showLoading(this, string, boolean)
     }
+    private fun checkInternet() {
+        checkInternet.observe(this){
+            if (!it){
+                dialog()
+                Toast.makeText(this, No_Internet_MSG, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
 
+    private fun dialog() {
+        val msg=PasswordDialog(title = No_Internet,Msg = No_Internet_MSG)
+        msg.isCancelable=false
+        msg.show(supportFragmentManager,"No_Internet")
+    }
     @SuppressLint("SetTextI18n")
     private fun setUpProfile() {
         myViewModel.userData.observe(this) {

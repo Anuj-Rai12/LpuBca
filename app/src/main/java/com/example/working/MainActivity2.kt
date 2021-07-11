@@ -31,6 +31,7 @@ class MainActivity2 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     private var binding: ActivityMain2Binding? = null
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var checkInternet: CheckInternet
     private lateinit var img: ImageView
     private lateinit var userName: TextView
     private lateinit var userEmail: TextView
@@ -55,6 +56,7 @@ class MainActivity2 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         }
         grantPermission()
         getAdminEmail()
+        checkInternet= CheckInternet(this)
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         img = binding?.nagView?.getHeaderView(0)?.findViewById(R.id.userProfileImage)!!
@@ -90,10 +92,26 @@ class MainActivity2 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
             Toast.makeText(this, "Can't Send Mail", Toast.LENGTH_SHORT).show()
         }
         setUpProfile()
+        checkInternet()
         navController = navHostFragment.navController
         appBarConfiguration = AppBarConfiguration(navController.graph, binding?.drawLayout)
         binding?.nagView!!.setupWithNavController(navController)
         setupActionBarWithNavController(navController, appBarConfiguration)
+    }
+
+    private fun checkInternet() {
+        checkInternet.observe(this){
+            if (!it){
+                dialog()
+                Toast.makeText(this, No_Internet_MSG, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun dialog() {
+        val msg=PasswordDialog(title = No_Internet,Msg = No_Internet_MSG)
+        msg.isCancelable=false
+        msg.show(supportFragmentManager,"No_Internet")
     }
 
     private fun getAdminEmail(){

@@ -26,13 +26,18 @@ import com.google.firebase.auth.FirebaseAuth
 import javax.inject.Inject
 
 
-class PasswordDialog : androidx.fragment.app.DialogFragment() {
+class PasswordDialog(val title: String? = null, val Msg: String? = null) :
+    androidx.fragment.app.DialogFragment() {
     private val args: PasswordDialogArgs by navArgs()
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val alterDialog = AlertDialog.Builder(requireActivity()).setTitle(args.title)
-        alterDialog.setMessage(args.message)
+        if (title!=null)
+            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
+        val alterDialog = AlertDialog.Builder(requireActivity()).setTitle(title ?: args.title)
+        alterDialog.setMessage(Msg ?: args.message)
             .setPositiveButton("ok") { dialogInterface, _ ->
                 dialogInterface.dismiss()
+                if (title!=null)
+                activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
             }
         return alterDialog.create()
     }
@@ -69,6 +74,7 @@ class UserInfoUpdateDialog @Inject constructor(
         }
         return alertDialog.create()
     }
+
     private fun setValue() {
         when (work) {
             NAME -> {

@@ -4,15 +4,13 @@ import android.Manifest
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.working.databinding.ActivityMainBinding
-import com.example.working.utils.CustomProgressBar
-import com.example.working.utils.checkCameraPermission
-import com.example.working.utils.checkGalleryPermission
-import com.example.working.utils.checkWritePermission
+import com.example.working.utils.*
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,19 +24,35 @@ const val REQUEST_WRIT = 103
 class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
+    private lateinit var checkInternet: CheckInternet
     @Inject
     lateinit var customProgressBar: CustomProgressBar
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        checkInternet= CheckInternet(this)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         grantPermission()
+        checkInternet()
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView2) as NavHostFragment
         navController = navHostFragment.findNavController()
         setupActionBarWithNavController(navController)
     }
+    private fun checkInternet() {
+        checkInternet.observe(this){
+            if (!it){
+                dialog()
+                Toast.makeText(this, No_Internet_MSG, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
 
+    private fun dialog() {
+        val msg=PasswordDialog(title = No_Internet,Msg = No_Internet_MSG)
+        msg.isCancelable=false
+        msg.show(supportFragmentManager,"No_Internet")
+    }
     private fun grantPermission() {
         if (!checkCameraPermission(this)) {
             request(Manifest.permission.CAMERA, REQUEST_CAM, "Camera")
