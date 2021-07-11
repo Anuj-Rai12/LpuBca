@@ -12,6 +12,7 @@
         android:layout_height="match_parent"
         android:layout_margin="10dp"
         android:visibility="gone"
+        tools:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/DownloadRecycle"
         app:layout_constraintEnd_toStartOf="@+id/DownloadRecycle"
         app:layout_constraintHorizontal_bias="0.5"

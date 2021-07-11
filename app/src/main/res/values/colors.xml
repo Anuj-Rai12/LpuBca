@@ -10,8 +10,10 @@
     <color name="dialogBackgroundColor">#00000000</color>
     <!-- App Color-->
     <color name="red_color">#D50000</color>
+    <color name="my_color">#fb7268</color>
     <color name="light_grey">#f8f8ff</color>
     <color name="grey">#808080</color>
-    <color name="light_green">#53C50B</color>
+    <color name="light_my_color">#F5A59F</color>
+    <color name="light_green">#fb7268</color>
     <color name="back_lastIcon">#E4E4E6</color>
 </resources>
