@@ -17,19 +17,19 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/myimage" />
+        app:srcCompat="@drawable/book_icon" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
         android:text="@string/my_App_name"
         android:textAlignment="center"
         android:textColor="@color/white"
-        android:textSize="30sp"
+        android:textSize="25sp"
         android:textStyle="bold"
         android:fontFamily="@font/average_sans"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imgView"
         app:layout_constraintLeft_toLeftOf="@id/imgView"
         app:layout_constraintRight_toRightOf="@id/imgView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

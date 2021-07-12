@@ -57,9 +57,9 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         if (!flag) {
             msg.isCancelable = flag
             msg.show(supportFragmentManager, "No_Internet")
-        }
-        else
+        } else if (msg.isVisible) {
             msg.dismiss()
+        }
     }
     private fun grantPermission() {
         if (!checkCameraPermission(this)) {
