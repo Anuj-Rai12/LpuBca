@@ -52,11 +52,11 @@ class MainActivity2 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         binding = ActivityMain2Binding.inflate(layoutInflater)
         setContentView(binding?.root)
         savedInstanceState?.let { bundle ->
-            adminEmail=bundle.getString(MAIL)
+            adminEmail = bundle.getString(MAIL)
         }
         grantPermission()
         getAdminEmail()
-        checkInternet= CheckInternet(this)
+        checkInternet = CheckInternet(this)
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         img = binding?.nagView?.getHeaderView(0)?.findViewById(R.id.userProfileImage)!!
@@ -85,7 +85,7 @@ class MainActivity2 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         }
         bugs.setOnClickListener {
             adminEmail?.let {
-                val intend=Intent(Intent.ACTION_VIEW, Uri.parse("mailto:$it"))
+                val intend = Intent(Intent.ACTION_VIEW, Uri.parse("mailto:$it"))
                 startActivity(intend)
                 return@setOnClickListener
             }
@@ -100,26 +100,32 @@ class MainActivity2 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     }
 
     private fun checkInternet() {
-        checkInternet.observe(this){
-            if (!it){
+        checkInternet.observe(this) {
+            if (!it) {
                 dialog()
                 Toast.makeText(this, No_Internet_MSG, Toast.LENGTH_LONG).show()
+            } else {
+                dialog(flag = true)
+                Toast.makeText(this, "Connection Established", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun dialog() {
-        val msg=PasswordDialog(title = No_Internet,Msg = No_Internet_MSG)
-        msg.isCancelable=false
-        msg.show(supportFragmentManager,"No_Internet")
+    private fun dialog(flag: Boolean = false) {
+        val msg = PasswordDialog(title = No_Internet, Msg = No_Internet_MSG)
+        if (!flag) {
+            msg.isCancelable = flag
+            msg.show(supportFragmentManager, "No_Internet")
+        } else
+            msg.dismiss()
     }
 
-    private fun getAdminEmail(){
+    private fun getAdminEmail() {
         adminViewModel.getAdminEmailId.observe(this) {
             when (it) {
                 is MySealed.Error -> Log.i(TAG, "getAdminEmail: ${it.exception?.localizedMessage}")
                 is MySealed.Loading -> Log.i(TAG, "getAdminEmail: Getting Admin Email")
-                is MySealed.Success ->adminEmail=it.data
+                is MySealed.Success -> adminEmail = it.data
             }
         }
     }
@@ -202,11 +208,13 @@ class MainActivity2 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         adminEmail?.let {
-            outState.getString(MAIL,it)
+            outState.getString(MAIL, it)
         }
     }
+
     override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
         Log.i(TAG, "onPermissionsGranted: Permstion granted ->$perms")
     }
 }
-private const val MAIL="MY_MAIL"
+
+private const val MAIL = "MY_MAIL"

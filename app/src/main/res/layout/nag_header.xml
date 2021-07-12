@@ -103,7 +103,7 @@
         android:layout_marginTop="20dp"
         android:drawablePadding="14dp"
         android:drawableTint="@color/black"
-        android:text="Bug Report"
+        android:text="Report Bug"
         android:textColor="@color/black"
         android:textSize="15sp"
         app:drawableStartCompat="@drawable/ic_bug_report" />

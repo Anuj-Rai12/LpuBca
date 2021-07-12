@@ -80,8 +80,6 @@ class ShareUserData : Fragment(R.layout.share_framgent), EasyPermissions.Permiss
             if (checkUI(subject)
                 || getSemester == null
                 || getMaterial == null || getUnit == null
-                || adminViewModel.localData.value?.isEmpty() == true
-                || adminViewModel.localData.value == null
             ) {
                 Log.i(TAG, "onViewCreated: Subject-> $subject")
                 Log.i(TAG, "onViewCreated: Material-> $getMaterial")
@@ -89,20 +87,31 @@ class ShareUserData : Fragment(R.layout.share_framgent), EasyPermissions.Permiss
                 Log.i(TAG, "onViewCreated: Unit-> $getUnit")
                 Snackbar.make(requireView(), "Please Enter the Info", Snackbar.LENGTH_SHORT).show()
                 return@setOnClickListener
-            } else {
-                //ShareFile-Multiple
-                shareItem(subject)
             }
+
+            if (adminViewModel.localData.value?.isEmpty() == true
+            || adminViewModel.localData.value == null
+        ) {
+            Snackbar.make(requireView(), "Please Choose File", Snackbar.LENGTH_SHORT).show()
+            return@setOnClickListener
+        }
+            //ShareFile-Multiple
+            shareItem(subject)
         }
         binding.shareWebsite.setOnClickListener {
             val websiteLink =
                 if (checkUI(binding.shareWebsiteLink.text.toString())) null
                 else binding.shareWebsiteLink.text.toString()
             val subject = binding.ShareNameTxT.text.toString()
-            if (websiteLink == null || getMaterial == null || getUnit == null || getSemester == null
+            if (getMaterial == null || getUnit == null || getSemester == null
                 || checkUI(subject)
             ) {
                 Snackbar.make(requireView(), "Please Fill The Info", Snackbar.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (websiteLink == null ){
+                Snackbar.make(requireView(),"Enter Website Link",Snackbar.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             shareWebsiteFile(websiteLink, subject)
@@ -225,12 +234,13 @@ class ShareUserData : Fragment(R.layout.share_framgent), EasyPermissions.Permiss
             ei.putExtra(
                 Intent.EXTRA_TEXT,
                 "This Resource is for :- \n $getSemester -> $getMaterial -> $subject ->$getUnit " +
-                        "\n Share UDI -> ${FirebaseAuth.getInstance().currentUser?.uid}")
+                        "\n Share UDI -> ${FirebaseAuth.getInstance().currentUser?.uid}"
+            )
             val uris = ArrayList<Uri>()
             adminViewModel.localData.value?.forEach {
                 uris.add(it.fileUrl)
             }
-            ei.putExtra(Intent.EXTRA_STREAM,uris)
+            ei.putExtra(Intent.EXTRA_STREAM, uris)
             context?.startActivity(Intent.createChooser(ei, "Send via Email ONLY"))
             return
         }

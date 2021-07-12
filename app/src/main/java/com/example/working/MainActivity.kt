@@ -45,13 +45,21 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
                 dialog()
                 Toast.makeText(this, No_Internet_MSG, Toast.LENGTH_LONG).show()
             }
+            else{
+                dialog(flag = true)
+                Toast.makeText(this, "Connection Established", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
-    private fun dialog() {
-        val msg=PasswordDialog(title = No_Internet,Msg = No_Internet_MSG)
-        msg.isCancelable=false
-        msg.show(supportFragmentManager,"No_Internet")
+    private fun dialog(flag:Boolean=false) {
+        val msg = PasswordDialog(title = No_Internet, Msg = No_Internet_MSG)
+        if (!flag) {
+            msg.isCancelable = flag
+            msg.show(supportFragmentManager, "No_Internet")
+        }
+        else
+            msg.dismiss()
     }
     private fun grantPermission() {
         if (!checkCameraPermission(this)) {

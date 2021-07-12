@@ -13,12 +13,12 @@ import com.example.working.utils.*
 class SubjectViewHolder(private val binding: SubjectItemBinding) :
     RecyclerView.ViewHolder(binding.root) {
     @SuppressLint("SetTextI18n")
-    fun bind(function: (String) -> Unit, subjectInfo: SubjectInfo) {
+    fun bind(function: (String,String) -> Unit, subjectInfo: SubjectInfo) {
         binding.apply {
             binding.unitCurrentData.isVisible=false
             binding.subjectTeacherName.isVisible=true
             binding.root.setOnClickListener {
-                function(subjectInfo.subject ?: " ")
+                function(subjectInfo.orginalsub ?: " ",subjectInfo.subject?:" ")
             }
             folderBox.setImageResource(R.drawable.ic_folder_name)
             textView.text="${subjectInfo.subject},\n"

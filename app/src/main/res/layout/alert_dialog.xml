@@ -130,7 +130,7 @@
         android:id="@+id/semesterLayout"
         android:hint="New Semester"
         android:visibility="gone"
-        app:boxStrokeColor="@color/purple_700"
+        app:boxStrokeColor="@color/my_color"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 

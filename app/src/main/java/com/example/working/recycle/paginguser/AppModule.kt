@@ -8,7 +8,6 @@ import com.example.working.repos.VERSION
 import com.example.working.repos.VERSION_DOC
 import com.example.working.room.RoomDataBaseInstance
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.auth.User
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,7 +25,7 @@ object AppModule {
     private val update by lazy {
         fireStore.collection(VERSION).document(VERSION_DOC)
     }
-    private val adminId = "drZyYp5mMyMwjoK3mSYB4toYdhQ2"
+    private const val adminId = "ZFruF8WEdSbM3itFxjqlNhpR8As2"
 
     @Provides
     @Singleton

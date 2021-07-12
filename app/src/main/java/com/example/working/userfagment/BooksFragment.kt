@@ -206,19 +206,19 @@ class BooksFragment : Fragment(R.layout.book_fragment) {
         binding.recycleView.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(requireContext())
-            subjectRecycleView = SubjectRecycleView {
-                itemOnClick(it)
+            subjectRecycleView = SubjectRecycleView {main,path->
+                itemOnClick(main,path)
             }
             adapter = subjectRecycleView
         }
     }
 
-    private fun itemOnClick(s: String) {
+    private fun itemOnClick(s: String, title: String) {
         Log.i(TAG, "itemOnClick: SubjectName -> $s")
         val path = "${args.path},$s"
         Log.i(TAG, "itemOnClick: SubjectName -> $path")
         val action =
-            BooksFragmentDirections.actionBooksFragmentToNoteFragment(title = s, path = path)
+            BooksFragmentDirections.actionBooksFragmentToNoteFragment(title = title, path = path)
         findNavController().navigate(action)
     }
 }

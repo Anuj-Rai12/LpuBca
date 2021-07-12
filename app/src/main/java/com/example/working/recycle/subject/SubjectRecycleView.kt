@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import com.example.working.databinding.SubjectItemBinding
 import com.example.working.utils.SubjectInfo
 
-class SubjectRecycleView constructor(private val function: (String) -> Unit) :
+class SubjectRecycleView constructor(private val function: (String,String) -> Unit) :
     ListAdapter<SubjectInfo, SubjectViewHolder>(DiffUtil) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubjectViewHolder {
         val binding = SubjectItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)

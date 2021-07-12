@@ -18,8 +18,11 @@ class ResourcesViewHolder(private val binding: FloderItemBinding) :
             SourceTime.text = materials.time ?: "00/00/0000"
             root.setOnClickListener {
                 val subInfo: MutableList<SubjectInfo> = mutableListOf()
-                materials.subject?.filterValues { sub ->
-                    subInfo.add(sub)
+                materials.subject?.filter {sub->
+                    val key=sub.key
+                    val subj=sub.value
+                    subj.orginalsub=key
+                    subInfo.add(subj)
                 }
                 function(subInfo,materials.id?:" ")
             }

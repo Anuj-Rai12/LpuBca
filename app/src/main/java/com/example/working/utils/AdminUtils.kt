@@ -47,7 +47,8 @@ data class Materials(
 data class SubjectInfo(
     val subject: String? = null,
     val description: String? = null,
-    val teacher: String? = null
+    val teacher: String? = null,
+    var orginalsub:String?=null
 ) : Parcelable
 
 @Parcelize

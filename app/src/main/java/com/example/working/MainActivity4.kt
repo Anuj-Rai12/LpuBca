@@ -45,13 +45,13 @@ class MainActivity4 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     lateinit var customProgress: CustomProgress
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        checkInternet= CheckInternet(this)
+        checkInternet = CheckInternet(this)
         binding = ActivityMain4Binding.inflate(layoutInflater)
         setContentView(binding.root)
         grantPermission()
         img = binding.nagViewAdmin.getHeaderView(0).findViewById(R.id.userProfileImage)!!
-        bugs=binding.nagViewAdmin.getHeaderView(0).findViewById(R.id.myBugReport)!!
-        bugs.isVisible=false
+        bugs = binding.nagViewAdmin.getHeaderView(0).findViewById(R.id.myBugReport)!!
+        bugs.isVisible = false
         userName = binding.nagViewAdmin.getHeaderView(0).findViewById(R.id.userNametext)!!
         userEmail = binding.nagViewAdmin.getHeaderView(0).findViewById(R.id.userEmailtext)!!
         logout =
@@ -92,20 +92,29 @@ class MainActivity4 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     private fun showLoading(string: String?, boolean: Boolean = false) {
         customProgress.showLoading(this, string, boolean)
     }
+
     private fun checkInternet() {
-        checkInternet.observe(this){
-            if (!it){
+        checkInternet.observe(this) {
+            if (!it) {
                 dialog()
                 Toast.makeText(this, No_Internet_MSG, Toast.LENGTH_LONG).show()
+            } else {
+                dialog(flag = true)
+                Toast.makeText(this, "Connection Established", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun dialog() {
-        val msg=PasswordDialog(title = No_Internet,Msg = No_Internet_MSG)
-        msg.isCancelable=false
-        msg.show(supportFragmentManager,"No_Internet")
+    private fun dialog(flag: Boolean = false) {
+        val msg = PasswordDialog(title = No_Internet, Msg = No_Internet_MSG)
+        if (!flag) {
+            msg.isCancelable = flag
+            msg.show(supportFragmentManager, "No_Internet")
+        } else if (msg.isVisible) {
+            msg.dismiss()
+        }
     }
+
     @SuppressLint("SetTextI18n")
     private fun setUpProfile() {
         myViewModel.userData.observe(this) {
@@ -165,6 +174,7 @@ class MainActivity4 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
             request(Manifest.permission.WRITE_EXTERNAL_STORAGE, REQUEST_WRIT, "Access to Storage")
         }
     }
+
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration) || super.onNavigateUp()
     }
