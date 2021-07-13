@@ -46,7 +46,11 @@
             app:nullable="true" />
         <action
             android:id="@+id/action_booksFragment_to_viewFileFragment"
-            app:destination="@id/viewFileFragment" />
+            app:destination="@id/viewFileFragment"
+            app:enterAnim="@anim/ente_anim"
+            app:exitAnim="@anim/exit_anim"
+            app:popEnterAnim="@anim/pop_enter_anim"
+            app:popExitAnim="@anim/pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/downloadFragment"
@@ -55,7 +59,11 @@
         tools:layout="@layout/download_framgnet" >
         <action
             android:id="@+id/action_downloadFragment_to_viewFileFragment"
-            app:destination="@id/viewFileFragment" />
+            app:destination="@id/viewFileFragment"
+            app:enterAnim="@anim/ente_anim"
+            app:exitAnim="@anim/exit_anim"
+            app:popEnterAnim="@anim/pop_enter_anim"
+            app:popExitAnim="@anim/pop_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
