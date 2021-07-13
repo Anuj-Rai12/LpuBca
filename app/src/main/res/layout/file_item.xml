@@ -19,11 +19,10 @@
             android:id="@+id/ShareSubject"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_marginTop="3dp"
             android:layout_marginStart="3dp"
-            android:backgroundTint="@color/black"
+            android:layout_marginTop="3dp"
             android:background="@drawable/ic_share"
-            />
+            android:backgroundTint="@color/black" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/ClickLayout"
@@ -49,11 +48,11 @@
                 android:paddingBottom="3dp"
                 android:textColor="@color/black"
                 android:textSize="18sp"
-                android:textStyle="bold"
+                android:gravity="center"
                 app:layout_constraintLeft_toLeftOf="@id/subject_img"
                 app:layout_constraintRight_toRightOf="@id/subject_img"
                 app:layout_constraintTop_toBottomOf="@id/subject_img"
-                tools:text="File-Name" />
+                tools:text="File-Name  SJKDFJKLSDJK G DGLKJDS KJLLDKJSGLKDJS DGLKJDLJ DGLJKDGLJ" />
 
             <TextView
                 android:id="@+id/fileSizeTxt"
@@ -64,8 +63,8 @@
                 android:paddingBottom="3dp"
                 android:textColor="@color/grey"
                 android:textSize="15sp"
-                app:layout_constraintRight_toRightOf="@id/fileNameTxt"
                 app:layout_constraintLeft_toLeftOf="@id/fileNameTxt"
+                app:layout_constraintRight_toRightOf="@id/fileNameTxt"
                 app:layout_constraintTop_toBottomOf="@id/fileNameTxt"
                 tools:text="File Size: 23kb" />
 
@@ -80,9 +79,9 @@
                 android:gravity="center_vertical"
                 android:maxLines="1"
                 android:textColor="@color/black"
-                app:layout_constraintRight_toRightOf="@id/fileSizeTxt"
                 app:drawableStartCompat="@drawable/ic_person"
                 app:layout_constraintLeft_toLeftOf="@id/fileSizeTxt"
+                app:layout_constraintRight_toRightOf="@id/fileSizeTxt"
                 app:layout_constraintTop_toBottomOf="@id/fileSizeTxt"
                 tools:text="Share by: Anuj Rai" />
 
@@ -91,12 +90,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="6dp"
-                android:paddingBottom="4dp"
                 android:drawablePadding="4dp"
                 android:drawableTint="@color/black"
                 android:ellipsize="end"
                 android:gravity="center_vertical"
                 android:maxLines="1"
+                android:paddingBottom="4dp"
                 android:textColor="@color/black"
                 app:drawableStartCompat="@drawable/ic_time"
                 app:layout_constraintRight_toRightOf="parent"

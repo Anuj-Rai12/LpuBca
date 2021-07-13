@@ -146,6 +146,7 @@ class Uploader : Fragment(R.layout.uplod_fragment) {
                     }
                     is MySealed.Success -> {
                         hideLoading()
+                        adminViewModel.fileName.remove(fileName)
                         dialog(title = "Success", message = it.data as String)
                     }
                 }

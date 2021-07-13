@@ -39,7 +39,8 @@ data class Materials(
     var udi: String? = null,
     val time: String? = null,
     val description: String? = null,
-    val subject: Map<String, SubjectInfo>? = null
+    val subject: Map<String, SubjectInfo>? = null,
+    val priority:Int?=null
 ) : Parcelable
 
 @IgnoreExtraProperties
@@ -48,7 +49,7 @@ data class SubjectInfo(
     val subject: String? = null,
     val description: String? = null,
     val teacher: String? = null,
-    var orginalsub:String?=null
+    var orginalsub: String? = null
 ) : Parcelable
 
 @Parcelize
@@ -160,9 +161,9 @@ fun shareText(
     downloadUri: String,
     sharedBy: String,
     title: String = "Share File!",
-    fileInfo:String?=null,
+    fileInfo: String? = null,
 ) {
-    val msg=if (fileInfo!=null)"$SHARED\n\n$downloadUri " +"\n\nFile Info\n$fileInfo\n"+
+    val msg = if (fileInfo != null) "$SHARED\n\n$downloadUri " + "\n\nFile Info\n$fileInfo\n" +
             "\nShared By : $sharedBy"
     else
         "$SHARED\n\n$downloadUri\n\nShared By : $sharedBy"

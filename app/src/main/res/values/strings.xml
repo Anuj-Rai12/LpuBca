@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Lpu Bca App</string>
+    <string name="app_name">Lpu Bca</string>
     <string name="my_App_name">Lpu Bca App</string>
     <string-array name="timers">
         <item>1th Semester</item>

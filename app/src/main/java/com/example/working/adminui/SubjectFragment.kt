@@ -68,7 +68,6 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
                 Snackbar.make(requireView(), "Please Enter Info", Snackbar.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
             updateFile()
         }
         binding.addSubject.setOnClickListener {
@@ -156,7 +155,8 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
             udi = args.meta.udi,
             time = args.meta.time,
             description = args.meta.description,
-            subject = map
+            subject = map,
+            priority =args.meta.priority
         )
         if (checkBeforeUpload())
             myViewModel.addFirstSet(args.path, materials = materials).observe(viewLifecycleOwner) {

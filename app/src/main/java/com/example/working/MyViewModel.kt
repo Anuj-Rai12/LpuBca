@@ -58,6 +58,7 @@ class MyViewModel @Inject constructor(
 
     private fun getResourceQuery() =
         FirebaseFirestore.getInstance().collection(getUserSemester ?: "")
+            .orderBy("priority", Query.Direction.DESCENDING)
             .limit(RESOURCES_LOAD_SIZE.toLong())
 
     private fun getUnitQuery() =

@@ -60,11 +60,21 @@ class Modifier : Fragment(R.layout.modifer_fragment) {
             val materials = Materials(
                 udi = FirebaseAuth.getInstance().currentUser?.uid,
                 time = getDateTime(),
-                description = desc
+                description = desc,
+                priority = getPriority(semesterNo!!)
             )
             val action =
                 ModifierDirections.actionModifierToSubjectFragment(path = str, meta = materials)
             findNavController().navigate(action)
+        }
+    }
+
+    private fun getPriority(string: String): Int? {
+        return when (string) {
+            "PPT" -> 3
+            "Book" -> 1
+            "Other Material" -> 2
+            else -> null
         }
     }
 
