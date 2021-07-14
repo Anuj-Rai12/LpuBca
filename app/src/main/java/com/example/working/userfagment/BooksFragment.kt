@@ -84,11 +84,15 @@ class BooksFragment : Fragment(R.layout.book_fragment) {
                 setBroadcastReceiver(id, fileInfo)
             }
         } else {
-            val action = BooksFragmentDirections.actionBooksFragmentToViewFileFragment(
-                fileInfo,
-                fileInfo.fileName
-            )
-            findNavController().navigate(action)
+            fileInfo.fileName?.let {
+                val action = BooksFragmentDirections.actionBooksFragmentToViewFileFragment(
+                    fileInfo,
+                    it
+                    )
+                if (!myViewModel.websiteLoading)
+                    myViewModel.websiteLoading=true
+                findNavController().navigate(action)
+            }
         }
     }
 

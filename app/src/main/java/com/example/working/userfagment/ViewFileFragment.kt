@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.ConnectivityManager
@@ -62,7 +63,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
     private val myViewModel: MyViewModel by activityViewModels()
     private val adminViewModel: AdminViewModel by activityViewModels()
     private var getDefaultPage: Int? = null
-
+    private var isWeb:Boolean?=null
     @Inject
     lateinit var customProgress: CustomProgress
 
@@ -72,6 +73,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
         binding = ViewFileFragmentBinding.bind(view)
         savedInstanceState?.let {
             getDefaultPage = it.getInt(PageNo)
+            isWeb=it.getBoolean("OK")
         }
         if (args.fileinfo.localDownloadUrl != null)
             offlineSee()
@@ -88,12 +90,14 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun onlineSee(savedInstanceState: Bundle?) {
-        if (savedInstanceState != null && isWebsiteFile(args.fileinfo.fileName!!)) {
-            binding.webView.restoreState(savedInstanceState)
+        /*if (isWeb!=null && isWebsiteFile(args.fileinfo.fileName!!)) {
+            binding.webView.restoreState(savedInstanceState!!)
+            Log.i(TAG, "onlineSee: Website is Not Null")
             webViewLoading()
             onBackPressed()
-        } else if (savedInstanceState == null && isWebsiteFile(args.fileinfo.fileName!!)) {
+        } else*/ if (isWebsiteFile(args.fileinfo.fileName!!)) {
             binding.myRoot.isVisible = true
+            Log.i(TAG, "onlineSee: Website is Null")
             checkConnection()
             webViewLoading()
             onBackPressed()
@@ -232,12 +236,14 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
             val uri = args.fileinfo.localDownloadUrl?.toUri() ?: myViewModel.downloadFile.getValue(
                 args.title
             )
-            val fileInfo="${args.fileinfo.folderPath},${args.fileinfo.fileName}"
+            val fileInfo = "${args.fileinfo.folderPath},${args.fileinfo.fileName}"
             val intent = Intent(Intent.ACTION_SEND).apply {
                 type = "image/*"
                 putExtra(Intent.EXTRA_STREAM, uri)
-                putExtra(Intent.EXTRA_TEXT, ("$SHARE_IMAGE\n"+"\n\nFile Info\n$fileInfo\n"+
-                        "\nShared By : ${args.fileinfo.sourceId}"))
+                putExtra(
+                    Intent.EXTRA_TEXT, ("$SHARE_IMAGE\n" + "\n\nFile Info\n$fileInfo\n" +
+                            "\nShared By : ${args.fileinfo.sourceId}")
+                )
             }
             startActivity(Intent.createChooser(intent, "Share File!"))
         } catch (e: Exception) {
@@ -330,12 +336,15 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
             if (binding.webView.canGoBack()) {
                 Log.i(TAG, "onbackPressed: Website can go back")
                 binding.webView.goBack()
-            } else {
+            } else if (!binding.webView.canGoBack()&&!myViewModel.websiteLoading) {
                 Log.i(TAG, "onbackPressed: website cannot  go back")
-                if (!myViewModel.websiteLoading) {
-                    myViewModel.websiteLoading = true
-                    findNavController().popBackStack()
-                }
+                Log.i(
+                    TAG,
+                    "onBackPressed: myViewModel.websiteLoading ->${myViewModel.websiteLoading}"
+                )
+                myViewModel.websiteLoading = true
+                activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+                findNavController().popBackStack()
             }
         }.handleOnBackPressed()
     }
@@ -346,16 +355,17 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
             return
         }
         Log.i(TAG, "hideLoading: iS NOT return")
-        myViewModel.websiteLoading = true
+
     }
 
+    @SuppressLint("SourceLockedOrientationActivity")
     private fun hideLoading() {
         activity?.let {
             customProgress.hideLoading(it)
+            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             return
         }
         Log.i(TAG, "hideLoading: iS NOT return")
-        myViewModel.websiteLoading = true
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -397,8 +407,12 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
         super.onSaveInstanceState(outState)
         getDefaultPage?.let {
             outState.putInt(PageNo, it)
+            return
         }
-        binding.webView.saveState(outState)
+        isWeb?.let {
+            outState.putBoolean("OK",it)
+            binding.webView.saveState(outState)
+        }
     }
 
     private fun request(
