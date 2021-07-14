@@ -79,7 +79,7 @@ class ShareUserData : Fragment(R.layout.share_framgent), EasyPermissions.Permiss
             val subject = binding.ShareNameTxT.text.toString()
             if (checkUI(subject)
                 || getSemester == null
-                || getMaterial == null || getUnit == null
+                || getMaterial == null
             ) {
                 Log.i(TAG, "onViewCreated: Subject-> $subject")
                 Log.i(TAG, "onViewCreated: Material-> $getMaterial")
@@ -88,7 +88,10 @@ class ShareUserData : Fragment(R.layout.share_framgent), EasyPermissions.Permiss
                 Snackbar.make(requireView(), "Please Enter the Info", Snackbar.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
+            if (getMaterial!="Book"&&getUnit==null){
+                Snackbar.make(requireView(), "Please Select Unit", Snackbar.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             if (adminViewModel.localData.value?.isEmpty() == true
             || adminViewModel.localData.value == null
         ) {
@@ -103,13 +106,16 @@ class ShareUserData : Fragment(R.layout.share_framgent), EasyPermissions.Permiss
                 if (checkUI(binding.shareWebsiteLink.text.toString())) null
                 else binding.shareWebsiteLink.text.toString()
             val subject = binding.ShareNameTxT.text.toString()
-            if (getMaterial == null || getUnit == null || getSemester == null
+            if (getMaterial == null  || getSemester == null
                 || checkUI(subject)
             ) {
                 Snackbar.make(requireView(), "Please Fill The Info", Snackbar.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
+            if (getMaterial!="Book"&&getUnit==null){
+                Snackbar.make(requireView(), "Please Select Unit", Snackbar.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             if (websiteLink == null ){
                 Snackbar.make(requireView(),"Enter Website Link",Snackbar.LENGTH_SHORT).show()
                 return@setOnClickListener

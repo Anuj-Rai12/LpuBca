@@ -19,7 +19,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private const val VERSION = 1
+private const val VERSION = 0
 const val ADMIN_PHONE = "+917777755555"
 @AndroidEntryPoint
 class MainActivity3 : AppCompatActivity() {
