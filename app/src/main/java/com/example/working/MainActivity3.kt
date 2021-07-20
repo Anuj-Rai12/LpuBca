@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.working.databinding.SplashScreenBinding
 import com.example.working.loginorsignup.TAG
 import com.example.working.repos.Update
+import com.example.working.utils.AllMyConstant
 import com.example.working.utils.CustomProgress
 import com.example.working.utils.MySealed
 import com.example.working.utils.UpdateDialog
@@ -21,14 +22,17 @@ import javax.inject.Inject
 
 private const val VERSION = 0
 const val ADMIN_PHONE = "+917777755555"
+
 @AndroidEntryPoint
 class MainActivity3 : AppCompatActivity() {
     private lateinit var binding: SplashScreenBinding
 
     @Inject
     lateinit var customProgressBar: CustomProgress
-
-    private lateinit var updateDialog: UpdateDialog
+    private var dialogFlag: Boolean? = null
+    private var updateDialog: UpdateDialog?=null
+    private var message:String?=null
+    private var link:String?=null
     private val myViewModel: MyViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,20 +42,33 @@ class MainActivity3 : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
+        savedInstanceState?.let {
+            dialogFlag=it.getBoolean(AllMyConstant.MyDialogFlag,false)
+            message=it.getString(AllMyConstant.MSG_DIALOG)
+            link=it.getString(AllMyConstant.MSG_LINK)
+        }
+        if (dialogFlag==true) {
+            message?.let {message->
+                dialog(message, link)
+            }
+        }
         lifecycleScope.launch {
             delay(3000)
+            if (dialogFlag==null||dialogFlag==false)
             checkUpdate()
         }
     }
 
     private fun hideLoading() = customProgressBar.hideLoading(this)
+
     companion object {
         var mySharedUrl: String? = null
     }
-    private fun showLoading(string: String?)=customProgressBar.showLoading(this, string)
+    private fun showLoading(string: String?) = customProgressBar.showLoading(this, string)
 
     private fun checkUpdate() {
         myViewModel.getUpdate.observe(this) {
+            Log.i(TAG, "checkUpdate: Get Update Started")
             when (it) {
                 is MySealed.Loading -> {
                     showLoading(it.data.toString())
@@ -71,10 +88,10 @@ class MainActivity3 : AppCompatActivity() {
                         dir(1)
                     else //User is Sign In
                         if (FirebaseAuth.getInstance().currentUser?.phoneNumber == ADMIN_PHONE) {
-                            mySharedUrl=update.download
+                            mySharedUrl = update.download
                             dir(4)
                         } else {
-                            mySharedUrl=update.download
+                            mySharedUrl = update.download
                             dir()
                         }
                 }
@@ -95,10 +112,19 @@ class MainActivity3 : AppCompatActivity() {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        hideLoading()
+        updateDialog?.dismiss()
+    }
+
     private fun dialog(message: String, link: String?) {
         updateDialog = UpdateDialog(message, link, "Update!")
-        updateDialog.show(supportFragmentManager, "UpdateTag")
-        updateDialog.isCancelable = false
+        dialogFlag = true
+        this.message=message
+        this.link=link
+        updateDialog?.show(supportFragmentManager, "UpdateTag")
+        updateDialog?.isCancelable = false
     }
 
     private fun dir(choice: Int = 0) {
@@ -118,6 +144,19 @@ class MainActivity3 : AppCompatActivity() {
                 startActivity(intent)
                 finish()
             }
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        message?.let {
+            outState.putString(AllMyConstant.MSG_DIALOG,it)
+        }
+        link?.let {
+            outState.putString(AllMyConstant.MSG_LINK,it)
+        }
+        dialogFlag?.let {
+            outState.putBoolean(AllMyConstant.MyDialogFlag,it)
         }
     }
 }

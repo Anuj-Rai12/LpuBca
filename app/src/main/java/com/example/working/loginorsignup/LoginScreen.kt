@@ -2,7 +2,6 @@ package com.example.working.loginorsignup
 
 
 import android.annotation.SuppressLint
-import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +14,7 @@ import com.example.working.ADMIN_PHONE
 import com.example.working.MyViewModel
 import com.example.working.R
 import com.example.working.databinding.LoginFragmentBinding
+import com.example.working.utils.AllMyConstant
 import com.example.working.utils.CustomProgressBar
 import com.example.working.utils.MySealed
 import com.google.android.material.snackbar.Snackbar
@@ -25,15 +25,28 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class LoginScreen : Fragment(R.layout.login_fragment) {
     private lateinit var binding: LoginFragmentBinding
-
     @Inject
     lateinit var customProgressBar: CustomProgressBar
     private val myViewModel: MyViewModel by activityViewModels()
-
+    private var loginFlag: Boolean? =null
+    private var userName:String?=null
+    private var userPassword:String?=null
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = LoginFragmentBinding.bind(view)
+        savedInstanceState?.let {
+            loginFlag=it.getBoolean("loginFlag",false)
+            userName=it.getString(AllMyConstant.MSG_DIALOG)
+            userPassword=it.getString("userPassword")
+        }
+        if (loginFlag ==true)
+        {
+            Log.i(TAG, "onViewCreated: $userPassword, $userName")
+            userName?.let {
+                validUser(it,userPassword!!)
+            }
+        }
         binding.nextBtn.setOnClickListener {
             if (binding.emailText.text.toString().isEmpty() || binding.passwordText.text.toString()
                     .isBlank() || binding.passwordText.text.toString()
@@ -69,23 +82,25 @@ class LoginScreen : Fragment(R.layout.login_fragment) {
     }
 
     private fun hideLoading() {
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+        //activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
         customProgressBar.dismiss()
     }
 
     @SuppressLint("SourceLockedOrientationActivity")
     private fun showLoading(string: String?, boolean: Boolean = false) {
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        //activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         customProgressBar.show(requireActivity(), string, boolean)
     }
 
-    private fun validUser() {
+    private fun validUser(userName:String=binding.emailText.text.toString(),pass:String=binding.passwordText.text.toString()) {
+        this.userPassword=pass
+        this.userName=userName
         myViewModel.signInAccount(
-            binding.emailText.text.toString(),
-            binding.passwordText.text.toString()
+            userName,pass
         ).observe(viewLifecycleOwner) {
             when (it) {
                 is MySealed.Loading -> {
+                    loginFlag=true
                     showLoading(it.data.toString())
                 }
                 is MySealed.Success -> {
@@ -106,6 +121,23 @@ class LoginScreen : Fragment(R.layout.login_fragment) {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        hideLoading()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        loginFlag?.let {
+            outState.putBoolean("loginFlag",it)
+        }
+        userName?.let {
+            outState.putString(AllMyConstant.MSG_DIALOG,it)
+        }
+        userPassword?.let {
+            outState.putString("userPassword",it)
+        }
+    }
     private fun remember() {
         val flag = binding.remeberme.isChecked
         if (flag)

@@ -67,72 +67,81 @@ class OTPScreen : Fragment(R.layout.opt_framgnet) {
         savedInstanceState?.let {
             verificationProg = savedInstanceState.getBoolean(KEY)
         }
-        myCallBack = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-            override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-                Log.i(TAG, "onVerificationCompleted: Credential Created Successfully")
-                verificationProg = false
-                signInWithCredential(credential)
-            }
-
-            override fun onVerificationFailed(e: FirebaseException) {
-                binding.errorMsg.isVisible = true
-                binding.errorMsg.text = when (e) {
-                    is FirebaseAuthInvalidCredentialsException -> {
-                        "Error :(\nInvalid Phone Number"
-                    }
-                    is FirebaseTooManyRequestsException -> {
-                        "Error :(\nUsed Too Many Messages Try After 8 hrs."
-                    }
-                    else -> "Error :(\n ${e.message.toString()}"
+        if (myViewModel.OtpDialogFlag == true)
+            updateUser()
+        if (myViewModel.OtpValidFlag == true)
+            validUser()
+        if (myViewModel.OtpValidFlag == null && myViewModel.OtpValidFlag == null) {
+            myCallBack = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                    Log.i(TAG, "onVerificationCompleted: Credential Created Successfully")
+                    verificationProg = false
+                    signInWithCredential(credential)
                 }
-                verificationProg = false
-                timer.cancel()
-                binding.otpCountDown.text = ""
-            }
 
-            override fun onCodeSent(
-                verificationId: String,
-                token: PhoneAuthProvider.ForceResendingToken
-            ) {
-                super.onCodeSent(verificationId, token)
-                Toast.makeText(activity, "OTP Sent Successfully", Toast.LENGTH_SHORT).show()
-                this@OTPScreen.verificationId = verificationId
-                resendToken = token
+                override fun onVerificationFailed(e: FirebaseException) {
+                    binding.errorMsg.isVisible = true
+                    binding.errorMsg.text = when (e) {
+                        is FirebaseAuthInvalidCredentialsException -> {
+                            "Error :(\nInvalid Phone Number"
+                        }
+                        is FirebaseTooManyRequestsException -> {
+                            "Error :(\nUsed Too Many Messages Try After 8 hrs."
+                        }
+                        else -> "Error :(\n ${e.message.toString()}"
+                    }
+                    verificationProg = false
+                    timer.cancel()
+                    binding.otpCountDown.text = ""
+                }
+
+                override fun onCodeSent(
+                    verificationId: String,
+                    token: PhoneAuthProvider.ForceResendingToken
+                ) {
+                    super.onCodeSent(verificationId, token)
+                    activity?.let {
+                        Toast.makeText(activity, "OTP Sent Successfully", Toast.LENGTH_SHORT).show()
+                    }
+                    this@OTPScreen.verificationId = verificationId
+                    resendToken = token
+                }
             }
-        }
-        if (args.myphoneno.isNullOrEmpty()) {
-            args.userthree?.let { info ->
-                //myViewModel.userData = info
-                Log.i(TAG, "onViewCreated: OTP is ->${binding.pinView.text.toString()}")
-                Log.i(TAG, "onViewCreated: User Data is ->${info}")
-                Log.i(TAG, "PHONE IS ->${info.phone}")
-                //Send Code
-                signInWithPhoneNumber(info.phone!!)
+            if (args.myphoneno.isNullOrEmpty()) {
+                args.userthree?.let { info ->
+                    //myViewModel.userData = info
+                    Log.i(TAG, "onViewCreated: OTP is ->${binding.pinView.text.toString()}")
+                    Log.i(TAG, "onViewCreated: User Data is ->${info}")
+                    Log.i(TAG, "PHONE IS ->${info.phone}")
+                    //Send Code
+                    signInWithPhoneNumber(info.phone!!)
+                }
+            } else {
+                args.myphoneno?.let { phone ->
+                    Log.i(TAG, "onViewCreated: MyPhone number ->$phone")
+                    //SendCode
+                    signInWithPhoneNumber(phone)
+                }
             }
-        } else {
-            args.myphoneno?.let { phone ->
-                Log.i(TAG, "onViewCreated: MyPhone number ->$phone")
-                //SendCode
-                signInWithPhoneNumber(phone)
+            binding.verify.setOnClickListener {
+                binding.errorMsg.isVisible = false
+                if (binding.pinView.text.toString().isBlank() || binding.pinView.text.toString()
+                        .isEmpty()
+                ) {
+                    Snackbar.make(requireView(), "Enter the Correct Otp", Snackbar.LENGTH_SHORT)
+                        .show()
+                    return@setOnClickListener
+                }
+                checkCode(verificationId, code = binding.pinView.text.toString())
             }
-        }
-        binding.verify.setOnClickListener {
-            binding.errorMsg.isVisible = false
-            if (binding.pinView.text.toString().isBlank() || binding.pinView.text.toString()
-                    .isEmpty()
-            ) {
-                Snackbar.make(requireView(), "Enter the Correct Otp", Snackbar.LENGTH_SHORT).show()
-                return@setOnClickListener
+            binding.resendotp.setOnClickListener {
+                if (args.myphoneno == null && args.userthree?.phone != null)
+                    resendCode(args.userthree?.phone!!, resendToken)
+                else if (args.myphoneno != null && args.userthree?.phone == null)
+                    resendCode(args.myphoneno!!, resendToken)
+                else
+                    Log.i(TAG, "onViewCreated: Invalid Resend Phone Number")
             }
-            checkCode(verificationId, code = binding.pinView.text.toString())
-        }
-        binding.resendotp.setOnClickListener {
-            if (args.myphoneno == null && args.userthree?.phone != null)
-                resendCode(args.userthree?.phone!!, resendToken)
-            else if (args.myphoneno != null && args.userthree?.phone == null)
-                resendCode(args.myphoneno!!, resendToken)
-            else
-                Log.i(TAG, "onViewCreated: Invalid Resend Phone Number")
         }
     }
 
@@ -175,6 +184,7 @@ class OTPScreen : Fragment(R.layout.opt_framgnet) {
     }
 
     private fun updateUser() {
+        myViewModel.OtpDialogFlag = true
         myViewModel.createUser(args.userthree?.email!!, args.userthree?.password!!)
             .observe(viewLifecycleOwner) {
                 when (it) {
@@ -183,10 +193,12 @@ class OTPScreen : Fragment(R.layout.opt_framgnet) {
                     }
                     is MySealed.Success -> {
                         hideLoading()
+                        myViewModel.OtpDialogFlag = false
                         validUser()
                     }
                     is MySealed.Error -> {
                         hideLoading()
+                        myViewModel.OtpDialogFlag = null
                         val action =
                             OTPScreenDirections.actionGlobalPasswordDialog(
                                 "${it.exception?.localizedMessage}",
@@ -206,17 +218,21 @@ class OTPScreen : Fragment(R.layout.opt_framgnet) {
     }
 
     private fun hideLoading() {
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
         customProgressBar.dismiss()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        hideLoading()
     }
 
     @SuppressLint("SourceLockedOrientationActivity")
     private fun showLoading(string: String?, boolean: Boolean = false) {
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         customProgressBar.show(requireActivity(), string, boolean)
     }
 
     private fun validUser() {
+        myViewModel.OtpValidFlag = true
         Log.i(TAG, "validUser: icon is ${Convertor.covertImages2ByteArray(myViewModel.image!!)}")
         myViewModel.createAccount(myViewModel.image!!, args.userthree!!)
             .observe(viewLifecycleOwner) {
@@ -225,11 +241,15 @@ class OTPScreen : Fragment(R.layout.opt_framgnet) {
                         showLoading(it.data.toString())
                     }
                     is MySealed.Success -> {
+                        myViewModel.OtpValidFlag = false
+                        myViewModel.OtpDialogFlag = false
                         hideLoading()
                         dir()
                     }
                     is MySealed.Error -> {
                         hideLoading()
+                        myViewModel.OtpValidFlag = null
+                        myViewModel.OtpDialogFlag = null
                         val action =
                             OTPScreenDirections.actionGlobalPasswordDialog(
                                 "${it.exception?.localizedMessage}",
@@ -244,13 +264,15 @@ class OTPScreen : Fragment(R.layout.opt_framgnet) {
 
     override fun onStart() {
         super.onStart()
-        if (verificationProg && args.userthree?.phone != null)
-            signInWithPhoneNumber(args.userthree?.phone!!)
-        else if (verificationProg && !args.myphoneno.isNullOrEmpty())
-            signInWithPhoneNumber(phone = args.myphoneno!!)
-        else {
-            Log.i(TAG, "onStart: Invalid Phone Number found")
-            Log.i(TAG, "PHONE IS ->${args.userthree?.phone}")
+        if (myViewModel.OtpValidFlag == null && myViewModel.OtpValidFlag == null) {
+            if (verificationProg && args.userthree?.phone != null)
+                signInWithPhoneNumber(args.userthree?.phone!!)
+            else if (verificationProg && !args.myphoneno.isNullOrEmpty())
+                signInWithPhoneNumber(phone = args.myphoneno!!)
+            else {
+                Log.i(TAG, "onStart: Invalid Phone Number found")
+                Log.i(TAG, "PHONE IS ->${args.userthree?.phone}")
+            }
         }
     }
 

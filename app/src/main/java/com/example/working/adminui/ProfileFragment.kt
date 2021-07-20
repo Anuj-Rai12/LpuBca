@@ -19,14 +19,12 @@ import com.example.working.utils.userchannel.FireBaseUser
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-private const val ROTATION = "Rotation"
 
 @AndroidEntryPoint
 class ProfileFragment : Fragment(R.layout.porfile_fragment), UpdateMyInfo {
     private lateinit var binding: PorfileFragmentBinding
     private val myViewModel: MyViewModel by activityViewModels()
-    private var loading: Boolean? = null
-    private lateinit var userInfoUpdateDialog: UserInfoUpdateDialog
+    private var userInfoUpdateDialog: UserInfoUpdateDialog? = null
 
     @Inject
     lateinit var customProgress: CustomProgress
@@ -34,10 +32,16 @@ class ProfileFragment : Fragment(R.layout.porfile_fragment), UpdateMyInfo {
         super.onViewCreated(view, savedInstanceState)
         binding = PorfileFragmentBinding.bind(view)
         Log.i(TAG, "onViewCreated: Welcome")
-        savedInstanceState?.let {
-            loading = it.getBoolean(ROTATION)
-        }
         getUserInfo()
+        if (myViewModel.profileDialogFlag == true) {
+            dialog(myViewModel.profileTitle!!, myViewModel.profileMessage!!)
+        }
+        if (myViewModel.profileUpdateIt == true) {
+            transferUI()
+        }
+        if (myViewModel.profileEmailUpdateOrNot==true){
+            updateNewEmail(myViewModel.profileUserEmail!!)
+        }
         binding.nameLayout.setOnClickListener {
             if (checkUI(binding.userNameText)) {
                 dialog(UPDATE, NAME)
@@ -54,6 +58,30 @@ class ProfileFragment : Fragment(R.layout.porfile_fragment), UpdateMyInfo {
         binding.semesterLayout.setOnClickListener {
             if (checkUI(binding.userSemester))
                 dialog(UPDATE, SEMESTER)
+        }
+    }
+
+    private fun transferUI() {
+        when {
+            myViewModel.isValidEmail(myViewModel.profileTitle) -> {
+                Log.i(TAG, "transferUI: Update Email")
+                updateEmail(
+                    email = myViewModel.profileTitle!!,
+                    password = myViewModel.profileMessage!!,
+                    newEmail = myViewModel.profileUserEmail!!
+                )
+            }
+            checkSemester(string = myViewModel.profileMessage!!) -> {
+                Log.i(TAG, "transferUI: CheckSemester Update")
+                updateSemester(semesterNo = myViewModel.profileMessage!!)
+            }
+            else -> {
+                Log.i(TAG, "transferUI: Update Name")
+                updateName(
+                    firstName = myViewModel.profileTitle!!,
+                    lastName = myViewModel.profileMessage!!
+                )
+            }
         }
     }
 
@@ -89,9 +117,12 @@ class ProfileFragment : Fragment(R.layout.porfile_fragment), UpdateMyInfo {
         when (title) {
             UPDATE -> {
                 userInfoUpdateDialog = UserInfoUpdateDialog(title, message)
-                userInfoUpdateDialog.updateMyInfo = this
-                userInfoUpdateDialog.show(childFragmentManager, "MyFragment")
-
+                myViewModel.profileTitle = title
+                myViewModel.profileMessage = message
+                myViewModel.profileDialogFlag = true
+                userInfoUpdateDialog?.isCancelable = false
+                userInfoUpdateDialog?.updateMyInfo = this
+                userInfoUpdateDialog?.show(childFragmentManager, "MyFragment")
             }
             else -> {
                 val action =
@@ -125,24 +156,33 @@ class ProfileFragment : Fragment(R.layout.porfile_fragment), UpdateMyInfo {
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        loading?.let {
-            outState.putBoolean(ROTATION, it)
-        }
+    override fun onPause() {
+        super.onPause()
+        hideLoading()
+        userInfoUpdateDialog?.dismiss()
     }
 
     override fun updateName(firstName: String, lastName: String) {
+        Log.i(TAG, "updateName: Activated ")
+        myViewModel.profileTitle = firstName
+        myViewModel.profileMessage = lastName
+        myViewModel.profileUpdateIt = true
         myViewModel.updateValue("$firstName,$lastName", NAME).observe(viewLifecycleOwner) {
             showResult(it)
         }
     }
 
     override fun updateEmail(email: String, password: String, newEmail: String) {
+        myViewModel.profileTitle = email
+        myViewModel.profileMessage = password
+        myViewModel.profileUserEmail = newEmail
+        myViewModel.profileUpdateIt = true
         myViewModel.signInAccount(email, password).observe(viewLifecycleOwner) {
+            Log.i(TAG, "updateEmail: Update Email Bro")
             when (it) {
                 is MySealed.Error -> {
                     hideLoading()
+                    myViewModel.profileUpdateIt = false
                     dialog("Error", "${it.exception?.localizedMessage}")
                 }
                 is MySealed.Loading -> {
@@ -150,6 +190,7 @@ class ProfileFragment : Fragment(R.layout.porfile_fragment), UpdateMyInfo {
                 }
                 is MySealed.Success -> {
                     hideLoading()
+                    myViewModel.profileUpdateIt = false
                     updateNewEmail(newEmail)
                 }
             }
@@ -157,14 +198,18 @@ class ProfileFragment : Fragment(R.layout.porfile_fragment), UpdateMyInfo {
     }
 
     private fun updateNewEmail(newEmail: String) {
+        myViewModel.profileEmailUpdateOrNot = true
         myViewModel.updateNewEmail(newEmail).observe(viewLifecycleOwner) {
             showResult(it)
         }
     }
 
     private fun showResult(it: MySealed<out String>) {
+        Log.i(TAG, "showResult: Show Result Is Activated")
         when (it) {
             is MySealed.Error -> {
+                myViewModel.profileEmailUpdateOrNot = false
+                myViewModel.profileUpdateIt = false
                 hideLoading()
                 dialog("Error", "${it.exception?.localizedMessage}")
             }
@@ -173,12 +218,16 @@ class ProfileFragment : Fragment(R.layout.porfile_fragment), UpdateMyInfo {
             }
             is MySealed.Success -> {
                 hideLoading()
+                myViewModel.profileEmailUpdateOrNot = false
+                myViewModel.profileUpdateIt = false
                 dialog("Success", it.data.toString())
             }
         }
     }
 
     override fun updateSemester(semesterNo: String) {
+        myViewModel.profileMessage = semesterNo
+        myViewModel.profileUpdateIt = true
         myViewModel.updateValue(semesterNo, SEMESTER).observe(viewLifecycleOwner) {
             showResult(it)
         }

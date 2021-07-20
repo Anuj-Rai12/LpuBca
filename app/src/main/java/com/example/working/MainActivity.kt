@@ -1,10 +1,9 @@
 package com.example.working
 
 import android.Manifest
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -14,7 +13,6 @@ import com.example.working.utils.*
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.dialogs.SettingsDialog
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 const val REQUEST_CAM = 101
 const val REQUEST_GAL = 102
@@ -25,11 +23,10 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var checkInternet: CheckInternet
-    @Inject
-    lateinit var customProgressBar: CustomProgressBar
+    private var passwordDialog: PasswordDialog? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        checkInternet= CheckInternet(this)
+        checkInternet = CheckInternet(this)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         grantPermission()
@@ -39,28 +36,27 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         navController = navHostFragment.findNavController()
         setupActionBarWithNavController(navController)
     }
+
     private fun checkInternet() {
-        checkInternet.observe(this){
-            if (!it){
+        checkInternet.observe(this) {
+            if (it) {
+                passwordDialog?.dismiss()
+            } else {
                 dialog()
-                Toast.makeText(this, No_Internet_MSG, Toast.LENGTH_LONG).show()
-            }
-            else{
-                dialog(flag = true)
-                Toast.makeText(this, "Connection Established", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun dialog(flag:Boolean=false) {
-        val msg = PasswordDialog(title = No_Internet, Msg = No_Internet_MSG)
-        if (!flag) {
-            msg.isCancelable = flag
-            msg.show(supportFragmentManager, "No_Internet")
-        } else if (msg.isVisible) {
-            msg.dismiss()
-        }
+    override fun onPause() {
+        super.onPause()
+        passwordDialog?.dismiss()
     }
+
+    private fun dialog() {
+        passwordDialog = PasswordDialog(title = No_Internet, Msg = No_Internet_MSG)
+        passwordDialog?.show(supportFragmentManager, "No_Internet")
+    }
+
     private fun grantPermission() {
         if (!checkCameraPermission(this)) {
             request(Manifest.permission.CAMERA, REQUEST_CAM, "Camera")
@@ -93,17 +89,7 @@ class MainActivity : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
             }
         }
     }
-    override fun onPause() {
-        super.onPause()
-        customProgressBar.show(this,null)
-        customProgressBar.dismiss()
-    }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        customProgressBar.show(this,null)
-        customProgressBar.dismiss()
-    }
     override fun onPermissionsGranted(requestCode: Int, perms: List<String>) {
         Log.i("MYTAG", "onPermissionsGranted: Permission Is Granted")
     }

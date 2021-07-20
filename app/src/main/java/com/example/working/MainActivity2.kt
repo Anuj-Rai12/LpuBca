@@ -39,6 +39,10 @@ class MainActivity2 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     private lateinit var share: TextView
     private lateinit var bugs: TextView
     private var adminEmail: String? = null
+    private var updateDialog: UpdateDialog? = null
+    private var passwordDialog: PasswordDialog? = null
+    private val message: String = "Do You Really Want to LogOut?"
+    private var dialogTitle: String = "LogOut!"
     private val myViewModel: MyViewModel by viewModels()
     private val adminViewModel: AdminViewModel by viewModels()
     private val shareLink by lazy {
@@ -54,6 +58,10 @@ class MainActivity2 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         savedInstanceState?.let { bundle ->
             adminEmail = bundle.getString(MAIL)
         }
+        if (myViewModel.dialogFlag) {
+            openDialog()
+            myViewModel.dialogFlag = false
+        }
         grantPermission()
         getAdminEmail()
         checkInternet = CheckInternet(this)
@@ -68,9 +76,7 @@ class MainActivity2 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
             binding?.nagView?.getHeaderView(0)?.findViewById(R.id.mylogoutText)!!
         share = binding?.nagView?.getHeaderView(0)?.findViewById(R.id.myshareText)!!
         logout.setOnClickListener {
-            val updateDialog = UpdateDialog("Do You Really Want to LogOut?", null, "LogOut!")
-            updateDialog.isCancelable = false
-            updateDialog.show(supportFragmentManager, "LogOUt")
+            openDialog()
         }
         share.setOnClickListener {
             shareLink?.let { url ->
@@ -99,26 +105,33 @@ class MainActivity2 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         setupActionBarWithNavController(navController, appBarConfiguration)
     }
 
+    override fun onPause() {
+        super.onPause()
+        hideLoading()
+        updateDialog?.dismiss()
+        passwordDialog?.dismiss()
+    }
+
+    private fun openDialog() {
+        updateDialog = UpdateDialog(message, null, dialogTitle)
+        myViewModel.dialogFlag = true
+        updateDialog?.isCancelable = false
+        updateDialog?.show(supportFragmentManager, AllMyConstant.MSG_DIALOG)
+    }
+
     private fun checkInternet() {
         checkInternet.observe(this) {
-            if (!it) {
-                dialog()
-                Toast.makeText(this, No_Internet_MSG, Toast.LENGTH_LONG).show()
+            if (it) {
+                passwordDialog?.dismiss()
             } else {
-                dialog(flag = true)
-                Toast.makeText(this, "Connection Established", Toast.LENGTH_SHORT).show()
+                dialog()
             }
         }
     }
 
-    private fun dialog(flag: Boolean = false) {
-        val msg = PasswordDialog(title = No_Internet, Msg = No_Internet_MSG)
-        if (!flag) {
-            msg.isCancelable = flag
-            msg.show(supportFragmentManager, "No_Internet")
-        } else if (msg.isVisible) {
-            msg.dismiss()
-        }
+    private fun dialog() {
+        passwordDialog = PasswordDialog(title = No_Internet, Msg = No_Internet_MSG)
+        passwordDialog?.show(supportFragmentManager, "No_Internet")
     }
 
     private fun getAdminEmail() {
@@ -142,7 +155,7 @@ class MainActivity2 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
 
     @SuppressLint("SetTextI18n")
     private fun setUpProfile() {
-
+        Log.i(TAG, "setUpProfile: Profile Is Updated ")
         myViewModel.userData.observe(this) {
             when (it) {
                 is MySealed.Loading -> {

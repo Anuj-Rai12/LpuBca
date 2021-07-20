@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -36,6 +35,10 @@ class MainActivity4 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
     private lateinit var logout: TextView
     private lateinit var share: TextView
     private lateinit var bugs: TextView
+    private var updateDialog: UpdateDialog?=null
+    private var passwordDialog:PasswordDialog?=null
+    private val message:String="Do You Really Want to LogOut?"
+    private var dialogTitle:String="LogOut!"
     private val myViewModel: MyViewModel by viewModels()
     private val shareLink by lazy {
         MainActivity3.mySharedUrl
@@ -48,6 +51,10 @@ class MainActivity4 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         checkInternet = CheckInternet(this)
         binding = ActivityMain4Binding.inflate(layoutInflater)
         setContentView(binding.root)
+        if (myViewModel.dialogFlag) {
+            openDialog()
+            myViewModel.dialogFlag=false
+        }
         grantPermission()
         img = binding.nagViewAdmin.getHeaderView(0).findViewById(R.id.userProfileImage)!!
         bugs = binding.nagViewAdmin.getHeaderView(0).findViewById(R.id.myBugReport)!!
@@ -58,9 +65,7 @@ class MainActivity4 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
             binding.nagViewAdmin.getHeaderView(0).findViewById(R.id.mylogoutText)!!
         share = binding.nagViewAdmin.getHeaderView(0).findViewById(R.id.myshareText)!!
         logout.setOnClickListener {
-            val updateDialog = UpdateDialog("Do You Really Want to LogOut?", null, "LogOut!")
-            updateDialog.isCancelable = false
-            updateDialog.show(supportFragmentManager, "LogOUt")
+            openDialog()
         }
         setUpProfile()
         checkInternet()
@@ -84,6 +89,20 @@ class MainActivity4 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         //setupActionBarWithNavController(navController, appBarConfiguration)
     }
 
+    override fun onPause() {
+        super.onPause()
+        hideLoading()
+        updateDialog?.dismiss()
+        passwordDialog?.dismiss()
+    }
+
+    private fun openDialog() {
+        updateDialog = UpdateDialog(message, null, dialogTitle)
+        myViewModel.dialogFlag=true
+        updateDialog?.isCancelable = false
+        updateDialog?.show(supportFragmentManager, AllMyConstant.MSG_DIALOG)
+    }
+
     private fun hideLoading() {
         customProgress.hideLoading(this)
     }
@@ -95,33 +114,25 @@ class MainActivity4 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
 
     private fun checkInternet() {
         checkInternet.observe(this) {
-            if (!it) {
-                dialog()
-                Toast.makeText(this, No_Internet_MSG, Toast.LENGTH_LONG).show()
+            if (it) {
+                passwordDialog?.dismiss()
             } else {
-                dialog(flag = true)
-                Toast.makeText(this, "Connection Established", Toast.LENGTH_SHORT).show()
+                dialog()
             }
         }
     }
 
-    private fun dialog(flag: Boolean = false) {
-        val msg = PasswordDialog(title = No_Internet, Msg = No_Internet_MSG)
-        if (!flag) {
-            msg.isCancelable = flag
-            msg.show(supportFragmentManager, "No_Internet")
-        } else if (msg.isVisible) {
-            msg.dismiss()
-        }
+    private fun dialog() {
+         passwordDialog = PasswordDialog(title = No_Internet, Msg = No_Internet_MSG)
+            passwordDialog?.show(supportFragmentManager, "No_Internet")
     }
 
     @SuppressLint("SetTextI18n")
     private fun setUpProfile() {
         myViewModel.userData.observe(this) {
+            Log.i(TAG, "setUpProfile: Get Profile UserData")
             when (it) {
-                is MySealed.Loading -> {
-                    showLoading("User Profile is Loading")
-                }
+                is MySealed.Loading -> showLoading("User Profile is Loading")
                 is MySealed.Success -> {
                     hideLoading()
                     val user = it.data

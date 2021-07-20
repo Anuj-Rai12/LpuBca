@@ -37,6 +37,15 @@ class MyViewModel @Inject constructor(
     private val getUpdateTask: Task<DocumentSnapshot>,
     db: RoomDataBaseInstance
 ) : ViewModel() {
+     var OtpDialogFlag:Boolean?=null
+     var OtpValidFlag:Boolean?=null
+    var profileTitle: String? = null
+    var profileMessage: String? = null
+    var profileUserEmail: String? = null
+    var profileDialogFlag: Boolean? = null
+    var profileUpdateIt: Boolean? = null
+    var profileEmailUpdateOrNot: Boolean? = null
+    var dialogFlag: Boolean = false
     val downloadUpdateFile = db.getDao().showAll().asLiveData()
     var websiteLoading: Boolean = true
     var subjectLoading: Boolean? = null

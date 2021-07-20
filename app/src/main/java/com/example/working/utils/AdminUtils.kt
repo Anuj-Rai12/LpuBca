@@ -75,18 +75,26 @@ fun rand(from: Int = 1, to: Int = 10000000): Int {
 class CustomProgress @Inject constructor(private val customProgressBar: CustomProgressBar) {
     fun hideLoading(context: Context) {
         val con = context as Activity
-        con.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+        //con.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
         customProgressBar.dismiss()
     }
 
     @SuppressLint("SourceLockedOrientationActivity")
     fun showLoading(context: Context, string: String?, boolean: Boolean = false) {
         val con = context as Activity
-        con.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        //con.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         customProgressBar.show(con, string, boolean)
     }
 }
-
+fun checkSemester(string: String) = when (string) {
+    "1th Semester" -> true
+    "2th Semester" -> true
+    "3th Semester" -> true
+    "4th Semester" -> true
+    "5th Semester" -> true
+    "6th Semester" -> true
+    else -> false
+}
 fun getPathFile(file: String): List<String> {
     val tagArray = file.split("\\s*,\\s*".toRegex()).toTypedArray()
     return tagArray.toList()
@@ -202,3 +210,9 @@ const val SHARE_PDF = "Hey Check this PDF,"
 const val SHARED_APP =
     "Check This App,\nThis App contains All the PPT,Other Resources Which is helpful for you studies"
 const val SHARED_DOC = "Hey Check this Documents,"
+
+object AllMyConstant{
+    const val MyDialogFlag="THIS_DIALOG_FRAGMENT"
+    const val MSG_DIALOG="thisMessage"
+    const val MSG_LINK="thisLink"
+}

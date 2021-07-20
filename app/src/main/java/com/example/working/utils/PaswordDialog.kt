@@ -3,7 +3,6 @@ package com.example.working.utils
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -30,14 +29,10 @@ class PasswordDialog(val title: String? = null, val Msg: String? = null) :
     androidx.fragment.app.DialogFragment() {
     private val args: PasswordDialogArgs by navArgs()
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        if (title!=null)
-            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
         val alterDialog = AlertDialog.Builder(requireActivity()).setTitle(title ?: args.title)
         alterDialog.setMessage(Msg ?: args.message)
             .setPositiveButton("ok") { dialogInterface, _ ->
                 dialogInterface.dismiss()
-                if (title!=null)
-                activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
             }
         return alterDialog.create()
     }
@@ -67,9 +62,11 @@ class UserInfoUpdateDialog @Inject constructor(
             semesterNo = arrayAdapter.getItem(position)
         }
         alertDialog.setPositiveButton("Update") { _, _ ->
+            myViewModel.profileDialogFlag=false
             setValue()
         }
         alertDialog.setNegativeButton("Cancel") { dialogInterface, _ ->
+            myViewModel.profileDialogFlag=false
             dialogInterface.dismiss()
         }
         return alertDialog.create()
@@ -175,7 +172,6 @@ class UpdateDialog constructor(
 ) : AppCompatDialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val alterDialog = AlertDialog.Builder(activity)
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
         if (title != "LogOut!") {
             alterDialog
                 .setTitle(title)
@@ -195,7 +191,6 @@ class UpdateDialog constructor(
                     activity?.finish()
                 }.setNegativeButton("No") { _, _ ->
                     dismiss()
-                    activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
                 }
         }
         return alterDialog.create()
