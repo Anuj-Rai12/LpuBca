@@ -91,14 +91,12 @@ dependencies {
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
     //cloud Firestore
-    implementation 'com.google.firebase:firebase-firestore:23.0.1'
+    implementation 'com.google.firebase:firebase-firestore:23.0.2'
     implementation 'com.google.firebase:firebase-firestore-ktx'
     //FireBase Kotlin Coroutine
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.5.0")
     //JetPack DataStore
-    implementation("androidx.datastore:datastore-preferences:1.0.0-beta01")
-    //RealTime DataBase Firebase
-    implementation 'com.google.firebase:firebase-database-ktx:20.0.0'
+    implementation("androidx.datastore:datastore-preferences:1.0.0-rc01")
     //Firebase Storage
     implementation 'com.google.firebase:firebase-storage:20.0.0'
     //Shimmer
@@ -114,4 +112,6 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
     // MultiDex
     implementation "androidx.multidex:multidex:$multidex_version"
+    //Lottie
+    implementation 'com.airbnb.android:lottie:3.7.2'
 }

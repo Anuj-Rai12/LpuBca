@@ -141,7 +141,7 @@ class NoteFragment : Fragment(R.layout.note_framgnet) {
                 is MySealed.Error -> {
                     binding.folderShimmer.isVisible = false
                     binding.folderRecycleView.isVisible = false
-                    binding.isEmptyOrNotBoss.isVisible = true
+                    binding.pageNotFound.isVisible = true
                     binding.resourceErrorText.isVisible = true
                     binding.resourceErrorText.text = "${it.exception?.localizedMessage}"
                     dialog(message = "${it.exception?.localizedMessage}")
@@ -153,10 +153,9 @@ class NoteFragment : Fragment(R.layout.note_framgnet) {
                 is MySealed.Success -> {
                     binding.folderShimmer.isVisible = false
                     it.data?.let {
-                        binding.isEmptyOrNotBoss.isVisible = it
+                        binding.pageNotFound.isVisible = it
                         if (it) {
                             binding.folderRecycleView.isVisible = false
-                            binding.isEmptyOrNotBoss.setBackgroundResource(R.drawable.filenotfound)
                             binding.resourceErrorText.isVisible = it
                             binding.resourceErrorText.text = APPLOGY
 
@@ -184,9 +183,9 @@ class NoteFragment : Fragment(R.layout.note_framgnet) {
                         putUIItem(false)
                         val error = (it.append as LoadState.Error).error.localizedMessage
                         if (error.equals("List is Empty", true)) {
-                            binding.isEmptyOrNotBoss.isVisible = true
+                            binding.pageNotFound.isVisible = true
                             binding.resourceErrorText.isVisible = true
-                            binding.resourceErrorText.text = "$error"
+                            binding.resourceErrorText.text = "''"+"$error"+"''"
                             binding.resourcesRetry.isVisible = true
                             dialog(message = "$error")
                         }
@@ -254,7 +253,7 @@ class NoteFragment : Fragment(R.layout.note_framgnet) {
                     hideLoading()
                     binding.folderShimmer.isVisible = false
                     binding.folderRecycleView.isVisible = false
-                    binding.isEmptyOrNotBoss.isVisible = true
+                    binding.pageNotFound.isVisible = true
                     binding.resourceErrorText.isVisible = true
                     binding.resourceErrorText.text = "${it.exception?.localizedMessage}"
                     dialog(message = "${it.exception?.localizedMessage}")
