@@ -53,7 +53,7 @@ class MainActivity3 : AppCompatActivity() {
             }
         }
         lifecycleScope.launch {
-            delay(3000)
+            delay(4500)
             if (dialogFlag==null||dialogFlag==false)
             checkUpdate()
         }
