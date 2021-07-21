@@ -100,11 +100,16 @@ class MainActivity2 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         }
         setUpProfile()
         checkInternet()
+        subscribe()
         navController = navHostFragment.navController
         appBarConfiguration = AppBarConfiguration(navController.graph, binding?.drawLayout)
         binding?.nagView!!.setupWithNavController(navController)
         setupActionBarWithNavController(navController, appBarConfiguration)
     }
+
+    private fun subscribe() = myViewModel.subscriberToNotification.observe(this){
+            checkSubscriptionStatus(it)
+        }
 
     override fun onPause() {
         super.onPause()

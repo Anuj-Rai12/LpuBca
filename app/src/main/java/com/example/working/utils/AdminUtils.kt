@@ -13,9 +13,11 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.os.Parcelable
+import android.util.Log
 import android.webkit.MimeTypeMap
 import androidx.core.content.FileProvider
 import com.example.working.adminui.respotry.FileInfo
+import com.example.working.loginorsignup.TAG
 import com.google.firebase.firestore.IgnoreExtraProperties
 import com.vmadalin.easypermissions.EasyPermissions
 import kotlinx.parcelize.Parcelize
@@ -40,7 +42,7 @@ data class Materials(
     val time: String? = null,
     val description: String? = null,
     val subject: Map<String, SubjectInfo>? = null,
-    val priority:Int?=null
+    val priority: Int? = null
 ) : Parcelable
 
 @IgnoreExtraProperties
@@ -86,6 +88,7 @@ class CustomProgress @Inject constructor(private val customProgressBar: CustomPr
         customProgressBar.show(con, string, boolean)
     }
 }
+
 fun checkSemester(string: String) = when (string) {
     "1th Semester" -> true
     "2th Semester" -> true
@@ -95,6 +98,7 @@ fun checkSemester(string: String) = when (string) {
     "6th Semester" -> true
     else -> false
 }
+
 fun getPathFile(file: String): List<String> {
     val tagArray = file.split("\\s*,\\s*".toRegex()).toTypedArray()
     return tagArray.toList()
@@ -204,6 +208,15 @@ fun getNightMode(context: Context): Boolean {
     return mode == Configuration.UI_MODE_NIGHT_YES
 }
 
+fun checkSubscriptionStatus(mySealed: MySealed<out String>) = when (mySealed) {
+    is MySealed.Error -> Log.i(
+        TAG,
+        "checkSubscriptionStatus: ${mySealed.exception?.localizedMessage}"
+    )
+    is MySealed.Loading -> Log.i(TAG, "checkSubscriptionStatus:  ${mySealed.data}")
+    is MySealed.Success -> Log.i(TAG, "checkSubscriptionStatus:   ${mySealed.data}")
+}
+
 const val SHARED_WEBSITE = "Hey, Check this Interesting Website,"
 const val SHARE_IMAGE = "Hey,Check this Image,"
 const val SHARE_PDF = "Hey Check this PDF,"
@@ -211,9 +224,10 @@ const val SHARED_APP =
     "Check This App,\nThis App contains All the PPT,Other Resources Which is helpful for you studies"
 const val SHARED_DOC = "Hey Check this Documents,"
 
-object AllMyConstant{
-    const val MyDialogFlag="THIS_DIALOG_FRAGMENT"
-    const val MSG_DIALOG="thisMessage"
-    const val MSG_LINK="thisLink"
-    const val IMAGE_DOWNLOAD="Image Is Loading.."
+object AllMyConstant {
+    const val MyDialogFlag = "THIS_DIALOG_FRAGMENT"
+    const val MSG_DIALOG = "thisMessage"
+    const val MSG_LINK = "thisLink"
+    const val IMAGE_DOWNLOAD = "Image Is Loading.."
+    const val TOPIC = "/topics/MyFriends"
 }

@@ -81,6 +81,7 @@ class MainActivity4 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
                 )
             }
         }
+        subscribe()
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.fragmentContainerView3) as NavHostFragment
         navController = navHostFragment.navController
@@ -89,7 +90,9 @@ class MainActivity4 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         setupActionBarWithNavController(navController, appBarConfiguration)
         //setupActionBarWithNavController(navController, appBarConfiguration)
     }
-
+    private fun subscribe() = myViewModel.subscriberToNotification.observe(this){
+        checkSubscriptionStatus(it)
+    }
     override fun onPause() {
         super.onPause()
         hideLoading()

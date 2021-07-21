@@ -7,11 +7,14 @@ import com.example.working.repos.USERS
 import com.example.working.repos.VERSION
 import com.example.working.repos.VERSION_DOC
 import com.example.working.room.RoomDataBaseInstance
+import com.example.working.utils.AllMyConstant
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.tasks.await
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -43,6 +46,11 @@ object AppModule {
 
     @Provides
     @Singleton
+    @Subscriber
+    fun subscribeIt() = FirebaseMessaging.getInstance().subscribeToTopic(AllMyConstant.TOPIC)
+
+    @Provides
+    @Singleton
     @AdminQuery
     fun getAdminUserId() = fireStore.collection(USERS).document(adminId)
 
@@ -60,3 +68,6 @@ annotation class GetUpdate
 @Retention(AnnotationRetention.BINARY)
 annotation class AdminQuery
 
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class Subscriber

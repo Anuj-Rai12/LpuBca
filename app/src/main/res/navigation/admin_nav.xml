@@ -145,4 +145,9 @@
             app:popEnterAnim="@anim/pop_enter_anim"
             app:popExitAnim="@anim/pop_exit_anim" />
     </fragment>
+    <fragment
+        android:id="@+id/sendNotificationFragment"
+        android:name="com.example.working.notfiy.SendNotificationFragment"
+        android:label="Create Notifications"
+        tools:layout="@layout/send_notfication_framgment" />
 </navigation>

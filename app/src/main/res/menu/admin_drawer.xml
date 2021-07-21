@@ -20,6 +20,11 @@
         android:iconTint="@color/black"
         android:title="My Downloads" />
     <item
+        android:id="@+id/sendNotificationFragment"
+        android:icon="@drawable/ic_notification"
+        android:iconTint="@color/black"
+        android:title="Create Notification" />
+    <item
         android:id="@+id/profileFragment"
         android:icon="@drawable/ic_person"
         android:title="Profile" />

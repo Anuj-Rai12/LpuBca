@@ -113,7 +113,7 @@ class MyRepository @Inject constructor() {
             val check = fireStore.collection(semesterNo).get().await()
             MySealed.Success(check.isEmpty)
         } catch (e: Exception) {
-            MySealed.Error(null,e)
+            MySealed.Error(null, e)
         }
         emit(data)
     }.flowOn(IO)
@@ -159,6 +159,17 @@ class MyRepository @Inject constructor() {
             udi.currentUser?.updateEmail(newEmail)?.await()
             reference.update(EMAIL, newEmail).await()
             MySealed.Success("Email Is Updated Successfully.$msg")
+        } catch (e: Exception) {
+            MySealed.Error(null, e)
+        }
+        emit(data)
+    }.flowOn(IO)
+
+    fun subscribeToNotification(subscriber: Task<Void>) = flow {
+        emit(MySealed.Loading("Subscription to Notification Loading"))
+        val data = try {
+            subscriber.await()
+            MySealed.Success("Successfully Subscribe")
         } catch (e: Exception) {
             MySealed.Error(null, e)
         }

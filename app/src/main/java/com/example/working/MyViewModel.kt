@@ -10,6 +10,7 @@ import androidx.paging.cachedIn
 import com.example.working.adminui.LOAD_SIZE
 import com.example.working.recycle.paginguser.FirestorePagingSource
 import com.example.working.recycle.paginguser.GetUpdate
+import com.example.working.recycle.paginguser.Subscriber
 import com.example.working.recycle.resource.ResourcesPaginationSource
 import com.example.working.recycle.unit.UnitPaginationSource
 import com.example.working.repos.ClassPersistence
@@ -35,6 +36,8 @@ class MyViewModel @Inject constructor(
     private val getAllUserQuery: Query,
     @GetUpdate
     private val getUpdateTask: Task<DocumentSnapshot>,
+    @Subscriber
+    private val subscriber: Task<Void>,
     db: RoomDataBaseInstance
 ) : ViewModel() {
     var imageProfile: Boolean? = null
@@ -76,6 +79,7 @@ class MyViewModel @Inject constructor(
             .document(loadPath?.get(1) ?: " ").collection(loadPath?.get(2) ?: "")
             .limit(UNIT_LOAD_SIZE.toLong())
 
+    val subscriberToNotification = myRepository.subscribeToNotification(subscriber).asLiveData()
     fun createAccount(icon: Bitmap, userInfo1: UserInfo1) =
         myRepository.createAcc(icon, userInfo1).asLiveData()
 
