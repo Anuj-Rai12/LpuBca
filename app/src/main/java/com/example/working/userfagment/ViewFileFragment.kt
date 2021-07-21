@@ -64,6 +64,10 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
     private val adminViewModel: AdminViewModel by activityViewModels()
     private var getDefaultPage: Int? = null
     private var isWeb:Boolean?=null
+    private var websiteOrNot:Boolean?=null
+    private var fileReceiver:BroadcastReceiver?=null
+    private var viewDownloadManger:DownloadManager?=null
+    private var viewTrueId:Long?=null
     @Inject
     lateinit var customProgress: CustomProgress
 
@@ -78,7 +82,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
         if (args.fileinfo.localDownloadUrl != null)
             offlineSee()
         else
-            onlineSee(savedInstanceState)
+            onlineSee()
         binding.myRoot.setOnRefreshListener {
             if (isWebsiteFile(args.fileinfo.fileName!!)) {
                 checkConnection()
@@ -89,13 +93,8 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun onlineSee(savedInstanceState: Bundle?) {
-        /*if (isWeb!=null && isWebsiteFile(args.fileinfo.fileName!!)) {
-            binding.webView.restoreState(savedInstanceState!!)
-            Log.i(TAG, "onlineSee: Website is Not Null")
-            webViewLoading()
-            onBackPressed()
-        } else*/ if (isWebsiteFile(args.fileinfo.fileName!!)) {
+    private fun onlineSee() {
+        if (isWebsiteFile(args.fileinfo.fileName!!)) {
             binding.myRoot.isVisible = true
             Log.i(TAG, "onlineSee: Website is Null")
             checkConnection()
@@ -146,12 +145,16 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
     }
 
     private fun setBroadcastReceiver(TrueId: Long) {
-        val receiver = object : BroadcastReceiver() {
+        fileReceiver = object : BroadcastReceiver() {
             @RequiresApi(Build.VERSION_CODES.M)
             override fun onReceive(context: Context?, intent: Intent?) {
                 val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                viewTrueId = null
+                fileReceiver=null
                 hideLoading()
                 if (id == TrueId) {
+                    viewTrueId = null
+                    fileReceiver=null
                     binding.myRoot.isRefreshing = true
                     val uri = getFileUrl(getFileDir(fileName = args.title, requireContext()))
                     activity?.let {
@@ -166,7 +169,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
                     dialog(message = "File is Not Downloaded :(")
             }
         }
-        activity?.registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+        activity?.registerReceiver(fileReceiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
     }
 
     @SuppressLint("SetTextI18n")
@@ -196,11 +199,23 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
         val uri = getFileDir(args.title, requireContext())
         val request = getDownloadRequest(args.fileinfo, uri)
         showLoading("${args.title} is Downloading,\nDon't close the App.")
-        val downloadManger: DownloadManager =
+        viewDownloadManger=
             activity?.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        return downloadManger.enqueue(request)
+        viewTrueId=viewDownloadManger?.enqueue(request)
+        return viewTrueId!!
     }
 
+    override fun onPause() {
+        super.onPause()
+        hideLoading()
+        viewTrueId?.let {
+            viewDownloadManger?.remove(it)
+        }
+        fileReceiver?.let { receiver ->
+            Log.i(TAG, "onPause: Receiver is Unregister")
+            activity?.unregisterReceiver(receiver)
+        }
+    }
     private fun getFileUrl(file: File) = getFileUrl(file, requireContext())
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -317,6 +332,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
                 Log.i(TAG, "onProgressChanged: the Loading is $newProgress")
                 if (newProgress == 100) {
                     Log.i(TAG, "onProgressChanged:Loading Completed")
+                    websiteOrNot=true
                     hideLoading()
                     myViewModel.websiteLoading = false
                     binding.myRoot.isRefreshing = false
@@ -324,6 +340,7 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
                     if (myViewModel.websiteLoading)
                         showLoading()
                     binding.myRoot.isRefreshing = true
+                    websiteOrNot=true
                 }
                 super.onProgressChanged(view, newProgress)
             }
@@ -349,8 +366,11 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
         }.handleOnBackPressed()
     }
 
+    @SuppressLint("SourceLockedOrientationActivity")
     private fun showLoading(title: String = "${args.title} is Loading") {
         activity?.let {
+            if (websiteOrNot==true)
+                activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             customProgress.showLoading(it, title)
             return
         }
@@ -362,7 +382,6 @@ class ViewFileFragment : Fragment(R.layout.view_file_fragment),
     private fun hideLoading() {
         activity?.let {
             customProgress.hideLoading(it)
-            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             return
         }
         Log.i(TAG, "hideLoading: iS NOT return")

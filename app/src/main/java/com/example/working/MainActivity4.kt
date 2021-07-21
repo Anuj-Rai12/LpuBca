@@ -54,6 +54,7 @@ class MainActivity4 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         if (myViewModel.dialogFlag) {
             openDialog()
             myViewModel.dialogFlag=false
+            passwordDialog=null
         }
         grantPermission()
         img = binding.nagViewAdmin.getHeaderView(0).findViewById(R.id.userProfileImage)!!

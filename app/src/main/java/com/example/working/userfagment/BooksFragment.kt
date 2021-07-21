@@ -35,12 +35,19 @@ class BooksFragment : Fragment(R.layout.book_fragment) {
     private val adminViewModel: AdminViewModel by activityViewModels()
     private var subjectRecycleView: SubjectRecycleView? = null
     private var fileRecycleView: FileRecycleView? = null
+    private var bookReceiver: BroadcastReceiver? = null
+    private var downloadManger: DownloadManager? = null
 
     @Inject
     lateinit var customProgress: CustomProgress
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = BookFragmentBinding.bind(view)
+        adminViewModel.bookFileInfo?.let {
+            Log.i(TAG, "onViewCreated: Downloading Again")
+            val long=setFileDownload(it)
+            setBroadcastReceiver(long,fileInfo = it)
+        }
         args.subject?.let {
             setRecycleView()
             setData()
@@ -84,19 +91,19 @@ class BooksFragment : Fragment(R.layout.book_fragment) {
                 setBroadcastReceiver(id, fileInfo)
             }
         } else {
-            fileInfo.fileName?.let {
+            fileInfo.fileName.let {
                 val action = BooksFragmentDirections.actionBooksFragmentToViewFileFragment(
                     fileInfo,
                     it
-                    )
+                )
                 if (!myViewModel.websiteLoading)
-                    myViewModel.websiteLoading=true
+                    myViewModel.websiteLoading = true
                 findNavController().navigate(action)
             }
         }
     }
 
-    private fun showLoading(message: String)=
+    private fun showLoading(message: String) =
         customProgress.showLoading(requireActivity(), message)
 
     private fun hideLoading() = customProgress.hideLoading(requireActivity())
@@ -107,20 +114,27 @@ class BooksFragment : Fragment(R.layout.book_fragment) {
         activity?.let {
             showLoading("${fileInfo.fileName} is Downloading,\nDon't close the App.")
         }
-        val downloadManger: DownloadManager =
-            activity?.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        return downloadManger.enqueue(request)
+        downloadManger= activity?.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        adminViewModel.bookFileInfo=fileInfo
+        adminViewModel.bookTrueId = downloadManger?.enqueue(request)
+        return adminViewModel.bookTrueId!!
     }
 
     private fun setBroadcastReceiver(TrueId: Long, fileInfo: FileInfo) {
-        val receiver = object : BroadcastReceiver() {
+        bookReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
                 activity?.let {
+                    adminViewModel.bookTrueId = null
+                    adminViewModel.bookFileInfo=null
+                    bookReceiver=null
                     hideLoading()
                 }
                 if (id == TrueId) {
                     val uri = getFileDir(fileName = fileInfo.fileName!!, requireContext())
+                    adminViewModel.bookTrueId = null
+                    adminViewModel.bookFileInfo=null
+                    bookReceiver=null
                     activity?.let {
                         Toast.makeText(
                             it,
@@ -128,7 +142,7 @@ class BooksFragment : Fragment(R.layout.book_fragment) {
                             Toast.LENGTH_LONG
                         ).show()
                     }
-                    fileInfo.localDownloadUrl=getFileUrl(uri)!!.toString()
+                    fileInfo.localDownloadUrl = getFileUrl(uri)!!.toString()
                     adminViewModel.saveDownload(
                         UserData(
                             fileInfo = fileInfo,
@@ -136,7 +150,7 @@ class BooksFragment : Fragment(R.layout.book_fragment) {
                         )
                     ).observe(viewLifecycleOwner) {
                         if (it is MySealed.Success) {
-                            dialog(title = "Success!",message = it.data!!)
+                            dialog(title = "Success!", message = it.data!!)
                         }
                     }
                     //Show Document file
@@ -150,11 +164,25 @@ class BooksFragment : Fragment(R.layout.book_fragment) {
                 }
             }
         }
-        activity?.registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+        activity?.registerReceiver(
+            bookReceiver,
+            IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+        )
     }
 
-    private fun getFileUrl(file: File)= getFileUrl(context = requireContext(),file = file)
+    private fun getFileUrl(file: File) = getFileUrl(context = requireContext(), file = file)
 
+    override fun onPause() {
+        super.onPause()
+        hideLoading()
+        adminViewModel.bookTrueId?.let {
+            downloadManger?.remove(it)
+        }
+        bookReceiver?.let { receiver ->
+            Log.i(TAG, "onPause: Receiver is Unregister")
+            activity?.unregisterReceiver(receiver)
+        }
+    }
 
     private fun viewDocumentFile(uri: Any, fileInfo: FileInfo) {
         val trueUri = when (uri) {
@@ -210,8 +238,8 @@ class BooksFragment : Fragment(R.layout.book_fragment) {
         binding.recycleView.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(requireContext())
-            subjectRecycleView = SubjectRecycleView {main,path->
-                itemOnClick(main,path)
+            subjectRecycleView = SubjectRecycleView { main, path ->
+                itemOnClick(main, path)
             }
             adapter = subjectRecycleView
         }

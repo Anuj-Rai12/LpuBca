@@ -215,4 +215,5 @@ object AllMyConstant{
     const val MyDialogFlag="THIS_DIALOG_FRAGMENT"
     const val MSG_DIALOG="thisMessage"
     const val MSG_LINK="thisLink"
+    const val IMAGE_DOWNLOAD="Image Is Loading.."
 }

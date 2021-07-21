@@ -61,6 +61,7 @@ class MainActivity2 : AppCompatActivity(), EasyPermissions.PermissionCallbacks {
         if (myViewModel.dialogFlag) {
             openDialog()
             myViewModel.dialogFlag = false
+            passwordDialog=null
         }
         grantPermission()
         getAdminEmail()

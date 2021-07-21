@@ -3,7 +3,6 @@ package com.example.working.loginorsignup
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.ActivityInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
@@ -28,6 +27,7 @@ import coil.request.SuccessResult
 import com.example.working.MyViewModel
 import com.example.working.R
 import com.example.working.databinding.SignFramgnetBinding
+import com.example.working.utils.AllMyConstant
 import com.example.working.utils.BottomSheet
 import com.example.working.utils.CustomProgressBar
 import com.example.working.utils.SendData
@@ -49,6 +49,10 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
 
     private val myViewModel: MyViewModel by activityViewModels()
 
+    private val semesterArray: ArrayAdapter<String> by lazy {
+        val weeks = resources.getStringArray(R.array.timers)
+        ArrayAdapter(requireContext(), R.layout.dropdaown, weeks)
+    }
     @Inject
     lateinit var myBottomSheet: BottomSheet
 
@@ -70,6 +74,9 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
         setSemester()
         savedInstanceState?.let {
             semesterNo = it.getString("Sem")
+        }
+        if (myViewModel.imageProfile == true) {
+            urlImage()
         }
         if (myViewModel.image == null) {
             myViewModel.image = convertImage()
@@ -127,7 +134,7 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
             findNavController().navigate(action)
         }
         binding.Autocom.setOnItemClickListener { _, _, position, _ ->
-            getPosition(position)
+            semesterNo=semesterArray.getItem(position)
         }
         getImage()
     }
@@ -159,19 +166,6 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
         )
         return passwordREGEX.matcher(password).matches()
     }
-
-    private fun getPosition(position: Int) {
-        semesterNo = when (position) {
-            0 -> "1th Semester"
-            1 -> "2th Semester"
-            2 -> "3th Semester"
-            3 -> "4th Semester"
-            4 -> "5th Semester"
-            5 -> "6th Semester"
-            else -> null
-        }
-    }
-
     private fun getImage() {
         binding.setimagedude.setOnClickListener {
             myBottomSheet.sendData = this
@@ -218,23 +212,21 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
 
     override fun urlImage() {
         lifecycleScope.launch {
-            showLoading("Image Is Loading..")
+            myViewModel.imageProfile = true
+            showLoading(AllMyConstant.IMAGE_DOWNLOAD)
             myViewModel.image = getBitmap() ?: convertImage()
             myBitmap = myViewModel.image
             binding.profileImage.setImageBitmap(myBitmap)
         }
     }
 
-    private fun hideLoading() {
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
-        customProgressBar.dismiss()
-    }
+    private fun hideLoading() = customProgressBar.dismiss()
+
 
     @SuppressLint("SourceLockedOrientationActivity")
-    private fun showLoading(string: String?, boolean: Boolean = false) {
-        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+    private fun showLoading(string: String?, boolean: Boolean = false) =
         customProgressBar.show(requireActivity(), string, boolean)
-    }
+
 
     private fun convertImage(myImage: Int = R.drawable.myimage): Bitmap =
         BitmapFactory.decodeResource(resources, myImage)
@@ -246,9 +238,11 @@ class SignUpScreen : Fragment(R.layout.sign_framgnet), SendData {
             .build()
         return try {
             val result = (loading.execute(request) as SuccessResult).drawable
+            myViewModel.imageProfile = false
             hideLoading()
             (result as BitmapDrawable).bitmap
         } catch (e: Exception) {
+            myViewModel.imageProfile = false
             hideLoading()
             Snackbar.make(requireView(), "No Internet :(", Snackbar.LENGTH_SHORT).show()
             null

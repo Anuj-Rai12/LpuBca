@@ -37,8 +37,9 @@ class MyViewModel @Inject constructor(
     private val getUpdateTask: Task<DocumentSnapshot>,
     db: RoomDataBaseInstance
 ) : ViewModel() {
-     var OtpDialogFlag:Boolean?=null
-     var OtpValidFlag:Boolean?=null
+    var imageProfile: Boolean? = null
+    var OtpDialogFlag: Boolean? = null
+    var OtpValidFlag: Boolean? = null
     var profileTitle: String? = null
     var profileMessage: String? = null
     var profileUserEmail: String? = null

@@ -26,6 +26,8 @@ class AdminViewModel @Inject constructor(
     private val adminQuery: DocumentReference
 ) :
     ViewModel() {
+    var bookTrueId: Long? = null
+    var bookFileInfo:FileInfo?=null
     var adminEmail: String? = null
     var folderName: String? = null
     var fileUrl: Uri? = null
@@ -33,9 +35,9 @@ class AdminViewModel @Inject constructor(
     private val _taskEvent = Channel<MySealedChannel>()
     val taskEvent = _taskEvent.receiveAsFlow()
     private var getAllLocalFile = mutableListOf<LocalFileInfo>()
-    private var _localData=MutableLiveData<MutableList<LocalFileInfo>>()
-    val localData:LiveData<MutableList<LocalFileInfo>>
-    get() = _localData
+    private var _localData = MutableLiveData<MutableList<LocalFileInfo>>()
+    val localData: LiveData<MutableList<LocalFileInfo>>
+        get() = _localData
 
     fun uploadFile(
         folderName: String,
@@ -47,7 +49,7 @@ class AdminViewModel @Inject constructor(
     fun getGalleryFile(uri: Uri) {
         val obj = LocalFileInfo(uri)
         getAllLocalFile.add(obj)
-        _localData.value=getAllLocalFile
+        _localData.value = getAllLocalFile
     }
 
     val getAdminEmailId = adminRepository.getAdminEmailId(adminQuery).asLiveData()
@@ -75,10 +77,10 @@ class AdminViewModel @Inject constructor(
     fun addMoreSubject(path: MyFilePath, map: Map<String, SubjectInfo>) =
         adminRepository.addMoreSubject(path, map).asLiveData()
 
-    fun deleteLocalItem(localFileInfo: LocalFileInfo){
+    fun deleteLocalItem(localFileInfo: LocalFileInfo) {
         viewModelScope.launch {
             getAllLocalFile.remove(localFileInfo)
-            _localData.value=getAllLocalFile
+            _localData.value = getAllLocalFile
             _taskEvent.send(MySealedChannel.DeleteAndChannel(localFileInfo))
         }
     }

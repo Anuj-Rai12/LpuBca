@@ -37,7 +37,6 @@ class MyRepository @Inject constructor() {
         val data = try {
             udi.currentUser!!.updateEmail(email).await()
             udi.currentUser!!.updatePassword(password).await()
-            kotlinx.coroutines.delay(20000)
             MySealed.Success(null)
         } catch (e: Exception) {
             MySealed.Error(null, e)
@@ -71,11 +70,9 @@ class MyRepository @Inject constructor() {
             password = info1.password,
             icon = ico
         )
-
         emit(MySealed.Loading("User Profile is Been Updating"))
         val data = try {
             reference.set(userdata).await()
-            kotlinx.coroutines.delay(20000)
             MySealed.Success(null)
         } catch (e: Exception) {
             MySealed.Error(null, e)
@@ -149,7 +146,6 @@ class MyRepository @Inject constructor() {
                     }.await()
                 }
             }
-            kotlinx.coroutines.delay(20000)
             MySealed.Success("$fileName Is Updated Successfully.$msg")
         } catch (e: Exception) {
             MySealed.Error(null, e)

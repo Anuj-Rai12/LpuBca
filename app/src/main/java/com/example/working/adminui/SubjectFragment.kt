@@ -1,6 +1,7 @@
 package com.example.working.adminui
 
 import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -84,7 +85,16 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
             addSubject(teacherName)
         }
     }
+    private fun hideLoading() {
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+        customProgress.hideLoading(requireActivity())
+    }
 
+    @SuppressLint("SourceLockedOrientationActivity")
+    private fun showLoading(string: String?, boolean: Boolean = false) {
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        customProgress.showLoading(requireActivity(), string, boolean)
+    }
     private fun addSubject(teacher: String) {
         val map = mapOf(
             binding.FolderName.text.toString() to SubjectInfo(
@@ -97,14 +107,14 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
             myViewModel.addMoreSubject(args.path, map).observe(viewLifecycleOwner) {
                 when (it) {
                     is MySealed.Error -> {
-                        customProgress.hideLoading(requireActivity())
+                        hideLoading()
                         dialog("${it.exception?.localizedMessage}")
                     }
                     is MySealed.Loading -> {
-                        customProgress.showLoading(requireActivity(), it.data.toString())
+                        showLoading(it.data.toString())
                     }
                     is MySealed.Success -> {
-                        customProgress.hideLoading(requireActivity())
+                        hideLoading()
                         setUploading()
                     }
                 }
@@ -128,14 +138,14 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
         myViewModel.updateSecondPath(filePath, map).observe(viewLifecycleOwner) {
             when (it) {
                 is MySealed.Error -> {
-                    customProgress.hideLoading(requireActivity())
+                    hideLoading()
                     dialog("${it.exception?.localizedMessage}")
                 }
                 is MySealed.Loading -> {
-                    customProgress.showLoading(requireActivity(), it.data.toString())
+                    showLoading(it.data.toString())
                 }
                 is MySealed.Success -> {
-                    customProgress.hideLoading(requireActivity())
+                    hideLoading()
                     myViewModel.fileName.clear()
                     dialog(it.data.toString(), "Success!")
                 }
@@ -162,14 +172,14 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
             myViewModel.addFirstSet(args.path, materials = materials).observe(viewLifecycleOwner) {
                 when (it) {
                     is MySealed.Error -> {
-                        customProgress.hideLoading(requireActivity())
+                        hideLoading()
                         dialog("${it.exception?.localizedMessage}")
                     }
                     is MySealed.Loading -> {
-                        customProgress.showLoading(requireActivity(), it.data.toString())
+                        showLoading(it.data.toString())
                     }
                     is MySealed.Success -> {
-                        customProgress.hideLoading(requireActivity())
+                        hideLoading()
                         setUploading()
                         //dialog(it.data.toString(), "Success!")
                     }
@@ -189,14 +199,14 @@ class SubjectFragment : Fragment(R.layout.subject_fragment) {
         myViewModel.addSecondSet(filePath, allData).observe(viewLifecycleOwner) {
             when (it) {
                 is MySealed.Error -> {
-                    customProgress.hideLoading(requireActivity())
+                    hideLoading()
                     dialog("${it.exception?.localizedMessage}")
                 }
                 is MySealed.Loading -> {
-                    customProgress.showLoading(requireActivity(), it.data.toString())
+                    showLoading(it.data.toString())
                 }
                 is MySealed.Success -> {
-                    customProgress.hideLoading(requireActivity())
+                    hideLoading()
                     myViewModel.fileName.clear()
                     myViewModel.folderName = null
                     dialog(it.data.toString(), title = "Success!!")
