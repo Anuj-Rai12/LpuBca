@@ -51,13 +51,26 @@
             android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold"
-            tools:text="Hello I'm Anuj Rai And, How Are you  Hope use Are Fine So, how's Jamie  it been long time to see him " />
-
+            tools:text="Other Material" />
+        <TextView
+            android:id="@+id/subjectDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/newsTitle"
+            android:layout_alignStart="@id/newsTitle"
+            android:layout_alignEnd="@id/newsTitle"
+            android:layout_margin="3dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/allerta"
+            android:gravity="center"
+            android:textColor="@color/grey"
+            android:textStyle="bold"
+            tools:text="Other Material" />
         <TextView
             android:id="@+id/SourceTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/newsTitle"
+            android:layout_below="@id/subjectDesc"
             android:layout_alignParentEnd="true"
             android:layout_margin="2dp"
             android:drawablePadding="4dp"

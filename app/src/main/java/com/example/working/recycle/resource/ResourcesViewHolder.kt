@@ -13,18 +13,18 @@ class ResourcesViewHolder(private val binding: FloderItemBinding) :
     fun bind(function: (List<SubjectInfo>, String) -> Unit, materials: Materials) {
         binding.apply {
             myName.text = materials.udi
-            newsTitle.text="${materials.id},\n"
-            newsTitle.append(materials.description ?: "No Description")
+            newsTitle.text = "${materials.id},"
+            subjectDesc.text = materials.description ?: "No Description"
             SourceTime.text = materials.time ?: "00/00/0000"
             root.setOnClickListener {
                 val subInfo: MutableList<SubjectInfo> = mutableListOf()
-                materials.subject?.filter {sub->
-                    val key=sub.key
-                    val subj=sub.value
-                    subj.orginalsub=key
+                materials.subject?.filter { sub ->
+                    val key = sub.key
+                    val subj = sub.value
+                    subj.orginalsub = key
                     subInfo.add(subj)
                 }
-                function(subInfo,materials.id?:" ")
+                function(subInfo, materials.id ?: " ")
             }
         }
     }
