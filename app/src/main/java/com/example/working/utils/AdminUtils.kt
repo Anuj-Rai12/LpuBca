@@ -230,4 +230,9 @@ object AllMyConstant {
     const val MSG_LINK = "thisLink"
     const val IMAGE_DOWNLOAD = "Image Is Loading.."
     const val TOPIC = "/topics/MyFriends"
+    const val API_KEY="AAAAwNie7Ig:APA91bGsLQuHx7kwlTryfyPdShj9yp0YuTKYksiDqMeSmdG82SDggQEmwou8WAVEES9mzaGobmJQmsxWGUj3pOMC7jzllSAISUa52K9GLPNn0Ci1g5fKMusnPW6njRu_pSCAi92wFtBi"
+    const val CONTENT_TYPE="application/json"
+    const val URL="https://fcm.googleapis.com"
+    const val URL_END_POINT="fcm/send"
+    const val ICON_NAME="book_icon"
 }

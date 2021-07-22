@@ -7,108 +7,133 @@
     android:layout_margin="8dp"
     android:background="@color/light_grey"
     tools:context="com.example.working.notfiy.SendNotificationFragment">
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <TextView
-        android:id="@+id/titleNot"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:fontFamily="@font/allerta"
-        android:text="Create\nNotifications."
-        android:textAllCaps="false"
-        android:textColor="@color/black"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/notificationTitleLayout"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:hint="Title"
-        android:textColorHint="@color/black"
-        app:boxStrokeColor="@color/my_color"
-        app:boxStrokeWidthFocused="2dp"
-        app:endIconMode="clear_text"
-        app:endIconTint="@color/black"
-        app:hintTextColor="@color/black"
-        app:layout_constraintLeft_toLeftOf="@id/titleNot"
-        app:layout_constraintTop_toBottomOf="@id/titleNot"
-        app:startIconDrawable="@drawable/ic_user">
+        android:layout_height="match_parent">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/notificationTitle"
+        <TextView
+            android:id="@+id/titleNot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:fontFamily="@font/allerta"
+            android:text="Create\nNotifications."
+            android:textAllCaps="false"
+            android:textColor="@color/black"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/notificationTitleLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:inputType="text" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Title"
+            android:textColorHint="@color/black"
+            app:boxStrokeColor="@color/my_color"
+            app:boxStrokeWidthFocused="2dp"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/black"
+            app:hintTextColor="@color/black"
+            app:layout_constraintLeft_toLeftOf="@id/titleNot"
+            app:layout_constraintTop_toBottomOf="@id/titleNot"
+            app:startIconDrawable="@drawable/ic_user">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/notificationDescLayout"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:textColorHint="@color/black"
-        app:boxStrokeColor="@color/my_color"
-        app:boxStrokeWidthFocused="2dp"
-        app:endIconMode="clear_text"
-        app:endIconTint="@color/black"
-        app:hintTextColor="@color/black"
-        app:layout_constraintLeft_toLeftOf="@id/notificationTitleLayout"
-        app:layout_constraintTop_toBottomOf="@id/notificationTitleLayout">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/notificationTitle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/notificationDesc"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/notificationDescLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:gravity="top"
-            android:drawableStart="@drawable/ic_notification"
-            android:hint="Write Some Text..."
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textColorHint="@color/black"
+            app:boxStrokeColor="@color/my_color"
+            app:boxStrokeWidthFocused="2dp"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/black"
+            app:hintTextColor="@color/black"
             app:layout_constraintLeft_toLeftOf="@id/notificationTitleLayout"
-            app:layout_constraintTop_toBottomOf="@id/notificationTitleLayout"
-            />
-    </com.google.android.material.textfield.TextInputLayout>
+            app:layout_constraintTop_toBottomOf="@id/notificationTitleLayout">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/notificationLinkLayout"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:hint="Images Link (optional)"
-        android:textColorHint="@color/black"
-        app:boxStrokeColor="@color/my_color"
-        app:boxStrokeWidthFocused="2dp"
-        app:endIconMode="clear_text"
-        app:endIconTint="@color/black"
-        app:hintTextColor="@color/black"
-        app:layout_constraintLeft_toLeftOf="@id/notificationDescLayout"
-        app:layout_constraintTop_toBottomOf="@id/notificationDescLayout"
-        app:startIconDrawable="@drawable/ic_user">
+            <EditText
+                android:id="@+id/notificationDesc"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:drawableStart="@drawable/ic_notification"
+                android:gravity="top"
+                android:hint="Write Some Text..."
+                app:layout_constraintLeft_toLeftOf="@id/notificationTitleLayout"
+                app:layout_constraintTop_toBottomOf="@id/notificationTitleLayout" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/notificationLink"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/notificationLinkLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:inputType="text" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Images Link (optional)"
+            android:textColorHint="@color/black"
+            app:boxStrokeColor="@color/my_color"
+            app:boxStrokeWidthFocused="2dp"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/black"
+            app:hintTextColor="@color/black"
+            app:layout_constraintLeft_toLeftOf="@id/notificationDescLayout"
+            app:layout_constraintTop_toBottomOf="@id/notificationDescLayout"
+            app:startIconDrawable="@drawable/ic_user">
 
-    <Button
-        android:id="@+id/sendNotification"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Send Notification"
-        android:textAllCaps="false"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintLeft_toLeftOf="@id/notificationLinkLayout"
-        app:layout_constraintRight_toRightOf="@id/notificationLinkLayout"
-        app:layout_constraintTop_toBottomOf="@id/notificationLinkLayout" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/notificationLink"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/notificationDataLayout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Share Website Link (optional)"
+            android:textColorHint="@color/black"
+            app:boxStrokeColor="@color/my_color"
+            app:boxStrokeWidthFocused="2dp"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/black"
+            app:hintTextColor="@color/black"
+            app:layout_constraintLeft_toLeftOf="@id/notificationLinkLayout"
+            app:layout_constraintTop_toBottomOf="@id/notificationLinkLayout"
+            app:startIconDrawable="@drawable/ic_user">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/notificationDataLink"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/sendNotification"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Send Notification"
+            android:textAllCaps="false"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintLeft_toLeftOf="@id/notificationDataLayout"
+            app:layout_constraintRight_toRightOf="@id/notificationDataLayout"
+            app:layout_constraintTop_toBottomOf="@id/notificationDataLayout" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

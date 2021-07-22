@@ -3,6 +3,7 @@ package com.example.working.recycle.paginguser
 import android.app.Application
 import androidx.room.Room
 import com.example.working.adminui.LOAD_SIZE
+import com.example.working.notfiy.NotifyInterface
 import com.example.working.repos.USERS
 import com.example.working.repos.VERSION
 import com.example.working.repos.VERSION_DOC
@@ -10,11 +11,17 @@ import com.example.working.room.RoomDataBaseInstance
 import com.example.working.utils.AllMyConstant
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.messaging.FirebaseMessaging
+import com.google.gson.Gson
+import com.google.gson.internal.GsonBuildConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.tasks.await
+import okhttp3.OkHttpClient
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
@@ -29,6 +36,26 @@ object AppModule {
         fireStore.collection(VERSION).document(VERSION_DOC)
     }
     private const val adminId = "ZFruF8WEdSbM3itFxjqlNhpR8As2"
+
+
+    private val client by lazy {
+        OkHttpClient.Builder().apply {
+            readTimeout(20, TimeUnit.SECONDS)
+            writeTimeout(20, TimeUnit.SECONDS)
+            connectTimeout(30, TimeUnit.SECONDS)
+        }.build()
+    }
+
+    @Provides
+    @Singleton
+    fun getRetrofit(): NotifyInterface =
+        Retrofit.Builder()
+            .baseUrl(AllMyConstant.URL)
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(NotifyInterface::class.java)
+
 
     @Provides
     @Singleton

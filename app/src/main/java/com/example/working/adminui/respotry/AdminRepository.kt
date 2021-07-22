@@ -3,6 +3,8 @@ package com.example.working.adminui.respotry
 import android.net.Uri
 import android.os.Parcelable
 import com.example.working.adminui.AllData
+import com.example.working.notfiy.MainObject
+import com.example.working.notfiy.NotifyInterface
 import com.example.working.room.RoomDataBaseInstance
 import com.example.working.room.UserData
 import com.example.working.utils.*
@@ -60,14 +62,15 @@ class AdminRepository @Inject constructor(
         emit(data)
     }.flowOn(IO)
 
-    fun saveDownloadFile(userData: UserData) = flow{
-            getUserDao.insert(userData)
+    fun saveDownloadFile(userData: UserData) = flow {
+        getUserDao.insert(userData)
         emit(MySealed.Success("${userData.fileInfo.fileName} Is Saved"))
     }.flowOn(IO)
 
     suspend fun deleteDownloadDB(userData: UserData) {
         getUserDao.delete(userData)
     }
+
     private fun getFileSize(fileSize: Long): String {
         return if (fileSize.toInt() / 1024 <= 1000)
             "${(fileSize / 1024).toDouble()} Kb"
@@ -135,14 +138,30 @@ class AdminRepository @Inject constructor(
         emit(data)
     }.flowOn(IO)
 
-    fun getAdminEmailId(adminQuery: DocumentReference)=flow {
+    fun getAdminEmailId(adminQuery: DocumentReference) = flow {
         emit(MySealed.Loading(null))
-        val data=try {
-            val info=adminQuery.get().await()
-            val email=info.get("email") as String?
+        val data = try {
+            val info = adminQuery.get().await()
+            val email = info.get("email") as String?
             MySealed.Success(email)
-        }catch (e:Exception){
-            MySealed.Error(null,e)
+        } catch (e: Exception) {
+            MySealed.Error(null, e)
+        }
+        emit(data)
+    }.flowOn(IO)
+
+    fun sendNotification(notifyInterface: NotifyInterface, mainObject: MainObject) = flow {
+        emit(MySealed.Loading("Notification is in Process"))
+        val data = try {
+            val response = notifyInterface.sendNotification(mainObject = mainObject)
+            val str = if (response.isSuccessful)
+                "Success,Message Sent Successfully"
+            else
+                "Error,Message not Sent"
+
+            MySealed.Success(str)
+        } catch (e: Exception) {
+            MySealed.Error(null, e)
         }
         emit(data)
     }.flowOn(IO)
@@ -157,5 +176,5 @@ data class FileInfo(
     val fileName: String? = null,
     var sourceId: String? = null,
     val date: String? = null,
-    var localDownloadUrl:String?=null
+    var localDownloadUrl: String? = null
 ) : Parcelable

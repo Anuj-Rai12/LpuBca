@@ -1,6 +1,7 @@
 package com.example.working
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
@@ -20,7 +21,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private const val VERSION = 0
+private const val VERSION = 1
 const val ADMIN_PHONE = "+917777755555"
 
 @AndroidEntryPoint
@@ -38,6 +39,14 @@ class MainActivity3 : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = SplashScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        intent.extras?.keySet()?.forEach{
+            if (it=="Key1") {
+                val string = (intent.extras?.getString(it))
+                string?.let {str->
+                    loadUrl(str)
+                }
+            }
+        }
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
@@ -59,6 +68,10 @@ class MainActivity3 : AppCompatActivity() {
         }
     }
 
+    private fun loadUrl(string: String) {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(string))
+        startActivity(browserIntent)
+    }
     private fun hideLoading() = customProgressBar.hideLoading(this)
 
     companion object {

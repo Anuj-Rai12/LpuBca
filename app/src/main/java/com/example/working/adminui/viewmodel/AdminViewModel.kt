@@ -5,6 +5,8 @@ import androidx.lifecycle.*
 import com.example.working.adminui.AllData
 import com.example.working.adminui.respotry.AdminRepository
 import com.example.working.adminui.respotry.FileInfo
+import com.example.working.notfiy.MainObject
+import com.example.working.notfiy.NotifyInterface
 import com.example.working.recycle.paginguser.AdminQuery
 import com.example.working.room.UserData
 import com.example.working.userfagment.LocalFileInfo
@@ -23,11 +25,18 @@ import javax.inject.Inject
 class AdminViewModel @Inject constructor(
     private val adminRepository: AdminRepository,
     @AdminQuery
-    private val adminQuery: DocumentReference
+    private val adminQuery: DocumentReference,
+
+    private val notifyInterface: NotifyInterface
 ) :
     ViewModel() {
+    var notifyFlag: Boolean? = null
+    var notifytitle: String? = null
+    var notifyDesc: String? = null
+    var notifyImage: String? = null
+
     var bookTrueId: Long? = null
-    var bookFileInfo:FileInfo?=null
+    var bookFileInfo: FileInfo? = null
     var adminEmail: String? = null
     var folderName: String? = null
     var fileUrl: Uri? = null
@@ -45,6 +54,8 @@ class AdminViewModel @Inject constructor(
         source: String
     ) = adminRepository.uploadFile(folderName, fileName, fileUrl!!, source).asLiveData()
 
+    fun sendNotification(mainObject: MainObject) =
+        adminRepository.sendNotification(notifyInterface, mainObject).asLiveData()
 
     fun getGalleryFile(uri: Uri) {
         val obj = LocalFileInfo(uri)
