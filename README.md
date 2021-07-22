@@ -11,12 +11,13 @@ This App Can be Very Help Student of Bca By Providing PPTs,Notes and Other Mater
  7. Kotlin Coroutines
  8. Some Extra JetPack Feature Like Nagavtion Component, RecycleView, Live Data, ViewModel fragments
  9. Dagger Hilt
-10. Kotin Flow 
+10. Kotlin Flow 
 11. FireBase Auth
 12. FireBase Cloud Firestore
 13. FireBase Storage
 14. FireBase Crash Analytics
-15. Pagination
+15. FireBase Cloud Messaging 
+16. Pagination
 
  
 ## App Features
@@ -30,6 +31,7 @@ This App Can be Very Help Student of Bca By Providing PPTs,Notes and Other Mater
 - Feature to Contribute Resource and Get Shout Out in App
 - Feature to Report Bug.
 - Feature to View Users Profile Detail And Can Update UserInfo
+- Feature to Receive Updates of File Upload Detail through Notifications
 - Currently It have 7+ Users 
 
 This is My LpuBca App and i have implement all the knowledge which is learn
